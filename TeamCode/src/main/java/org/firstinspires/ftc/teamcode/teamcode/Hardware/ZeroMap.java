@@ -53,7 +53,8 @@ public class ZeroMap {
     private OpenGLMatrix lastLocation = null;
     private VuforiaLocalizer vuforia = null;
 
-    public int zeroLock;
+    public int zeroLockMax = 10;
+    public int zeroLockMin = 2;
 
     WebcamName webcamName = null;
 
@@ -67,6 +68,8 @@ public class ZeroMap {
     final float leftDisp     = 0;
 
     private double[] zeroPoint = new double[5];
+    List<Recognition> updatedRecognitions;
+    List<Recognition> recon;
 
     private void setClimate(VuforiaTrackable track, float dx, float dy,
                             float dz, float firstAng, float secondAng, float thirdAng) {
@@ -154,13 +157,13 @@ public class ZeroMap {
                 }
             }
                     if (tfod != null) {
-                        List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                        updatedRecognitions = tfod.getUpdatedRecognitions();
                         if (updatedRecognitions != null) {
                             opMode.telemetry.addData("Zeroes Detected",
                                     updatedRecognitions.size());
                             int i = 0;
                             for (Recognition recognition : updatedRecognitions) {
-                                opMode.telemetry.addData(String.format("Labal (%d)", i),
+                                opMode.telemetry.addData(String.format("Label (%d)", i),
                                         recognition.getLabel());
                                 if (recognition.getLabel().equals("Skystone")) {
                                     zeroPoint[1] = recognition.getRight();
@@ -186,6 +189,10 @@ public class ZeroMap {
                 zeroPoint[1] = translation.get(1) / mmPerInch;
                 zeroPoint[2] = translation.get(2) / mmPerInch;
 
+                if (zeroPoint[1] < -5.9) { zeroLockMin = 1; }
+                else if (zeroPoint[1] > - 1.1) { zeroLockMin = 3; }
+                else { zeroLockMin = 2; }
+
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ,
                         DEGREES);
                 opMode.telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} =" +
@@ -202,22 +209,23 @@ public class ZeroMap {
                 zeroPoint[3] = 0;
             }
 
-            List<Recognition> recon = tfod.getUpdatedRecognitions();
+           recon = tfod.getUpdatedRecognitions();
             if (recon != null && targetVisible) {
-                zeroLock = 4;
+                zeroLockMax = 40;
             }
 
             else if (recon != null) {
-                zeroLock = 3;
+                zeroLockMax = 30;
             }
 
-            else { zeroLock = 1; }
+            else { zeroLockMax = 10; }
             opMode.telemetry.update();
 
-            opMode.telemetry.addData("Target :", zeroLock);
+            opMode.telemetry.addData("Zero Status :", zeroLockMax + zeroLockMin);
         }
 
-        return zeroLock;
+        return zeroLockMax + zeroLockMin;
+
     }
 
     public void zeroOut() {

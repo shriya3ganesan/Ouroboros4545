@@ -45,6 +45,9 @@ public class DriveTrain {
     int quadrant;
     int RDXquadrant;
 
+    double baseRatio;
+    double hTarget;
+
     public ElapsedTime runtime = new ElapsedTime();
     private LinearOpMode opMode;
     private Sensors sensors;
@@ -634,7 +637,7 @@ public class DriveTrain {
                 RDXalpha = Math.asin(i / RDXdiag);
                 prevEncode = getEncoderAverage();
                 prevFoc = getEncoderAverage();
-                RDXVector(RDXalpha);
+                RDXVector(RDXalpha, 5, 5);
                 lifeblood(RDXarr2, RDXalpha);
 
                 newFoc = getEncoderAverage();
@@ -657,7 +660,7 @@ public class DriveTrain {
                     RDXalpha = Math.asin(i / RDXdiag);
                     prevEncode = getEncoderAverage();
                     prevFoc = getEncoderAverage();
-                    RDXVector(RDXalpha);
+                    RDXVector(RDXalpha, 5, 5);
                     lifeblood(RDXarr2, RDXalpha);
 
                     newFoc = getEncoderAverage();
@@ -680,18 +683,31 @@ public class DriveTrain {
         return RDXlifeblood;
     }
 
-    public void RDXVector (double radiax) {
+    double baseLineEncoder;
+
+    public void RDXVector (double radiax, double target, double timeOutMS) {
+
+        runtime.reset();
         while (radiax >= 360) {
             radiax -= 360;
         }
 
         RDx = Math.sin(radiax);
         RDy = Math.cos(radiax);
+        baseRatio = RDx/RDy;
+        hTarget = (radiax * radiax) /
+                ((baseRatio * baseRatio) + 1);
+        hTarget = Math.sqrt(hTarget);
+        baseLineEncoder = getEncoderAverage();
 
-        fl.setPower(RDy - RDx);
-        fr.setPower(RDy + RDx);
-        bl.setPower(RDy + RDx);
-        br.setPower(RDy - RDx);
+        while(Math.abs(getEncoderAverage()) < target * inchCounts
+                && runtime.milliseconds() < timeOutMS) {
+            fl.setPower(RDy - RDx);
+            fr.setPower(RDy + RDx);
+            bl.setPower(RDy + RDx);
+            br.setPower(RDy - RDx);
+        }
+        snowWhite();
     }
 
     public void encoderMove(LinearOpMode opMode, double target, double timeout, double radiax) {
@@ -707,7 +723,7 @@ public class DriveTrain {
         {
 
             average = getEncoderAverage();
-            RDXVector(radiax);
+            RDXVector(radiax, target, timeout);
 
             opMode.telemetry.addData("Current Positions: ", "fl %7d : fr %7d : bl %7d : br %7d",
                     fl.getCurrentPosition(), fr.getCurrentPosition(), bl.getCurrentPosition(), br.getCurrentPosition());

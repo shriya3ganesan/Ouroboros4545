@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.teamcode.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -51,12 +52,25 @@ public class GreenPathing_Basic extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
+        sensors.initSensors(this);
         zero.zeroInit(this);
-        while (opModeIsActive()) { zero.zeroBrowse(this); }
-        zero.zeroOut();
 
-        /*drive.initDriveTrain();
+        drive.fl = hardwareMap.dcMotor.get("fl");
+        drive.fr = hardwareMap.dcMotor.get("fr");
+        drive.bl = hardwareMap.dcMotor.get("bl");
+        drive.br = hardwareMap.dcMotor.get("br");
+
+        drive.fl.setDirection(DcMotor.Direction.FORWARD);
+        drive.fr.setDirection(DcMotor.Direction.REVERSE);
+        drive.bl.setDirection(DcMotor.Direction.FORWARD);
+        drive.br.setDirection(DcMotor.Direction.REVERSE);
+
+        drive.fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        drive.fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        drive.bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        drive.br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        //drive.initDriveTrain();
 
         if (robotWidth >= robotLength) {
             greatLength = robotWidth;
@@ -71,13 +85,12 @@ public class GreenPathing_Basic extends LinearOpMode {
 
         trueTime.reset();
 
-        //if (vuf.VuBrowse()[3] == 1) {
+        shufflePos = 1;
+
             if (shufflePos == 3) {
                 drive.encoderMove(this, zeroOffset, 2,  90);
 
                 drive.encoderMove(this, trueHypo, 2,  thetaBit);
-
-                //Intake
 
                 drive.encoderMove(this, -trueHypo, 2,  180 + thetaBit);
             }
@@ -86,8 +99,6 @@ public class GreenPathing_Basic extends LinearOpMode {
 
                 drive.encoderMove(this, trueHypo, 2,  360 - thetaBit);
 
-                //Intake
-
                 drive.encoderMove(this, -trueHypo, 2, 180 - thetaBit);
             }
             else {
@@ -95,21 +106,15 @@ public class GreenPathing_Basic extends LinearOpMode {
 
                 drive.encoderMove(this, falseHypo, 2,  0);
 
-                //Intake
-
                 drive.encoderMove(this, -falseHypo, 2,  180);
             }
-        //}
 
-       // else {
             drive.encoderMove(this, zeroOffset, 2,  90);
 
             drive.encoderMove(this, falseHypo, 2,  0);
 
-            //Intake
 
             drive.encoderMove(this, -falseHypo, 2,  180);
-        //}
 
             runtime.reset();
 
@@ -180,7 +185,5 @@ public class GreenPathing_Basic extends LinearOpMode {
             telemetry.addData("Path", "Complete");
             telemetry.update();
         }
-        */
     }
-}
 

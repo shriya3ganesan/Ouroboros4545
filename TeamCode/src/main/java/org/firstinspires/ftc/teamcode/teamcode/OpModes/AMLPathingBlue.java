@@ -51,9 +51,7 @@ public class AMLPathingBlue extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-
-        sensors.initSensors(this);
-        drive.initDriveTrain(this);
+        drive.initDriveTrain();
         intake.initIntakeAuto(this);
         outtake.initOuttakeAuto(this);
         vuf.zeroInit(this);
@@ -71,7 +69,7 @@ public class AMLPathingBlue extends LinearOpMode {
 
         trueTime.reset();
 
-       // vuf.zeroOut();
+        //switch (vuf.zeroBrowse(this) % 10) {
 
         switch (3) {
 
@@ -101,6 +99,7 @@ public class AMLPathingBlue extends LinearOpMode {
                 drive.encoderDrive(this, -1, 16, 16, 2);
                 break;
         }
+        vuf.zeroOut();
 
         drive.encoderMove(this, 72, 3, -1);
         drive.strafeMove(this, 24, 2, -1); //hopefully left

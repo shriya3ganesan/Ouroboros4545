@@ -24,13 +24,15 @@ public class ZerOuttake{
     OpMode opMode;
     ElapsedTime time = new ElapsedTime();
 
+    double vexEncoder = 0;
+
     //1.055 Inches Base, Foundation is 2.25 inches
 
     static double HOOKDOWN = -1.0;
     static double HOOKUP = 1.0;
     private boolean toggled = false;
 
-    public void initOuttake(OpMode opMode)
+    public void initZeroOuttake(OpMode opMode)
     {
         time.reset();
         this.opMode = opMode;
@@ -61,8 +63,12 @@ public class ZerOuttake{
     public void zeroTeleOut() {
 
             if (Math.abs(opMode.gamepad2.right_stick_y) >=.075) {
-                rightVex.setPower(opMode.gamepad2.right_stick_y / 2);
-                leftVex.setPower(-opMode.gamepad2.right_stick_y / 2);
+                if (vexEncoder < 500 && opMode.gamepad2.right_stick_y < -0.5
+                || vexEncoder > 0 && opMode.gamepad2.right_stick_y > 0.5) {
+                    rightVex.setPower(opMode.gamepad2.right_stick_y / 2);
+                    vexEncoder += rightVex.getPower() * (Math.PI / 2);
+                    leftVex.setPower(-opMode.gamepad2.right_stick_y / 2);
+                }
             }
             else {
                 rightVex.setPower(0);
@@ -70,10 +76,10 @@ public class ZerOuttake{
             }
 
             if (Math.abs(opMode.gamepad2.left_stick_y) > .05) {
-                if ((liftRight.getCurrentPosition() + liftLeft.getCurrentPosition()) /2
-                        == 0 && -opMode.gamepad2.left_stick_y > 0.5 ||
-                        (liftRight.getCurrentPosition() + liftRight.getCurrentPosition()) / 2 ==
-                                -6500 && -opMode.gamepad2.left_stick_y < -0.5) {
+                if ((liftRight.getCurrentPosition() ==
+                        0 && -opMode.gamepad2.left_stick_y > 0.5 ||
+                        (liftRight.getCurrentPosition() ==
+                                -6500 && -opMode.gamepad2.left_stick_y < -0.5))) {
                     liftRight.setPower(opMode.gamepad2.left_stick_y);
                     liftLeft.setPower(opMode.gamepad2.left_stick_y);
                 }
@@ -94,10 +100,6 @@ public class ZerOuttake{
                 }
             }
 
-            hookToggle();
-    }
-
-    public void hookToggle() {
         if(!toggled && opMode.gamepad2.y)
         {
             toggled = true;
@@ -120,4 +122,35 @@ public class ZerOuttake{
                     hookLeft.getPosition() != HOOKDOWN) {}
         }
     }
+
+    public void horizontalZero(double power) {
+        if (Math.abs(power) >=.075) {
+            if (vexEncoder < 500 && power < -0.5
+                    || vexEncoder > 0 && power > 0.5) {
+                rightVex.setPower(power / 2);
+                vexEncoder += rightVex.getPower() * (Math.PI / 2);
+                leftVex.setPower(-power / 2);
+            }
+        }
+        else {
+            rightVex.setPower(0);
+            leftVex.setPower(0);
+        }
+    }
+
+    public void liftZero(double power) {
+        if (Math.abs(power) > .05) {
+            if ((liftRight.getCurrentPosition() ==
+                    0 && -power > 0.5 ||
+                    (liftRight.getCurrentPosition() ==
+                            -6500 && -power < -0.5))) {
+                liftRight.setPower(power);
+                liftLeft.setPower(power);
+            }
+        } else {
+            liftRight.setPower(0);
+            liftLeft.setPower(0);
+        }
+    }
+
 }

@@ -8,10 +8,10 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class Outtake {
+public class Outtake{
 
     private static final double MAXLEVEL = 14;
-    private static final double MAXHEIGHT = 35; // Inches
+    private static final double MAXHEIGHT = 30; // Inches
     private static final double DISTANCE_TO_BUILD_ZONE = 1; // what ever distance is from foundation to build zone
     public Servo pushBlock;
     public Servo hookRight;
@@ -32,12 +32,12 @@ public class Outtake {
     boolean bottom;
 
     static final double DISTANCE_BETWEEN_BLOCKS = 4.0; // In Inches
-    static final double HORIZONTALEXTENSIONTIME = 3000; // Time it takes for lift to extend out = length of lift / speed of motors
+    static final double liftExtensionTime = 1000; // Time it takes for lift to extend out = length of lift / speed of motors
 
-    static final double encoderLevelCount = (288 / (Math.PI * .53));
+    static final double encoderLevelCount = (288 /  (Math.PI * .53)) ;
 
-    static double LIFTPOWER = 1;
-    static double HOOKDOWN = .60;
+    static double LIFTPOWER = 1.0;
+    static double HOOKDOWN = 0;
     static double HOOKUP = 1.0;
 
     double k = 1.0;
@@ -47,12 +47,13 @@ public class Outtake {
     double prevEncoderPos = 0;
     private boolean toggled = false;
 
-    public void initOuttake(OpMode opMode) {
+    public void initOuttake(OpMode opMode)
+    {
 
         time.reset();
         this.opMode = opMode;
         top = false;
-        bottom = true;
+        bottom = false;
 
         k = 1.0;
         level = 1.0;
@@ -68,25 +69,20 @@ public class Outtake {
         hookRight = opMode.hardwareMap.servo.get("RHook");
 
 
-        hookLeft.setDirection(Servo.Direction.FORWARD);
-        hookRight.setDirection(Servo.Direction.FORWARD);
-
+        hookLeft.setDirection(Servo.Direction.REVERSE);
         liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         prevEncoderPos = averageLiftPosition();
-        if (prevEncoderPos > 0) {
-            bottom = false;
-        }
-
+        if(prevEncoderPos <= 0) { bottom = true; }
         resetLiftEncoders();
-
 
     }
 
-    public void initOuttakeAuto(LinearOpMode opMode) {
+    public void initOuttakeAuto(LinearOpMode opMode)
+    {
 
         time.reset();
         this.opMode = opMode;
@@ -118,8 +114,8 @@ public class Outtake {
         resetLiftEncoders();
 
     }
-
-    private void resetLiftEncoders() {
+    private void resetLiftEncoders()
+    {
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -132,7 +128,8 @@ public class Outtake {
     // Process : Robot Aligns, Lift Extends Up, CRServos move forward while hook connected to servo
     // is in contact with block, when block needs to be released hook from servo extended out
 
-    public void hookAuto(LinearOpMode opmode1) {
+    public void hookAuto(LinearOpMode opmode1)
+    {
         hookRight.setPosition(HOOKDOWN);
         hookLeft.setPosition(HOOKDOWN);
 
@@ -143,35 +140,36 @@ public class Outtake {
         hookLeft.setPosition(HOOKUP);
         hookRight.setPosition(HOOKUP);
     }
-
-    public double averageLiftPosition() {
+    public double averageLiftPosition()
+    {
         int count = 2;
 
-        if (liftRight.getCurrentPosition() == 0 && !bottom) count--;
-        if (liftLeft.getCurrentPosition() == 0 && !bottom) count--;
-        if (count == 0) return 0;
+        if(liftRight.getCurrentPosition() == 0 && !bottom) count--;
+        if(liftLeft.getCurrentPosition() == 0 && !bottom) count--;
+        if(count == 0) return 0;
         return (liftLeft.getCurrentPosition() + liftRight.getCurrentPosition()) / count;
 
     }
 
-    public void raiseLiftMacro() {
-        if (opMode.gamepad2.dpad_up) {
-            liftRight.setPower(LIFTPOWER);
-            liftLeft.setPower(LIFTPOWER);
+    public void raiseLift()
+    {
+        resetLiftEncoders();
+        liftRight.setPower(LIFTPOWER);
+        liftLeft.setPower(LIFTPOWER);
 
-            while (encoderLevelCount * blockHeight * level + 3 * encoderLevelCount > averageLiftPosition()) {
-            }
-
-            liftLeft.setPower(0);
-            liftRight.setPower(0);
-            top = true;
+        while(encoderLevelCount * blockHeight * level + 3 * encoderLevelCount  > averageLiftPosition())
+        {
         }
 
+        liftLeft.setPower(0);
+        liftRight.setPower(0);
+        top = true;
     }
 
-    public void outTake_Auto(LinearOpMode opMode) {
+    public void outTake_Auto(LinearOpMode opMode)
+    {
         pushBlock.setPosition(1);
-        raiseLiftMacro();
+        raiseLift();
         openBasket();
 
 
@@ -179,61 +177,10 @@ public class Outtake {
 
     //moves lift up and down by increments
 
-    public void lift() {
-        if (averageLiftPosition() <= 0 * encoderLevelCount) {
-            bottom = true;
-            resetLiftEncoders();
-        }
-
-        if (averageLiftPosition() >= MAXHEIGHT * encoderLevelCount) {
-            top = true;
-        }
-
-        if (Math.abs(opMode.gamepad2.left_stick_y) > .05) {
-
-            liftRight.setPower(-opMode.gamepad2.left_stick_y);
-            liftLeft.setPower(-opMode.gamepad2.left_stick_y);
-            top = false;
-            bottom = false;
-        } else if (top && opMode.gamepad2.left_stick_y > 0) {
-            liftRight.setPower(0);
-            liftLeft.setPower(0);
-        } else if (bottom && opMode.gamepad2.left_stick_y < 0) {
-
-            liftRight.setPower(0);
-            liftLeft.setPower(0);
-        } else {
-            liftRight.setPower(0);
-            liftLeft.setPower(0);
-        }
-
-        if (opMode.gamepad2.b && !bottom && averageLiftPosition() > 4 * encoderLevelCount)
-        {
-            time.reset();
-        while (time.milliseconds() < 100) { }
-        resetOuttake();
-        }
-    }
-
-    public void encoderCallibrate()
-    {
-        if(opMode.gamepad2.left_stick_button && opMode.gamepad2.right_stick_button)
-        {
-            time.reset();
-            while(time.milliseconds() < 100){}
-            resetLiftEncoders();
-        }
-    }
     public void outTake_TeleOp()
     {
 
         horizontalLiftTele();
-        raiseLiftMacro();
-        hookToggle();
-        openBasket();
-        lift();
-        encoderCallibrate();
-
 
         if(blockCount == 2)
         {
@@ -250,127 +197,118 @@ public class Outtake {
             pushBlock.setPosition(1);
         }
 
+        if (Math.abs(opMode.gamepad2.left_stick_y) > .05 && !top) {
+
+            bottom = false;
+            liftRight.setPower(-opMode.gamepad2.left_stick_y * k);
+            liftLeft.setPower(-opMode.gamepad2.left_stick_y * k);
+        }
+        else if(Math.abs(opMode.gamepad2.left_stick_y) > .05)
+        {
+            top = false;
+            liftRight.setPower(-.5);
+            liftLeft.setPower(-.5);
+        }
+
+        //  Extend Outtake out, and activate servo to push block forward
+        else if(opMode.gamepad2.a) {
+            openBasket();
+            //  Push block onto field
+
+        }
+        else if(opMode.gamepad2.b) {
+
+            resetOuttake();
+
+        }
+        else {
+            liftRight.setPower(0);
+            liftLeft.setPower(0);
+        }
+        // lift proportional changing, for precision placement
+
+
+        if(opMode.gamepad2.dpad_left)
+        {
+            time.reset();
+            while(time.milliseconds() < 50){}
+
+            k -= 0.3;
+        }
+        else if(opMode.gamepad2.dpad_right)
+        {
+            time.reset();
+            while(time.milliseconds() < 50){}
+            k += 0.3;
+        }
+
+        if(opMode.gamepad2.dpad_up)
+        {
+            raiseLift();
+        }
+
+        if(averageLiftPosition() < 0)
+        {
+            bottom = true;
+            resetLiftEncoders();
+        }
+
+        if(averageLiftPosition() > MAXHEIGHT * encoderLevelCount)
+        {
+            top = true;
+        }
+        hookToggle();
 
     }
 
-    public void Output_Telemetry()
+    public void Output_Telemtry()
     {
+        opMode.telemetry.addData("K : ", k);
         opMode.telemetry.addData("Lift Bottom : ", bottom);
         opMode.telemetry.addData("Lift Right : ", liftRight.getCurrentPosition());
         opMode.telemetry.addData("Lift Left : ", liftLeft.getCurrentPosition());
         opMode.telemetry.addData("Prev Encoder Pos : ", prevEncoderPos);
-        opMode.telemetry.addData("Average : ", averageLiftPosition());
-        opMode.telemetry.addData("Block Count", blockCount);
-        opMode.telemetry.addData("Level", level);
-        opMode.telemetry.addData("Vex Power Right", rightVex.getPower());
-        opMode.telemetry.addData("Vex Power Left", leftVex.getPower());
-        opMode.telemetry.addData("Left Hook", hookLeft.getPosition());
-        opMode.telemetry.addData("Right Hook", hookRight.getPosition());
+        opMode.telemetry.addData("Open Basket", blockCount);
     }
 
     //  opens up the output basket using the Servos
     public void openBasket()
     {
         // pushes front servo in while as rotating CRServos to open basket
-        if(opMode.gamepad2.a) {
-            blockCount++;
-
-            pushBlock.setPosition(1);
-
-            rightVex.setPower(.5);
-            leftVex.setPower(-.5);
-
-            //8.78 inches extends out
-            time.reset();
-            while(time.milliseconds() < HORIZONTALEXTENSIONTIME)
-            {
-                if(opMode.gamepad2.right_stick_button)
-                {
-                    rightVex.setPower(0);
-                    leftVex.setPower(0);
-                }
-            }
-            //set position direction on angle - ask  trevor
-
-            rightVex.setPower(0);
-            leftVex.setPower(0);
 
 
+        blockCount++;
 
-            // should push block out at that point
+        pushBlock.setPosition(0);
 
-            // back to open position
-        }
-    }
+        rightVex.setPower(1);
+        leftVex.setPower(-1);
 
-    //  resets all variables and sets lift back to initial position
-    public void resetOuttake()
-    {
-
-/*
-        if(hookRight.getPosition() != 1)
-        {
-            hookRight.setPosition(1);
-            hookLeft.setPosition(1);
-        }
-*/
-
-
-        /*if(bottom && averageLiftPosition() < 4 * encoderLevelCount)
-        {
-           return;
-        }
-
-        opMode.telemetry.addData("RESET OUTTAKE IS RUNNING", " PREPARE LEFT BUTTON / RIGHT BUTTON");
-        opMode.telemetry.update();
-
-
-        pushBlock.setPosition(1); // moves servo to open position what ever angle that is
-
-        rightVex.setPower(.2);
-        leftVex.setPower(-.2);
-
+        //8.78 inches extends out
         time.reset();
-        while(time.milliseconds() < HORIZONTALEXTENSIONTIME) {
-
-            if(opMode.gamepad2.right_stick_button)
-            {
-                rightVex.setPower(0);
-                leftVex.setPower(0);
-            }
+        opMode1.sleep(240L);
+        while(time.milliseconds() < 5000)
+        {
         }
+        //set position direction on angle - ask  trevor
 
         rightVex.setPower(0);
         leftVex.setPower(0);
 
 
 
-        liftLeft.setPower(-LIFTPOWER);
-        liftRight.setPower(-LIFTPOWER);
+        // should push block out at that point
 
-        time.reset();
-        while(averageLiftPosition() >= 4 * encoderLevelCount && time.milliseconds() < 3000) {
+        pushBlock.setPosition(1); // back to open position
 
-            if(opMode.gamepad2.right_stick_button)
-            {
-                liftLeft.setPower(0);
-                liftRight.setPower(0);
-            }
+    }
 
-        }
-
-        liftLeft.setPower(0);
-        liftRight.setPower(0);
-
-        top = false;
-        bottom = true;
+    //  resets all variables and sets lift back to initial position
+    public void resetOuttake()
+    {
 
 
-        resetLiftEncoders();
 
-        pushBlock.setPosition(0);
-*/
-        //hook toggle
     }
 
     public void hookToggle()
@@ -379,36 +317,25 @@ public class Outtake {
         {
             toggled = true;
 
-            time.reset();
-            while(time.milliseconds() < 100)
-            {
-
-            }
             //set hook position to what ever the angle is, I assume servo is at (1) = 180,
             // and moves to (0) = 0 degrees
 
-            hookLeft.setPosition(0);
-            hookRight.setPosition(1);
+            hookLeft.setPosition(HOOKDOWN);
+            hookRight.setPosition(HOOKDOWN);
         }
         else if(toggled && opMode.gamepad2.y)
         {
             toggled = false;
 
-
-            time.reset();
-            while (time.milliseconds() < 100)
-            {
-
-            }
-            hookLeft.setPosition(1);
-            hookRight.setPosition(0);
+            hookLeft.setPosition(HOOKUP);
+            hookRight.setPosition(HOOKUP);
         }
     }
 
     public void horizontalLiftTele() {
         if (Math.abs(opMode.gamepad2.right_stick_y) >= .075) {
-            rightVex.setPower(-opMode.gamepad2.right_stick_y / 2);
-            leftVex.setPower(opMode.gamepad2.right_stick_y / 2);
+            rightVex.setPower(opMode.gamepad2.right_stick_y / 2);
+            leftVex.setPower(-opMode.gamepad2.right_stick_y / 2);
         }
         else {
             rightVex.setPower(0);
