@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.teamcode.Hardware;
 
+import android.graphics.Path;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -21,6 +23,9 @@ public class Outtake {
     public DcMotor liftRight;
     public DcMotor liftLeft;
 
+    boolean resetOuttakeToggle;
+    boolean openBasketToggle;
+
     OpMode opMode;
     LinearOpMode opMode1;
     DriveTrain drive = new DriveTrain();
@@ -36,7 +41,7 @@ public class Outtake {
     static final double DISTANCE_BETWEEN_BLOCKS = 4.0; // In Inches
     static final double HORIZONTALEXTENSIONTIME = 5000 ; // Time it takes for lift to extend out = length of lift / speed of motors
     static final double INITIAL_HORIZONTALEXTENSIONTIME = 4500;
-    static final double encoderLevelCount = (360 / (Math.PI * .53));
+    static final double encoderLevelCount = (288 / (Math.PI * .53));
 
     static double LIFTPOWER = 1;
     static double HOOKDOWN = .60;
@@ -134,17 +139,30 @@ public class Outtake {
 
     }
 
-    public void outTake_TeleOp()
+    public void outTake_TeleOp(OpMode opMode)
     {
 
         horizontalLiftTele();
-        raiseLiftMacro();
+        raiseLiftMacro(opMode);
         hookToggle();
-        openBasket();
-        lift();
+        lift(opMode);
         encoderCalibrate();
 
 
+        if (opMode.gamepad2.dpad_down && !bottom && averageLiftPosition() > 4 * encoderLevelCount)
+        {
+            time.reset();
+            while (time.milliseconds() < 300) { }
+            // resetOuttake(opMode);
+        }
+
+        if(opMode.gamepad2.a)
+        {
+            time.reset();
+            while(time.milliseconds() < 300){ }
+            // openBasket(opMode);
+
+        }
 
         if(blockCount == 2)
         {
@@ -166,15 +184,17 @@ public class Outtake {
             initHorizontalExtension();
         }
 
+        Output_Telemetry();
+
     }
 
-    public void lowerLiftAuto()
+    public void lowerLiftAuto(LinearOpMode opMode)
     {
         liftRight.setPower(-1);
         liftLeft.setPower(-1);
 
         time.reset();
-        while(averageLiftPosition() >= 0 && time.milliseconds() < 1000)
+        while(averageLiftPosition() >= 0 && time.milliseconds() < 1000 && opMode.opModeIsActive())
         {
 
         }
@@ -186,39 +206,39 @@ public class Outtake {
 
     public void Auto_Outtake(LinearOpMode opMode)
     {
-            //Assumes aligned with block
-            //And Horizontal Lift completely retracted
-            //And Lift at bottom
+        //Assumes aligned with block
+        //And Horizontal Lift completely retracted
+        //And Lift at bottom
 
-            raiseLiftAuto();
+        raiseLiftAuto(opMode);
 
-            rightVex.setPower(.5);
-            leftVex.setPower(-.5);
+        rightVex.setPower(.5);
+        leftVex.setPower(-.5);
 
-            //8.78 inches extends out
-            time.reset();
-            while (time.milliseconds() < 5000) {
-            }
-            //set position direction on angle - ask  trevor
+        //8.78 inches extends out
+        time.reset();
+        while (time.milliseconds() < 6000) {
+        }
+        //set position direction on angle - ask  trevor
 
-            rightVex.setPower(0);
-            leftVex.setPower(0);
+        rightVex.setPower(0);
+        leftVex.setPower(0);
 
-            //lower lift
+        //lower lift
 
-            lowerLiftAuto();
+        lowerLiftAuto(opMode);
 
-            rightVex.setPower(-.5);
-            leftVex.setPower(.5);
+        rightVex.setPower(-.5);
+        leftVex.setPower(.5);
 
-            //8.78 inches extends out
-            time.reset();
+        //8.78 inches extends out
+        time.reset();
 
-            while (time.milliseconds() < 2000) {
-            }
+        while (time.milliseconds() < 4000) {
+        }
 
-            rightVex.setPower(0);
-            leftVex.setPower(0);
+        rightVex.setPower(0);
+        leftVex.setPower(0);
 
 
     }
@@ -236,7 +256,7 @@ public class Outtake {
         rightVex.setPower(0);
         leftVex.setPower(0);
 
-        raiseLiftAuto();
+        //raiseLiftAuto(opMode);
 
         liftLeft.setPower(-LIFTPOWER/2);
         liftRight.setPower(-LIFTPOWER/2);
@@ -307,7 +327,7 @@ public class Outtake {
 
     }
 
-    public void raiseLiftMacro() {
+    public void raiseLiftMacro(OpMode opMode) {
 
         height = encoderLevelCount * blockHeight * level + 5 * encoderLevelCount;
 
@@ -345,11 +365,11 @@ public class Outtake {
 
     }
 
-    private void raiseLiftAuto() {
+    public void raiseLiftAuto(LinearOpMode opMode) {
         liftRight.setPower(LIFTPOWER);
         liftLeft.setPower(LIFTPOWER);
 
-        while (encoderLevelCount * blockHeight * 2 > averageLiftPosition()) {
+        while (encoderLevelCount * blockHeight * 1.5 > averageLiftPosition() && opMode.opModeIsActive()) {
 
             if(top && averageLiftPosition() > MAXHEIGHT * encoderLevelCount)
             {
@@ -366,12 +386,12 @@ public class Outtake {
 
     //moves lift up and down by increments
 
-    public void lift() {
+    public void lift(OpMode opMode) {
 
         left_stick_y = opMode.gamepad2.left_stick_y;
 
 
-        if (averageLiftPosition() < 0) {
+        if (averageLiftPosition() <= 0) {
             bottom = true;
             resetLiftEncoders();
         }
@@ -408,13 +428,6 @@ public class Outtake {
             liftLeft.setPower(0);
         }
 
-
-        if (opMode.gamepad2.dpad_down && !bottom && averageLiftPosition() > 4 * encoderLevelCount)
-        {
-            time.reset();
-            while (time.milliseconds() < 100) { }
-            resetOuttake();
-        }
     }
 
     public void encoderCalibrate()
@@ -445,7 +458,6 @@ public class Outtake {
         opMode.telemetry.addData("Right Hook", hookRight.getPosition());
     }
 
-
     public void openBasketAuto()
     {
         blockCount++;
@@ -471,10 +483,9 @@ public class Outtake {
         leftVex.setPower(0);
     }
     //  opens up the output basket using the Servos
-    public void openBasket()
+    public void openBasket(OpMode opMode)
     {
         // pushes front servo in while as rotating CRServos to open basket
-        if(opMode.gamepad2.a) {
             blockCount++;
 
             if(pushBlock.getPosition() != 1) pushBlock.setPosition(1);
@@ -502,19 +513,13 @@ public class Outtake {
             // should push block out at that point
 
             // back to open position
-        }
+            if(pushBlock.getPosition() != .6) pushBlock.setPosition(.6);
+            return;
     }
 
     //  resets all variables and sets lift back to initial position
-    public void resetOuttake()
+    public void resetOuttake(OpMode opMode)
     {
-/*
-        if(hookRight.getPosition() != 1)
-        {
-            hookRight.setPosition(1);
-            hookLeft.setPosition(1);
-        }
-*/
 
         if(bottom && averageLiftPosition() < 4 * encoderLevelCount)
         {
@@ -525,7 +530,7 @@ public class Outtake {
         opMode.telemetry.update();
 
 
-        pushBlock.setPosition(1);
+        if(pushBlock.getPosition() != 1) pushBlock.setPosition(1);
 
         rightVex.setPower(-.5);
         leftVex.setPower(.5);
@@ -537,6 +542,7 @@ public class Outtake {
             {
                 rightVex.setPower(0);
                 leftVex.setPower(0);
+                return;
             }
         }
 
@@ -572,7 +578,8 @@ public class Outtake {
 
 
         if(pushBlock.getPosition() != .6) pushBlock.setPosition(.6);
-        resetLiftEncoders();
+        //resetLiftEncoders();
+        return;
 
     }
 
@@ -583,13 +590,14 @@ public class Outtake {
             toggled = true;
 
             time.reset();
-            while(time.milliseconds() < 100)
+            while(time.milliseconds() < 300)
             {
 
             }
 
+            //Hook Down
             hookLeft.setPosition(1);
-            hookRight.setPosition(1);
+            hookRight.setPosition(0);
         }
         else if(toggled && opMode.gamepad2.y)
         {
@@ -597,12 +605,12 @@ public class Outtake {
 
 
             time.reset();
-            while (time.milliseconds() < 100)
+            while (time.milliseconds() < 300)
             {
 
             }
             hookLeft.setPosition(0);
-            hookRight.setPosition(0);
+            hookRight.setPosition(1);
         }
     }
 

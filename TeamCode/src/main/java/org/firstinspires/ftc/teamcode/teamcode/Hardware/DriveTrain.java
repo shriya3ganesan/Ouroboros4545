@@ -292,10 +292,10 @@ public class DriveTrain {
         double averageStrafe = 0.0;
 
         setStrafePower(power);
-        while(Math.abs(averageStrafe) < target * inchCounts && runtime.seconds() < timeout)
+        while(Math.abs(averageStrafe) < target * inchCounts && runtime.seconds() < timeout && opMode.opModeIsActive())
         {
 
-           // strafeEqualizer();
+            // strafeEqualizer();
             averageStrafe = getStrafeEncoderAverage(power);
 
             opMode.telemetry.addData("Target : ", target * inchCounts);
@@ -317,6 +317,7 @@ public class DriveTrain {
 
     private double getStrafeEncoderAverage(double direction) {
         count = 4.0;
+        double average = 0;
         if(fr.getCurrentPosition() == 0)
         {
             count--;
@@ -335,15 +336,15 @@ public class DriveTrain {
         }
         if(direction > 0)
         {
-            return (-1*fl.getCurrentPosition() + fr.getCurrentPosition()
+            average = (-1*fl.getCurrentPosition() + fr.getCurrentPosition()
                     + -1*br.getCurrentPosition() + bl.getCurrentPosition()) / count;
         }
         else if(direction < 0)
         {
-            return (fl.getCurrentPosition() + -1*fr.getCurrentPosition()
+            average = (fl.getCurrentPosition() + -1*fr.getCurrentPosition()
                     + br.getCurrentPosition() + -1*bl.getCurrentPosition()) / count;
         }
-        return getEncoderAverage();
+        return average;
     }
 
  /*   public void encoderStrafe(LinearOpMode opMode, double speed,
@@ -427,14 +428,13 @@ public class DriveTrain {
         newLeftBlarget = bl.getCurrentPosition() + (int) (leftInches * inchCounts);
         newRightBlarget = br.getCurrentPosition() + (int) (rightInches * inchCounts);
 
-            fl.setTargetPosition(-newLeftTarget);
-            fr.setTargetPosition(-newRightTarget);
-            bl.setTargetPosition(-newLeftBlarget);
-            br.setTargetPosition(-newRightBlarget);
+        fl.setTargetPosition(-newLeftTarget);
+        fr.setTargetPosition(-newRightTarget);
+        bl.setTargetPosition(-newLeftBlarget);
+        br.setTargetPosition(-newRightBlarget);
 
 
-
-        while (opMode.opModeIsActive() && (runtime.seconds() < timeoutS)) {
+        do {
 
             fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -454,6 +454,10 @@ public class DriveTrain {
             opMode.telemetry.update();
 
         }
+        while (opMode.opModeIsActive() && runtime.seconds() < timeoutS &&
+                (Math.abs(newLeftTarget) - Math.abs(getEncoderAverage())) > 5 );
+
+
 
 /*            opMode.telemetry.addData("Targets: ", "fl %7d : fr %7d : bl %7d : br %7d",
                     newLeftTarget, newRightTarget, newLeftBlarget, newRightBlarget);
@@ -464,10 +468,7 @@ public class DriveTrain {
 
         snowWhite();
 
-        fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
         opMode.sleep(50);
     }
@@ -485,19 +486,19 @@ public class DriveTrain {
         bOffset = 1 - bOffset;
         cOffset = primeSin * Math.sin(alpha);
 
-                switch (quadrant) {
-                    case 1:
-                        lStick[0] += cOffset;
-                        lStick[1] += bOffset;
-                    case 2:
-                        lStick[0] += cOffset;
-                        lStick[1] -= bOffset;
-                    case 3:
-                        lStick[0] -= cOffset;
-                        lStick[1] -= bOffset;
-                    case 4:
-                        lStick[0] -= cOffset;
-                        lStick[1] += bOffset;
+        switch (quadrant) {
+            case 1:
+                lStick[0] += cOffset;
+                lStick[1] += bOffset;
+            case 2:
+                lStick[0] += cOffset;
+                lStick[1] -= bOffset;
+            case 3:
+                lStick[0] -= cOffset;
+                lStick[1] -= bOffset;
+            case 4:
+                lStick[0] -= cOffset;
+                lStick[1] += bOffset;
         }
 
         return lStick;
@@ -746,7 +747,7 @@ public class DriveTrain {
 
         while (opMode.opModeIsActive() && runtime.milliseconds() <= timeOutMS && goal - sensors.getGyroYaw() > 1 ) {
 
-          //  sensors.angles = sensors.gyro.getAngularOrientation();
+            //  sensors.angles = sensors.gyro.getAngularOrientation();
 
             error = goal - sensors.getGyroYaw();
             proportional = error * kP;
@@ -768,10 +769,15 @@ public class DriveTrain {
         runtime.reset();
         //sensors.angles = sensors.gyro.getAngularOrientation();
 
+        if (goal - sensors.getGyroYaw() <= 180)
+            isRight = true;
+        else if (goal - sensors.getGyroYaw() > 180)
+            isRight = false;
+
         while (opMode.opModeIsActive() && runtime.milliseconds() <= timeOutMS && Math.abs(goal - sensors.getGyroYaw()) > 5 ) {
 
             //  sensors.angles = sensors.gyro.getAngularOrientation();
-            turn(.5, isRight);
+            turn(.25, isRight);
 
         }
     }

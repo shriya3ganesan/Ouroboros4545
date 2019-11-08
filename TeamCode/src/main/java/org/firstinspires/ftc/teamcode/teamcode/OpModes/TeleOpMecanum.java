@@ -127,7 +127,7 @@ public class TeleOpMecanum extends OpMode {
         if(gamepad1.x)
         {
             time.reset();
-            while(time.milliseconds() < 50){ }
+            while(time.milliseconds() < 300){ }
             if(speedProp == 1)
             {
                 speedProp = .5;
@@ -136,6 +136,8 @@ public class TeleOpMecanum extends OpMode {
                 speedProp = 1;
             }
         }
+
+        telemetry.addData("Speed", speedProp);
 
         if(gamepad1.dpad_left)
         {
@@ -160,9 +162,7 @@ public class TeleOpMecanum extends OpMode {
 
         intake.Intake_TeleOp();
 
-        outtake.outTake_TeleOp();
-
-        outtake.Output_Telemetry();
+        outtake.outTake_TeleOp(this);
 
         telemetry.update();
     }
