@@ -179,11 +179,6 @@ public class Outtake {
             pushBlock.setPosition(1);
         }
 
-        if(opMode.gamepad2.x)
-        {
-            initHorizontalExtension();
-        }
-
         Output_Telemetry();
 
     }

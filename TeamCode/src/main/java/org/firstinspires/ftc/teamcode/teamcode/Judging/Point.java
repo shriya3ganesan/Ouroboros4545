@@ -7,18 +7,50 @@ public class Point {
     double t = 0;
     double derivative = 0;
     double secondDerivative = 0;
+    double dX = 0;
+    double dY = 0;
+    double sdX = 0;
+    double sdY = 0;
+
+    public double getdX() {
+        return dX;
+    }
+
+    public double getdY() {
+        return dY;
+    }
+
+    public double getSdX() {
+        return sdX;
+    }
+
+    public double getSdY() {
+        return sdY;
+    }
 
     public Point(double t, double x, double y) {
         this.x = x;
         this.y = y;
         this.t = t;
     }
-    public Point(double t, double x, double y, double derivative, double secondDerivative) {
+    public Point(double t, double x, double y, double derivative, double secondDerivative, double dX, double dY, double sdX, double sdY) {
         this.x = x;
         this.y = y;
         this.t = t;
         this.derivative = derivative;
         this.secondDerivative = secondDerivative;
+        this.dX = dX;
+        this.dY = dY;
+        this.sdX = sdX;
+        this.sdY = sdY;
+    }
+
+    public double getDerivative() {
+        return derivative;
+    }
+
+    public double getSecondDerivative() {
+        return secondDerivative;
     }
 
     public double getT() {

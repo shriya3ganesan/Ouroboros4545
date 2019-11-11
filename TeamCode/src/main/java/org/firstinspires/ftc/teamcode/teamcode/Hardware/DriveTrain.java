@@ -923,6 +923,17 @@ public class DriveTrain {
                 (getRadiaxHorizontal() * getRadiaxHorizontal()));
     }
 
+    public void leftTank(double power)
+    {
+        fl.setPower(power);
+        bl.setPower(power);
+    }
+    public void rightTank(double power)
+    {
+        fr.setPower(power);
+        br.setPower(power);
+    }
+
     public boolean getRadiaxRefactor () {
         if (getRadiaxHorizontal() < 0) return true;
         else return false;
