@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Outtake {
 
     private static final double MAXLEVEL = 14;
-    private static final double MAXHEIGHT = 34; // Inches
+    private static final double MAXHEIGHT = 36; // Inches
     private static final double DISTANCE_TO_BUILD_ZONE = 1; // what ever distance is from foundation to build zone
     public Servo pushBlock;
     public Servo hookRight;
@@ -41,8 +41,9 @@ public class Outtake {
     static final double DISTANCE_BETWEEN_BLOCKS = 4.0; // In Inches
     static final double HORIZONTALEXTENSIONTIME = 5000 ; // Time it takes for lift to extend out = length of lift / speed of motors
     static final double INITIAL_HORIZONTALEXTENSIONTIME = 4500;
-    static final double encoderLevelCount = (288 / (Math.PI * .53));
+    static final double encoderLevelCount = (360 / (Math.PI * .5));
 
+    //262 encoder ticks per inch
     static double LIFTPOWER = 1;
     static double HOOKDOWN = .60;
     static double HOOKUP = 1.0;
@@ -177,11 +178,6 @@ public class Outtake {
         else if(Math.abs(opMode.gamepad2.right_trigger) > .5)
         {
             pushBlock.setPosition(1);
-        }
-
-        if(opMode.gamepad2.x)
-        {
-            initHorizontalExtension();
         }
 
         Output_Telemetry();

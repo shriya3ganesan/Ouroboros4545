@@ -1,21 +1,29 @@
-package org.firstinspires.ftc.teamcode.teamcode.Judging;
+package org.firstinspires.ftc.teamcode.teamcode.NewAuto;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class CubicSpline {
 
-    public static void main(String[] argument)
+    ArrayList<Motor_Power_Spline> motor_power_splines = new ArrayList<>();
+
+    public static void main(String[] args) {
+        CubicSpline s = new CubicSpline();
+        s.main();
+    }
+
+    public void main()
     {
         CubicSpline q = new CubicSpline();
         ArrayList<Point> p = new ArrayList<>();
         ArrayList<Function> functions = new ArrayList<>();
-        ArrayList<Motor_Power_Spline> motor_power_splines = new ArrayList<>();
+
         Function[] temp;
 
 
-        p.add(new Point(0, 0, 0));
-        p.add(new Point(5, 10, 10));
-        p.add(new Point(10, 20, 0));
+        p.add(new Point(0, 50, 50));
+        p.add(new Point(.5, 100, 100));
+        p.add(new Point(1, 300, 120));
 
         int number_of_equations = p.size() - 2;
 
@@ -65,33 +73,72 @@ public class CubicSpline {
                 der = f.getDerY(t) / f.getDerX(t);
                 secondDer = f.getSecondDerY(t) / f.getSecondDerX(t);
 
-                splinePoints.add(new Point(t, f.getFuncX(t), f.getFuncY(t), der, secondDer));
+                splinePoints.add(new Point(t, f.getFuncX(t), f.getFuncY(t), der, secondDer, f.getDerX(t),
+                        f.getDerY(t), f.getSecondDerX(t), f.getSecondDerY(t)));
 
 
             }
         }
-
+        double av = 0;
+        double avg = 0;
+        DecimalFormat df = new DecimalFormat("0.000");
         for(Point points : splinePoints)
         {
-            leftpower = Motor_Power_Spline.setLeftPower(points.secondDerivative , points.derivative, 1, .01);
-            rightpower = Motor_Power_Spline.setRightPower(points.secondDerivative, points.derivative, 1, .01);
+
+            av = Motor_Power_Spline.aungular_velocity(points.getdX(), points.getdY(), points.getSdX(), points.getSdY());
+            leftpower = Motor_Power_Spline.setLeftPower(av);
+            rightpower = Motor_Power_Spline.setRightPower(av);
+
+            //Normalize motor powers
+
+
+            if(leftpower > rightpower)
+            {
+                rightpower = rightpower / leftpower;
+                if(leftpower > 1)
+                {
+                    leftpower = 1;
+                }
+                else
+                {
+                    leftpower = leftpower;
+                }
+            }
+            else if(rightpower > leftpower)
+            {
+                leftpower = leftpower / rightpower;
+                if(rightpower > 1)
+                {
+                    rightpower = 1;
+                }
+                else
+                {
+                    rightpower = rightpower;
+                }
+            }
+
+            leftpower = Double.parseDouble(df.format(leftpower));
+            rightpower = Double.parseDouble(df.format(rightpower));
 
             motor_power_splines.add(new Motor_Power_Spline(leftpower, rightpower));
         }
 
         for(int i = 0; i < motor_power_splines.size(); i++)
         {
-            System.out.println(motor_power_splines.get(i));
+            //System.out.println(motor_power_splines.get(i));
         }
 
     }
 
 
-    public CubicSpline() {
-
+    public CubicSpline(){
 
     }
 
+    public ArrayList<Motor_Power_Spline> getMotorPowerList()
+    {
+        return motor_power_splines;
+    }
 
 
 
@@ -211,7 +258,7 @@ public class CubicSpline {
 
         //X and Y Optimization Constraints - Ouroboros Method
 
-        double c1 = Math.round(Math.sqrt(1 + t1 * t1) / Math.sqrt(1 + t2 * t2) * 10000000000L) / 10000000000L;
+        double c1 = Math.sqrt(1 + t1 * t1) / Math.sqrt(1 + t2 * t2);
         double c2 = Math.sqrt(1 + t2 * t2) / Math.sqrt(1 + t3 * t3);
 
         constraints[12][1] = 1 -  c1 * 1;
@@ -247,7 +294,16 @@ public class CubicSpline {
 
         GaussianElimination eq = new GaussianElimination();
 
-        solvedConstraints = eq.solve(constraints, solutions);
+        solvedConstraints = eq.lsolve(constraints, solutions);
+
+
+        for(int i = 0; i < solvedConstraints.length; i++)
+        {
+            if(Math.abs(solvedConstraints[i]) < .00000000001)
+            {
+                solvedConstraints[i] = 0;
+            }
+        }
 
 
         Function[] funcs = new Function[2];
@@ -356,7 +412,7 @@ public class CubicSpline {
 
         GaussianElimination eq = new GaussianElimination();
 
-        solvedConstraints = eq.solve(constraints, solutions);
+        solvedConstraints = eq.lsolve(constraints, solutions);
 
 
         for(int i = 0; i < solvedConstraints.length; i++)

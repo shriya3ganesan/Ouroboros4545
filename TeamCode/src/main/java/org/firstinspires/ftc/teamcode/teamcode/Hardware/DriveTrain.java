@@ -939,6 +939,17 @@ public class DriveTrain {
                 (getRadiaxHorizontal() * getRadiaxHorizontal()));
     }
 
+    public void leftTank(double power)
+    {
+        fl.setPower(power);
+        bl.setPower(power);
+    }
+    public void rightTank(double power)
+    {
+        fr.setPower(power);
+        br.setPower(power);
+    }
+
     public boolean getRadiaxRefactor () {
         if (getRadiaxHorizontal() < 0) return true;
         else return false;
@@ -979,6 +990,14 @@ public class DriveTrain {
         radiax = getAbsoluteRadiax(radiax, 180);
         if (getRadiaxRefactor()) radiax = getAbsoluteRadiax(radiax, 360);
         return radiax;
+    }
+
+    public double getNodalRadiax() {
+        double frSpeed = (fr.getPower() - getRadiaxVertical()) - getRadiaxHorizontal();
+        double flSpeed = -((fl.getPower() - getRadiaxVertical()) + getRadiaxHorizontal());
+        double blSpeed = -((bl.getPower() - getRadiaxVertical()) - getRadiaxHorizontal());
+        double brSpeed = (br.getPower() - getRadiaxVertical()) + getRadiaxHorizontal();
+        return average(average(brSpeed, frSpeed), average(flSpeed, blSpeed));
     }
 
     public double getVector () {
