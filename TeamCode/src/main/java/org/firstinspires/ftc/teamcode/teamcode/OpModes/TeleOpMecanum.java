@@ -45,6 +45,11 @@ public class TeleOpMecanum extends OpMode {
     double left_stick_x;
     double left_stick_y;
 
+    double flTestPower = 0;
+    double frTestPower = 0;
+    double blTestPower = 0;
+    double brTestPower = 0;
+
     @Override
     public void init() {
 
@@ -165,6 +170,27 @@ public class TeleOpMecanum extends OpMode {
         else {
             drive.snowWhite();
         }
+
+        if (gamepad1.left_trigger > 0.05f) {
+            drive.fl.setPower(flTestPower++);
+        }
+        if (gamepad1.left_bumper) {
+            drive.bl.setPower(blTestPower++);
+        }
+        if (gamepad1.right_trigger > 0.05f) {
+            drive.fr.setPower(frTestPower++);
+        }
+        if (gamepad1.right_bumper) {
+            drive.br.setPower(brTestPower++);
+        }
+
+        telemetry.addData("FL Power: ", flTestPower);
+
+        telemetry.addData("BL Power: ", blTestPower);
+
+        telemetry.addData("FR Power: ", frTestPower);
+
+        telemetry.addData("BR Power: ", brTestPower);
 
         intake.Intake_TeleOp();
 

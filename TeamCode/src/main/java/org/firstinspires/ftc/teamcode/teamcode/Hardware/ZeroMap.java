@@ -29,7 +29,7 @@ public class ZeroMap {
     private static final boolean portrait = true;
 
     public static final String vuKey =
-                    "AdzMYbL/////AAABmflzIV+frU0RltL/ML+2uAZXgJiI" +
+            "AdzMYbL/////AAABmflzIV+frU0RltL/ML+2uAZXgJiI" +
                     "Werfe92N/AeH7QsWCOQqyKa2G+tUDcgvg8uE8QjHeBZPcpf5hAwlC5qCfvg76eBoaa2b" +
                     "MMZ73hmTiHmr9fj3XmF4LWWZtDC6pWTFrzRAUguhlvgnck6Y4jjM16Px5TqgWYuWnpcxNM" +
                     "HMyOXdnHLlyysyE64PVzoN7hgMXgbi2K8+pmTXvpV2OeLCag8fAj1Tgdm/kKGr0TX86aQsC2" +
@@ -55,6 +55,7 @@ public class ZeroMap {
 
     public int zeroLockMax = 10;
     public int zeroLockMin = 2;
+    public double zeroReturn = 0;
 
     WebcamName webcamName = null;
 
@@ -68,8 +69,6 @@ public class ZeroMap {
     final float leftDisp     = 0;
 
     private double[] zeroPoint = new double[5];
-    List<Recognition> updatedRecognitions;
-    List<Recognition> recon;
 
     private void setClimate(VuforiaTrackable track, float dx, float dy,
                             float dz, float firstAng, float secondAng, float thirdAng) {
@@ -139,8 +138,9 @@ public class ZeroMap {
         }
     }
 
-    public int zeroBrowse(LinearOpMode opMode) {
-        while (!opMode.isStopRequested()) {
+    public double zeroBrowse(LinearOpMode opMode) {
+        while (!opMode.isStopRequested() && opMode.opModeIsActive()
+            && !targetVisible) {
 
             targetVisible = false;
             for (VuforiaTrackable trackable : skyTrack) {
@@ -156,29 +156,29 @@ public class ZeroMap {
                     break;
                 }
             }
-                    if (tfod != null) {
-                        updatedRecognitions = tfod.getUpdatedRecognitions();
-                        if (updatedRecognitions != null) {
-                            opMode.telemetry.addData("Zeroes Detected",
-                                    updatedRecognitions.size());
-                            int i = 0;
-                            for (Recognition recognition : updatedRecognitions) {
-                                opMode.telemetry.addData(String.format("Label (%d)", i),
-                                        recognition.getLabel());
-                                if (recognition.getLabel().equals("Skystone")) {
-                                    zeroPoint[1] = recognition.getRight();
-                                    zeroPoint[2] = recognition.getBottom();
-                                }
-                                opMode.telemetry.addData(String.format("  Left, Top (%d)", i),
-                                        "%.03f , %.03f",
-                                        recognition.getLeft(), recognition.getTop());
-                                opMode.telemetry.addData(String.format("  Right, Bottom (%d)", i),
-                                        "%.03f , %.03f",
-                                        recognition.getRight(), recognition.getBottom());
-                            }
-                            opMode.telemetry.update();
+            if (tfod != null) {
+                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                if (updatedRecognitions != null) {
+                    opMode.telemetry.addData("Zeroes Detected",
+                            updatedRecognitions.size());
+                    int i = 0;
+                    for (Recognition recognition : updatedRecognitions) {
+                        opMode.telemetry.addData(String.format("Labal (%d)", i),
+                                recognition.getLabel());
+                        if (recognition.getLabel().equals("Skystone")) {
+                            zeroPoint[1] = recognition.getRight();
+                            zeroPoint[2] = recognition.getBottom();
                         }
+                        opMode.telemetry.addData(String.format("  Left, Top (%d)", i),
+                                "%.03f , %.03f",
+                                recognition.getLeft(), recognition.getTop());
+                        opMode.telemetry.addData(String.format("  Right, Bottom (%d)", i),
+                                "%.03f , %.03f",
+                                recognition.getRight(), recognition.getBottom());
                     }
+                    opMode.telemetry.update();
+                }
+            }
 
             if (targetVisible) {
                 VectorF translation = lastLocation.getTranslation();
@@ -187,11 +187,12 @@ public class ZeroMap {
                         translation.get(2) / mmPerInch);
                 zeroPoint[0] = translation.get(0) / mmPerInch;
                 zeroPoint[1] = translation.get(1) / mmPerInch;
+                zeroReturn = translation.get(1) / mmPerInch;
                 zeroPoint[2] = translation.get(2) / mmPerInch;
 
-                if (zeroPoint[1] < -5.9) { zeroLockMin = 1; }
-                else if (zeroPoint[1] > - 1.1) { zeroLockMin = 3; }
-                else { zeroLockMin = 2; }
+                if (zeroPoint[1] < -5.9) { zeroLockMin += 1; }
+                else if (zeroPoint[1] > - 1.1) { zeroLockMin += 3; }
+                else { zeroLockMin += 2; }
 
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ,
                         DEGREES);
@@ -203,13 +204,14 @@ public class ZeroMap {
 
             else {
                 opMode.telemetry.addData("Visible Target", "Lost");
+                zeroReturn = 100;
                 zeroPoint[0] = 0;
                 zeroPoint[1] = 0;
                 zeroPoint[2] = 0;
                 zeroPoint[3] = 0;
             }
 
-           recon = tfod.getUpdatedRecognitions();
+            List<Recognition> recon = tfod.getUpdatedRecognitions();
             if (recon != null && targetVisible) {
                 zeroLockMax = 40;
             }
@@ -224,7 +226,7 @@ public class ZeroMap {
             opMode.telemetry.addData("Zero Status :", zeroLockMax + zeroLockMin);
         }
 
-        return zeroLockMax + zeroLockMin;
+        return zeroReturn;
 
     }
 

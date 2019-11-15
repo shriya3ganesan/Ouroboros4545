@@ -949,6 +949,30 @@ public class DriveTrain {
         return Math.abs(refact);
     }
 
+    public double getNodalRadiax () {
+        double frSpeed = fr.getPower() - (getRadiaxVertical() + getRadiaxHorizontal());
+        double flSpeed = (fl.getPower() - (getRadiaxVertical() - getRadiaxHorizontal()));
+        double blSpeed = bl.getPower() - (getRadiaxVertical() + getRadiaxHorizontal());
+        double brSpeed = (br.getPower() - (getRadiaxVertical() - getRadiaxHorizontal()));
+        return average(average(brSpeed, frSpeed), average(flSpeed, blSpeed));
+    }
+
+    double currentRadiax;
+
+    public void setTargetRadiax (double radiax) { currentRadiax = radiax; }
+
+    public double getTargetRadiax () { return currentRadiax; }
+
+    public double getAllowedRadiaxOffset (double allow) {
+        return getTargetRadiax() + allow;
+    }
+
+    public boolean notOffTargetRadiax (double offset) {
+        if (getRadiax() > getAllowedRadiaxOffset(offset)
+                || getRadiax() < getAllowedRadiaxOffset(-offset)) return false;
+        else return true;
+    }
+
     public double getRadiax () {
         double radiax = ((Math.acos(getRadiaxVertical() /
                 getRadiaxHypotenuse())) / (2 * Math.PI)) * 360;
