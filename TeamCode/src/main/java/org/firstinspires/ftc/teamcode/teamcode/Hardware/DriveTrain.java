@@ -952,6 +952,14 @@ public class DriveTrain {
         return radiax;
     }
 
+    public double getNodalRadiax() {
+        double frSpeed = (fr.getPower() - getRadiaxVertical()) - getRadiaxHorizontal();
+        double flSpeed = -((fl.getPower() - getRadiaxVertical()) + getRadiaxHorizontal());
+        double blSpeed = -((bl.getPower() - getRadiaxVertical()) - getRadiaxHorizontal());
+        double brSpeed = (br.getPower() - getRadiaxVertical()) + getRadiaxHorizontal();
+        return average(average(brSpeed, frSpeed), average(flSpeed, blSpeed));
+    }
+
     public double getVector () {
         double vector = getRadiax() + sensors.getGyroYaw();
         while (vector > 360) vector -= 360;

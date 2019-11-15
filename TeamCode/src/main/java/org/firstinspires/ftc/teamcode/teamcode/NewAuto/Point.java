@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teamcode.Judging;
+package org.firstinspires.ftc.teamcode.teamcode.NewAuto;
 
 
 public class Point {

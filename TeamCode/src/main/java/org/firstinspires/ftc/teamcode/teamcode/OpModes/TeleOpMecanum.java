@@ -140,10 +140,10 @@ public class TeleOpMecanum extends OpMode {
         telemetry.addData("Speed", speedProp);
         telemetry.addData("Vertical", drive.getRadiaxVertical());
         telemetry.addData("Hypotenuse", drive.getRadiaxHypotenuse());
+        telemetry.addData("Radiaz Faux", drive.getNodalRadiax());
         telemetry.addData("Horizontal", drive.getRadiaxHorizontal());
         telemetry.addData("Radiax", drive.getRadiax());
         //telemetry.addData("Vector", drive.getVector());
-
 
         if(gamepad1.dpad_left)
         {

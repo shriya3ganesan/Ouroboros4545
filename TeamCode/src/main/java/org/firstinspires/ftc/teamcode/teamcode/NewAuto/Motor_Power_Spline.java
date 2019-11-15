@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teamcode.Judging;
+package org.firstinspires.ftc.teamcode.teamcode.NewAuto;
 
 public class Motor_Power_Spline {
     double leftPower;
@@ -23,14 +23,15 @@ public class Motor_Power_Spline {
 
     public static double aungular_velocity( double dX, double dY, double sX, double sY)
     {
-        return (-1/(1+Math.pow(dY/dX, 2))) * ((sY * dX - sX * dY) / (Math.pow(dX, 2)));
+        return (1/(1+Math.pow(dY/dX, 2))) * ((sY * dX - sX * dY) / (Math.pow(dX, 2)));
     }
 
     public static double setLeftPower(double aungularVelocity) {
 
 
         double leftVelocity = 1 + robotlength * aungularVelocity / 2;
-        return leftVelocity;
+        return (-1) * (stallTorque / noLoadSpeed) * leftVelocity
+                + stallTorque * leftVelocity;
     }
 
     public static double setRightPower(double aungularVelocity) {
