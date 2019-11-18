@@ -21,9 +21,9 @@ public class CubicSpline {
         Function[] temp;
 
 
-        p.add(new Point(0, 50, 50));
-        p.add(new Point(.5, 100, 100));
-        p.add(new Point(1, 300, 120));
+        p.add(new Point(0, 0, 0));
+        p.add(new Point(.5,  50, 50));
+        p.add(new Point(1, 300, 60));
 
         int number_of_equations = p.size() - 2;
 
@@ -125,7 +125,7 @@ public class CubicSpline {
 
         for(int i = 0; i < motor_power_splines.size(); i++)
         {
-            //System.out.println(motor_power_splines.get(i));
+            System.out.println(motor_power_splines.get(i));
         }
 
     }
@@ -258,24 +258,27 @@ public class CubicSpline {
 
         //X and Y Optimization Constraints - Ouroboros Method
 
-        double c1 = Math.sqrt(1 + t1 * t1) / Math.sqrt(1 + t2 * t2);
-        double c2 = Math.sqrt(1 + t2 * t2) / Math.sqrt(1 + t3 * t3);
+        double cx1 = Math.sqrt(1 + Math.pow(points.get(0).getX(),2)) / Math.sqrt(1 + Math.pow(points.get(1).getX() , 2));
+        double cx2 = Math.sqrt(1 + Math.pow(points.get(1).getX(),2)) / Math.sqrt(1 + Math.pow(points.get(2).getX() , 2));
 
-        constraints[12][1] = 1 -  c1 * 1;
-        constraints[12][2] = 2 * (t1 - t1) - c1 * 2 * (t2 - t1);
-        constraints[12][3] = 3 * Math.pow((t1 - t1), 2) - c1 * 3 * Math.pow((t2 - t1), 2);
+        double cy1 = Math.sqrt(1 + Math.pow(points.get(0).getY(),2)) / Math.sqrt(1 + Math.pow(points.get(1).getY() , 2));
+        double cy2 = Math.sqrt(1 + Math.pow(points.get(1).getY(),2)) / Math.sqrt(1 + Math.pow(points.get(2).getY() , 2));
 
-        constraints[13][5] = 1 - c2 * 1;
-        constraints[13][6] = 2 * (t2 - t2) - c2 * 2 * (t3 - t2);
-        constraints[13][7] = 3 * Math.pow((t2 - t2), 2) - c2 * 3 * Math.pow((t3 - t2), 2);
+        constraints[12][1] = 1 -  cx1 * 1;
+        constraints[12][2] = 2 * (t1 - t1) - cx1 * 2 * (t2 - t1);
+        constraints[12][3] = 3 * Math.pow((t1 - t1), 2) - cx1 * 3 * Math.pow((t2 - t1), 2);
 
-        constraints[14][9] = 1 - c1 * 1;
-        constraints[14][10] = 2 * (t1 - t1) - c1 * 2 * (t2 - t1);
-        constraints[14][11] = 3 * Math.pow((t1 - t1), 2) - c1 * 3 * Math.pow((t2 - t1), 2);
+        constraints[13][5] = 1 - cx2 * 1;
+        constraints[13][6] = 2 * (t2 - t2) - cx2 * 2 * (t3 - t2);
+        constraints[13][7] = 3 * Math.pow((t2 - t2), 2) - cx2 * 3 * Math.pow((t3 - t2), 2);
 
-        constraints[15][13] = 1 -c2 * 1;
-        constraints[15][14] = 2 * (t2 - t2) - c2 * 2 * (t3 - t2);
-        constraints[15][15] = 3 * Math.pow((t2 - t2), 2) -  c2 * 3 * Math.pow((t3 - t2), 2);
+        constraints[14][9] = 1 - cy1 * 1;
+        constraints[14][10] = 2 * (t1 - t1) - cy1 * 2 * (t2 - t1);
+        constraints[14][11] = 3 * Math.pow((t1 - t1), 2) - cy1 * 3 * Math.pow((t2 - t1), 2);
+
+        constraints[15][13] = 1 - cy2 * 1;
+        constraints[15][14] = 2 * (t2 - t2) - cy2 * 2 * (t3 - t2);
+        constraints[15][15] = 3 * Math.pow((t2 - t2), 2) -  cy2 * 3 * Math.pow((t3 - t2), 2);
 
         /*int i = 0;
         for(double[] row : constraints)
@@ -299,7 +302,7 @@ public class CubicSpline {
 
         for(int i = 0; i < solvedConstraints.length; i++)
         {
-            if(Math.abs(solvedConstraints[i]) < .00000000001)
+            if(Math.abs(solvedConstraints[i]) < .000001)
             {
                 solvedConstraints[i] = 0;
             }
