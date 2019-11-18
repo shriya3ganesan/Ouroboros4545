@@ -1,29 +1,29 @@
-
 package org.firstinspires.ftc.teamcode.teamcode.OpModes;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Sensors;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.ZeroMap;
 
-@Autonomous(name ="Basic Blue Green Path", group="Auto Basic")
-public class GreenPathing_Basic extends LinearOpMode {
+@Autonomous(name ="Playground", group="Auto Basic")
+public class Playground extends LinearOpMode {
+
+    private ElapsedTime runtime = new ElapsedTime();
+    private double driveSpeed = 0.6;
 
     DriveTrain drive = new DriveTrain();
     Sensors sensors = new Sensors();
     Intake intake = new Intake();
     Outtake outtake = new Outtake();
     ZeroMap zero = new ZeroMap();
-
-    double robotLength = 17.1;
-    double robotWidth = 18.1;
 
     @Override
     public void runOpMode() {
@@ -43,18 +43,34 @@ public class GreenPathing_Basic extends LinearOpMode {
         drive.bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         drive.br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        drive.initDriveTrain(this);
+        telemetry.addLine("Drive motors initialized");
 
-        //drive.zeroRun(this, 0.6);
+        sensors.initSensors(this);
+        zero.zeroInit(this);
 
-        //Return to zero point
-
-        //drive.postChange(this, true);
-
-        sleep(1000);
-
-        telemetry.addData("Path", "Complete");
+        telemetry.addLine("Gyro Initialized");
         telemetry.update();
-        }
+
+        intake.initIntakeAuto(this);
+        outtake.initOuttakeAuto(this);
+
+        waitForStart();
+
+        //drive.RDXVector(45, 24, 3000);
+        //zero.zeroBrowse(this);
+
+
+        //drive.shaftChange(35, 5000, 48,
+                //0.6);
+
+        //!
+        //drive.strafeMove(this, 24, 5, 0.6);
+
+        //!!!
+        //drive.turnPID(this, 90, true, 0.6/90, 0.4, 0.03, 3000);
+        //drive.zeroRun(this);
+        //drive.postChange(this, true);
     }
+
+}
 
