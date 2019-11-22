@@ -1,29 +1,24 @@
 package org.firstinspires.ftc.teamcode.teamcode.NewAuto;
 
+import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class CubicSpline {
 
-    ArrayList<Motor_Power_Spline> motor_power_splines = new ArrayList<>();
+
 
     public static void main(String[] args) {
         CubicSpline s = new CubicSpline();
         s.main();
     }
 
-    public void main()
-    {
+    public ArrayList<Motor_Power_Spline> getMotor_power_splines(ArrayList<Point> p) {
         CubicSpline q = new CubicSpline();
-        ArrayList<Point> p = new ArrayList<>();
         ArrayList<Function> functions = new ArrayList<>();
 
         Function[] temp;
-
-
-        p.add(new Point(0, 0, 0));
-        p.add(new Point(.5,  50, 50));
-        p.add(new Point(1, 300, 60));
+        ArrayList<Motor_Power_Spline> motor_power_splines = new ArrayList<>();
 
         int number_of_equations = p.size() - 2;
 
@@ -68,7 +63,7 @@ public class CubicSpline {
 
         for(Function f : functions)
         {
-            for(double t = f.startT + .001 ; t  < f.endT; t += .001)
+            for(double t = f.startT + 1 ; t  < f.endT; t += 1)
             {
                 der = f.getDerY(t) / f.getDerX(t);
                 secondDer = f.getSecondDerY(t) / f.getSecondDerX(t);
@@ -116,9 +111,19 @@ public class CubicSpline {
                     rightpower = rightpower;
                 }
             }
+            else {
+                if(rightpower > 1)
+                {
+                    rightpower = 1;
+                }
+                if(leftpower > 1)
+                {
+                    leftpower = 1;
+                }
+            }
 
-            leftpower = Double.parseDouble(df.format(leftpower));
-            rightpower = Double.parseDouble(df.format(rightpower));
+            leftpower = Math.abs(leftpower);
+            rightpower = Math.abs(rightpower);
 
             motor_power_splines.add(new Motor_Power_Spline(leftpower, rightpower));
         }
@@ -128,6 +133,19 @@ public class CubicSpline {
             System.out.println(motor_power_splines.get(i));
         }
 
+        return motor_power_splines;
+    }
+
+    public void main()
+    {
+        ArrayList<Point> points = new ArrayList<>();
+
+        points.add(new Point(0, 0));
+        points.add(new Point(50, 50));
+        points.add(new Point(75, 100));
+
+        ArrayList<Motor_Power_Spline> motor = getMotor_power_splines(points);
+
     }
 
 
@@ -135,10 +153,6 @@ public class CubicSpline {
 
     }
 
-    public ArrayList<Motor_Power_Spline> getMotorPowerList()
-    {
-        return motor_power_splines;
-    }
 
 
 
@@ -258,27 +272,57 @@ public class CubicSpline {
 
         //X and Y Optimization Constraints - Ouroboros Method
 
-        double cx1 = Math.sqrt(1 + Math.pow(points.get(0).getX(),2)) / Math.sqrt(1 + Math.pow(points.get(1).getX() , 2));
-        double cx2 = Math.sqrt(1 + Math.pow(points.get(1).getX(),2)) / Math.sqrt(1 + Math.pow(points.get(2).getX() , 2));
+        double cx1 = Math.sqrt(1 + Math.pow(points.get(0).getX(),2));
+        double cx2 = Math.sqrt(1 + Math.pow(points.get(1).getX(),2));
+        double cx3 = Math.sqrt(1 + Math.pow(points.get(2).getX(),2));
 
-        double cy1 = Math.sqrt(1 + Math.pow(points.get(0).getY(),2)) / Math.sqrt(1 + Math.pow(points.get(1).getY() , 2));
-        double cy2 = Math.sqrt(1 + Math.pow(points.get(1).getY(),2)) / Math.sqrt(1 + Math.pow(points.get(2).getY() , 2));
+        double cy1 = Math.sqrt(1 + Math.pow(points.get(0).getY(),2));
+        double cy2 = Math.sqrt(1 + Math.pow(points.get(1).getY(),2));
+        double cy3 = Math.sqrt(1 + Math.pow(points.get(2).getY(),2));
 
-        constraints[12][1] = 1 -  cx1 * 1;
-        constraints[12][2] = 2 * (t1 - t1) - cx1 * 2 * (t2 - t1);
-        constraints[12][3] = 3 * Math.pow((t1 - t1), 2) - cx1 * 3 * Math.pow((t2 - t1), 2);
 
-        constraints[13][5] = 1 - cx2 * 1;
-        constraints[13][6] = 2 * (t2 - t2) - cx2 * 2 * (t3 - t2);
-        constraints[13][7] = 3 * Math.pow((t2 - t2), 2) - cx2 * 3 * Math.pow((t3 - t2), 2);
+        /*constraints[12][0] = 0;
+        constraints[12][1] = cx1 - cx2;
+        constraints[12][2] = 2 * cx1 * (t2 - t1);
+        constraints[12][3] = 3 * cx1 * Math.pow(t2 - t1, 2);
 
-        constraints[14][9] = 1 - cy1 * 1;
-        constraints[14][10] = 2 * (t1 - t1) - cy1 * 2 * (t2 - t1);
-        constraints[14][11] = 3 * Math.pow((t1 - t1), 2) - cy1 * 3 * Math.pow((t2 - t1), 2);
+        constraints[14][8] = 0;
+        constraints[14][9] = cy2 - cy1;
+        constraints[14][10] = 2 * cy2 * (t2 - t1);
+        constraints[14][11] = 3 * cy2 * Math.pow(t2 - t1, 2);
 
-        constraints[15][13] = 1 - cy2 * 1;
-        constraints[15][14] = 2 * (t2 - t2) - cy2 * 2 * (t3 - t2);
-        constraints[15][15] = 3 * Math.pow((t2 - t2), 2) -  cy2 * 3 * Math.pow((t3 - t2), 2);
+        constraints[13][4] = 0;
+        constraints[13][5] = cx2 - cx3;
+        constraints[13][6] = 2 * cx2 * (t3 - t2);
+        constraints[13][7] = 3 * cx2 * Math.pow(t3 - t2, 2);
+
+        constraints[15][12] = 0;
+        constraints[15][13] = cy3 - cy2;
+        constraints[15][14] = 2 * cy3 * (t3 - t2);
+        constraints[15][15] = 3 * cy3 * Math.pow(t3 - t2, 2);*/
+
+
+        constraints[12][0] = 0;
+        constraints[12][1] = 1;
+        constraints[12][2] = 2 * (t2 - t1);
+        constraints[12][3] = 3 * Math.pow(t2 - t1, 2);
+
+        constraints[14][8] = 0;
+        constraints[14][9] = 1;
+        constraints[14][10] = 2 * (t2 - t1);
+        constraints[14][11] = 3 * Math.pow(t2 - t1, 2);
+
+        constraints[13][4] = 0;
+        constraints[13][5] = 1;
+        constraints[13][6] = 2 * (t3 - t2);
+        constraints[13][7] = 3 * Math.pow(t3 - t2, 2);
+
+        constraints[15][12] = 0;
+        constraints[15][13] = 1;
+        constraints[15][14] = 2 * (t3 - t2);
+        constraints[15][15] = 3 * Math.pow(t3 - t2, 2);
+
+
 
         /*int i = 0;
         for(double[] row : constraints)
@@ -311,9 +355,9 @@ public class CubicSpline {
 
         Function[] funcs = new Function[2];
 
-        funcs[0] = new Function(solvedConstraints[0], solvedConstraints[1], solvedConstraints[2], solvedConstraints[3],
+        funcs[0] = new Function(0, 1, 0, 0,
                 solvedConstraints[8], solvedConstraints[9], solvedConstraints[10], solvedConstraints[11], t1, t2);
-        funcs[1] = new Function(solvedConstraints[4], solvedConstraints[5], solvedConstraints[6], solvedConstraints[7],
+        funcs[1] = new Function(0, 1, 0,0,
                 solvedConstraints[12], solvedConstraints[13], solvedConstraints[14], solvedConstraints[15], t2, t3);
 
         return funcs;

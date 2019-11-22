@@ -18,6 +18,6 @@ public class AMLPark extends LinearOpMode {
         waitForStart();
 
 
-        driveTrain.encoderDrive(this, .5, 60, 60, 5);
+        driveTrain.encoderDrive(this, .5, 72, 72, 5);
     }
 }

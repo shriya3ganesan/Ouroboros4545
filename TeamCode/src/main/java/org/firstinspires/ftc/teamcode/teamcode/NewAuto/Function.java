@@ -75,8 +75,7 @@ public class Function {
 
 
 
-        return "( " + aX + " + " + bX + "(t -" + startT + ") + " + cX + "(t -" + startT + ")^2 + " +
-                dX + "(t -" + startT + ")^3 , " + aY + " + " + bY + "(t -" + startT + ") + " + cY + "(t -" + startT + ")^2 + " +
+        return "( t,"  + aY + " + " + bY + "(t -" + startT + ") + " + cY + "(t -" + startT + ")^2 + " +
                 dY + "(t -" + startT + ")^3 ) ";
     }
 }

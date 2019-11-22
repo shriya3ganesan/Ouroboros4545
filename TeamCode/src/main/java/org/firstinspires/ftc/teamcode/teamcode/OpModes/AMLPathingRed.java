@@ -100,7 +100,7 @@ public class AMLPathingRed extends LinearOpMode {
         //lift out
         outtake.rightVex.setPower(.5);
         outtake.leftVex.setPower(-.5);
-        sleep(5500);
+        sleep(500);
         outtake.leftVex.setPower(0);
         outtake.rightVex.setPower(0);
 
@@ -116,7 +116,7 @@ public class AMLPathingRed extends LinearOpMode {
         //tighten
         outtake.rightVex.setPower(-.5);
         outtake.leftVex.setPower(.5);
-        sleep(3000);
+        sleep(250);
         outtake.leftVex.setPower(0);
         outtake.rightVex.setPower(0);
 
@@ -131,7 +131,7 @@ public class AMLPathingRed extends LinearOpMode {
         //loosen
         outtake.rightVex.setPower(.5);
         outtake.leftVex.setPower(-.5);
-        sleep(1500);
+        sleep(250);
         outtake.leftVex.setPower(0);
         outtake.rightVex.setPower(0);
 

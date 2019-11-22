@@ -28,6 +28,12 @@ public class Point {
         return sdY;
     }
 
+    public Point(double t, double y) {
+        this.y = y;
+        this.t = t;
+        this.x = 0;
+    }
+
     public Point(double t, double x, double y) {
         this.x = x;
         this.y = y;

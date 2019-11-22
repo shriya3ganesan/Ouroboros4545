@@ -173,7 +173,7 @@ public class Outtake {
 
         if(Math.abs(opMode.gamepad2.left_trigger) > .5)
         {
-            pushBlock.setPosition(.6);
+            pushBlock.setPosition(.3);
         }
         else if(Math.abs(opMode.gamepad2.right_trigger) > .5)
         {
@@ -190,7 +190,7 @@ public class Outtake {
         liftLeft.setPower(-1);
 
         time.reset();
-        while(averageLiftPosition() >= 0 && time.milliseconds() < 1000 && opMode.opModeIsActive())
+        while(averageLiftPosition() >= 0 && time.milliseconds() < 1500 && opMode.opModeIsActive())
         {
 
         }
@@ -365,7 +365,7 @@ public class Outtake {
         liftRight.setPower(LIFTPOWER);
         liftLeft.setPower(LIFTPOWER);
 
-        while (encoderLevelCount * blockHeight * 1.5 > averageLiftPosition() && opMode.opModeIsActive()) {
+        while (encoderLevelCount * blockHeight * 2 > averageLiftPosition() && opMode.opModeIsActive()) {
 
             if(top && averageLiftPosition() > MAXHEIGHT * encoderLevelCount)
             {

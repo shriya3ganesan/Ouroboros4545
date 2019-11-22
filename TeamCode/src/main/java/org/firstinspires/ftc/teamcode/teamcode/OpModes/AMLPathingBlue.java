@@ -65,7 +65,7 @@ public class AMLPathingBlue extends LinearOpMode {
         drive.initDriveTrain(this);
         intake.initIntakeAuto(this);
         outtake.initOuttakeAuto(this);
-        vuf.initVision(this);
+       // vuf.initVision(this);
 
         if (robotWidth >= robotLength) {
             greatLength = robotWidth;
@@ -79,13 +79,13 @@ public class AMLPathingBlue extends LinearOpMode {
 
 
         waitForStart();
-        if(vuf.senseBlue(this) == "left")
+       /* if(vuf.senseBlue(this) == "left")
             offset = 20;
         else if(vuf.senseBlue(this) == "right")
             offset = -20;
         else
             offset = 0;
-
+*/
 
         //lift up
         outtake.raiseLiftAuto(this);
@@ -93,7 +93,7 @@ public class AMLPathingBlue extends LinearOpMode {
         //lift out
         outtake.rightVex.setPower(.5);
         outtake.leftVex.setPower(-.5);
-        sleep(5000);
+        sleep(500);
         outtake.leftVex.setPower(0);
         outtake.rightVex.setPower(0);
 
@@ -118,29 +118,30 @@ public class AMLPathingBlue extends LinearOpMode {
         //tighten
         outtake.rightVex.setPower(-.5);
         outtake.leftVex.setPower(.5);
-        sleep(2250);
-        outtake.leftVex.setPower(0);
-        outtake.rightVex.setPower(0);
-
+        sleep(250);
+        outtake.rightVex.setPower(-.5);
+        outtake.leftVex.setPower(.5);
         //drive back
         drive.encoderDrive(this, .7, 20, 20, 5);
         //sleep(1000);
 
         //strafe across bridge
-        drive.strafeMove(this, 100 - offset, 10, -1);
+        drive.strafeMove(this, 120 - offset, 10, -.75);
 //        sleep(1000);
 
-        //loosen
-        outtake.rightVex.setPower(.5);
+        // loosen
+     /*   outtake.rightVex.setPower(.5);
         outtake.leftVex.setPower(-.5);
-        sleep(1500);
+        sleep(250);
         outtake.leftVex.setPower(0);
-        outtake.rightVex.setPower(0);
+        outtake.rightVex.setPower(0);*/
 
         //lift up
         outtake.raiseLiftAuto(this);
 
-        drive.gyroTurn(this, 360, false, 4000);
+        sleep(2000);
+
+      /*  drive.gyroTurn(this, 360, false, 4000);
 
 
         //drive out of way
@@ -155,7 +156,7 @@ public class AMLPathingBlue extends LinearOpMode {
         drive.strafeMove(this, 40, 10, .5);
         //drive.gyroTurn(this, 0, false, 4000);
 
-        drive.encoderDrive(this, .4, -12, -12, 3);
+        drive.encoderDrive(this, .4, -12, -12, 3);*/
 
 
 

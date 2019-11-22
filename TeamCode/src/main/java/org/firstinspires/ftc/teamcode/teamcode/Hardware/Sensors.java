@@ -20,6 +20,9 @@ public class Sensors {
     public Orientation angles;
     BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
+    double gyroOffset;
+    double startGyro;
+
     public void initSensors(LinearOpMode opMode) {
         this.opMode = opMode;
 
@@ -37,19 +40,22 @@ public class Sensors {
         opMode.telemetry.addLine("gyro calibrated");
         opMode.telemetry.update();
 
+        startGyro = getGyroYaw();
+        while (startGyro >= 360) startGyro -= 360;
+        gyroOffset = 0 - startGyro;
+
         //uSonic = opMode.hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "Ultrasonic");
     }
 
     public double MRConvert (double angle) {
-        if (angle <= 0) {
-            angle += 360;
-        }
+        while (angle <= 0) angle += 360;
+        while (angle >= 360) angle -= 360;
         return angle;
     }
 
     public double getGyroYaw() {
         angles = gyro.getAngularOrientation();
-        return MRConvert(angles.firstAngle);
+        return MRConvert(angles.firstAngle) + gyroOffset;
     }
 
     /*

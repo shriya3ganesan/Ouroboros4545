@@ -19,20 +19,7 @@ public class OuroborosMethodTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         drive.initDriveTrain(this);
-        c.main();
         waitForStart();
-        for(Motor_Power_Spline m : c.getMotorPowerList())
-        {
-            if(!opModeIsActive())
-            {
-                drive.snowWhite();
-                return;
-            }
-            drive.rightTank(m.getRightPower());
-            drive.leftTank(m.getLeftPower());
-
-            sleep(1);
-        }
 
         drive.snowWhite();
 

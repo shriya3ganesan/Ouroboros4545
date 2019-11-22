@@ -37,7 +37,7 @@ public class FoundationAutoRed extends LinearOpMode{
         out.hookLeft.setPosition(1);
         out.hookRight.setPosition(1);
         sleep(2000);
-        drive.encoderDrive(this, .4, 72, 72, 10);
+        drive.encoderDrive(this, .4, 65, 65, 10);
        // drive.strafeMove(this, 40, 5, .7);
         out.hookLeft.setPosition(0);
         out.hookRight.setPosition(0);

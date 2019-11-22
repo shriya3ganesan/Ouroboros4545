@@ -171,7 +171,7 @@ public class TeleOpMecanum extends OpMode {
             drive.snowWhite();
         }
 
-        if (gamepad1.left_trigger > 0.05f) {
+        /*if (gamepad1.left_trigger > 0.05f) {
             drive.fl.setPower(flTestPower++);
         }
         if (gamepad1.left_bumper) {
@@ -182,7 +182,7 @@ public class TeleOpMecanum extends OpMode {
         }
         if (gamepad1.right_bumper) {
             drive.br.setPower(brTestPower++);
-        }
+        }*/
 
         telemetry.addData("FL Power: ", flTestPower);
 

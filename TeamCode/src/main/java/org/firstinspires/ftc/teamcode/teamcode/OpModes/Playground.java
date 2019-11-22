@@ -28,7 +28,7 @@ public class Playground extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        drive.fl = hardwareMap.dcMotor.get("fl");
+        /*drive.fl = hardwareMap.dcMotor.get("fl");
         drive.fr = hardwareMap.dcMotor.get("fr");
         drive.bl = hardwareMap.dcMotor.get("bl");
         drive.br = hardwareMap.dcMotor.get("br");
@@ -41,12 +41,13 @@ public class Playground extends LinearOpMode {
         drive.fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         drive.fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         drive.bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        drive.br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        drive.br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*/
 
         telemetry.addLine("Drive motors initialized");
 
         sensors.initSensors(this);
-        zero.zeroInit(this);
+        drive.initDriveTrain(this);
+        //zero.zeroInit(this);
 
         telemetry.addLine("Gyro Initialized");
         telemetry.update();
@@ -55,6 +56,16 @@ public class Playground extends LinearOpMode {
         outtake.initOuttakeAuto(this);
 
         waitForStart();
+
+
+
+        drive.turnPID(this, 45, true, .6 / 45, .1/45,
+        0.03 / 90, 5);
+
+        sleep(500);
+
+        drive.turnPID(this, 90, true, .6 / 45, .1/45,
+                0.03 / 45, 5);
 
         //drive.RDXVector(45, 24, 3000);
         //zero.zeroBrowse(this);

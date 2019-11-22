@@ -68,7 +68,7 @@ public class DriveTrain {
     public double integral;
     public double derive;
     public double proportional;
-    public double error;
+    public double error = 0;
     public double time;
 
     double c2Offset;
@@ -149,16 +149,16 @@ public class DriveTrain {
     public void turn(double speed, boolean isRight) {
 
         if (isRight) {
-            fl.setPower(speed);
-            fr.setPower(-speed);
-            bl.setPower(speed);
-            br.setPower(-speed);
-        }
-        else
-        {
             fl.setPower(-speed);
             fr.setPower(speed);
             bl.setPower(-speed);
+            br.setPower(speed);
+        }
+        else
+        {
+            fl.setPower(speed);
+            fr.setPower(-speed);
+            bl.setPower(speed);
             br.setPower(speed);
         }
     }
@@ -740,29 +740,39 @@ public class DriveTrain {
     //PID Turns for Macanum Wheels
     //Proportional Integral Derivative Turn
     public void turnPID (LinearOpMode opMode, double goal, boolean isRight, double kP, double kI,
-                         double kD, double timeOutMS) {
+                         double kD, double timeOutS) {
 
         runtime.reset();
         //sensors.angles = sensors.gyro.getAngularOrientation();
 
-        while (opMode.opModeIsActive() && runtime.milliseconds() <= timeOutMS && goal - sensors.getGyroYaw() > 1 ) {
+        prevTime = runtime.seconds();
+        error = goal - sensors.getGyroYaw();
+
+        while (opMode.opModeIsActive() && runtime.seconds() <= timeOutS && Math.abs(error) > 1 ) {
 
             //  sensors.angles = sensors.gyro.getAngularOrientation();
 
             error = goal - sensors.getGyroYaw();
+
             proportional = error * kP;
-            time = runtime.milliseconds();
+
+            time = runtime.seconds();
+
             integral += ((time - prevTime) * error) * kI;
+
             derive = ((error - prevError) / (time - prevTime)) * kD;
+
             power = proportional + integral + derive;
 
             turn(power, isRight);
 
-            prevTime = runtime.milliseconds();
-            prevError = goal - sensors.getGyroYaw();
+
+            prevError = error;
 
 
         }
+
+        snowWhite();
     }
     public void gyroTurn(LinearOpMode opMode, double goal, boolean isRight, double timeOutMS) {
 
@@ -992,13 +1002,13 @@ public class DriveTrain {
         return radiax;
     }
 
-    public double getNodalRadiax() {
+    /*public double getNodalRadiax() {
         double frSpeed = (fr.getPower() - getRadiaxVertical()) - getRadiaxHorizontal();
         double flSpeed = -((fl.getPower() - getRadiaxVertical()) + getRadiaxHorizontal());
         double blSpeed = -((bl.getPower() - getRadiaxVertical()) - getRadiaxHorizontal());
         double brSpeed = (br.getPower() - getRadiaxVertical()) + getRadiaxHorizontal();
         return average(average(brSpeed, frSpeed), average(flSpeed, blSpeed));
-    }
+    }*/
 
     public double getVector () {
         double vector = getRadiax() + sensors.getGyroYaw();
