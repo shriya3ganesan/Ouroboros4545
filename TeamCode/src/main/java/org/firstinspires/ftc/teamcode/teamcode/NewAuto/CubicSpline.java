@@ -141,8 +141,8 @@ public class CubicSpline {
         ArrayList<Point> points = new ArrayList<>();
 
         points.add(new Point(0, 0));
-        points.add(new Point(50, 50));
-        points.add(new Point(75, 100));
+        points.add(new Point(25, 50));
+        points.add(new Point(300, 55));
 
         ArrayList<Motor_Power_Spline> motor = getMotor_power_splines(points);
 
@@ -302,23 +302,23 @@ public class CubicSpline {
         constraints[15][15] = 3 * cy3 * Math.pow(t3 - t2, 2);*/
 
 
-        constraints[12][0] = 0;
-        constraints[12][1] = 1;
-        constraints[12][2] = 2 * (t2 - t1);
-        constraints[12][3] = 3 * Math.pow(t2 - t1, 2);
+        constraints[12][0]  = 0;
+        constraints[12][1]  = 0;
+        constraints[12][2]  = 2 * (t2 - t1);
+        constraints[12][3]  = 3 * Math.pow(t2 - t1, 2);
 
-        constraints[14][8] = 0;
-        constraints[14][9] = 1;
+        constraints[14][8]  =  0;
+        constraints[14][9]  = 0;
         constraints[14][10] = 2 * (t2 - t1);
         constraints[14][11] = 3 * Math.pow(t2 - t1, 2);
 
-        constraints[13][4] = 0;
-        constraints[13][5] = 1;
-        constraints[13][6] = 2 * (t3 - t2);
-        constraints[13][7] = 3 * Math.pow(t3 - t2, 2);
+        constraints[13][4]  = 0;
+        constraints[13][5]  = 0;
+        constraints[13][6]  = 2 * (t3 - t2);
+        constraints[13][7]  = 3 * Math.pow(t3 - t2, 2);
 
         constraints[15][12] = 0;
-        constraints[15][13] = 1;
+        constraints[15][13] = 0 ;
         constraints[15][14] = 2 * (t3 - t2);
         constraints[15][15] = 3 * Math.pow(t3 - t2, 2);
 
