@@ -6,14 +6,24 @@ import java.util.ArrayList;
 
 public class CubicSpline {
 
+    public void SplineOut(double t1, double y1, double t2, double y2, double t3, double y3)
+    {
+        ArrayList<Point> points = new ArrayList<>();
 
+        points.add(new Point(t1, y1));
+        points.add(new Point(t2, y2));
+        points.add(new Point(t3,y3));
+
+        ArrayList<Motor_Power_Spline> motor = getMotor_power_splines(points);
+
+    }
 
     public static void main(String[] args) {
         CubicSpline s = new CubicSpline();
-        s.main();
+        s.SplineOut(0, 0, 1, .5 , 3, .5);
     }
 
-    public ArrayList<Motor_Power_Spline> getMotor_power_splines(ArrayList<Point> p) {
+    public static ArrayList<Motor_Power_Spline> getMotor_power_splines(ArrayList<Point> p) {
         CubicSpline q = new CubicSpline();
         ArrayList<Function> functions = new ArrayList<>();
 
@@ -63,10 +73,14 @@ public class CubicSpline {
 
         for(Function f : functions)
         {
-            for(double t = f.startT + 1 ; t  < f.endT; t += 1)
+            for(double t = f.startT + .1 ; t  < f.endT; t += .1)
             {
-                der = f.getDerY(t) / f.getDerX(t);
-                secondDer = f.getSecondDerY(t) / f.getSecondDerX(t);
+
+                der = f.getDerY(t);
+                secondDer = f.getSecondDerY(t);
+
+
+
 
                 splinePoints.add(new Point(t, f.getFuncX(t), f.getFuncY(t), der, secondDer, f.getDerX(t),
                         f.getDerY(t), f.getSecondDerX(t), f.getSecondDerY(t)));
@@ -76,82 +90,34 @@ public class CubicSpline {
         }
         double av = 0;
         double avg = 0;
-        DecimalFormat df = new DecimalFormat("0.000");
+        double d = 0;
+        /* DecimalFormat df = new DecimalFormat("0.000"); */
         for(Point points : splinePoints)
         {
 
-            av = Motor_Power_Spline.aungular_velocity(points.getdX(), points.getdY(), points.getSdX(), points.getSdY());
+            av = Motor_Power_Spline.aungular_velocity(points.getdY(), points.getSdY());
             leftpower = Motor_Power_Spline.setLeftPower(av);
             rightpower = Motor_Power_Spline.setRightPower(av);
 
             //Normalize motor powers
 
+            d = Math.abs(leftpower) + Math.abs(rightpower);
+            leftpower = Math.abs(leftpower) / d;
+            rightpower = Math.abs(rightpower) / d;
 
-            if(leftpower > rightpower)
-            {
-                rightpower = rightpower / leftpower;
-                if(leftpower > 1)
-                {
-                    leftpower = 1;
-                }
-                else
-                {
-                    leftpower = leftpower;
-                }
-            }
-            else if(rightpower > leftpower)
-            {
-                leftpower = leftpower / rightpower;
-                if(rightpower > 1)
-                {
-                    rightpower = 1;
-                }
-                else
-                {
-                    rightpower = rightpower;
-                }
-            }
-            else {
-                if(rightpower > 1)
-                {
-                    rightpower = 1;
-                }
-                if(leftpower > 1)
-                {
-                    leftpower = 1;
-                }
-            }
-
-            leftpower = Math.abs(leftpower);
-            rightpower = Math.abs(rightpower);
 
             motor_power_splines.add(new Motor_Power_Spline(leftpower, rightpower));
         }
 
         for(int i = 0; i < motor_power_splines.size(); i++)
         {
-            System.out.println(motor_power_splines.get(i));
+           System.out.println(motor_power_splines.get(i));
         }
 
         return motor_power_splines;
     }
 
-    public void main()
-    {
-        ArrayList<Point> points = new ArrayList<>();
 
-        points.add(new Point(0, 0));
-        points.add(new Point(25, 50));
-        points.add(new Point(300, 55));
-
-        ArrayList<Motor_Power_Spline> motor = getMotor_power_splines(points);
-
-    }
-
-
-    public CubicSpline(){
-
-    }
 
 
 
@@ -208,7 +174,6 @@ public class CubicSpline {
         solutions[9] = points.get(2).getY();
         solutions[10] = 0;
         solutions[11] = 0;
-
         solutions[12] = 0;
         solutions[13] = 0;
         solutions[14] = 0;
@@ -304,21 +269,29 @@ public class CubicSpline {
 
         constraints[12][0]  = 0;
         constraints[12][1]  = 0;
-        constraints[12][2]  = 2 * (t2 - t1);
-        constraints[12][3]  = 3 * Math.pow(t2 - t1, 2);
+        constraints[12][2]  = -2 * (t2 - t1);
+        constraints[12][3]  = -3 * Math.pow(t2 - t1, 2);
+        constraints[12][4]  = 0;
+        constraints[12][5]  = 0;
+        constraints[12][6]  = 2 * (t3 - t2);
+        constraints[12][7]  = 3 * Math.pow(t3 - t2, 2);
 
-        constraints[14][8]  =  0;
-        constraints[14][9]  = 0;
-        constraints[14][10] = 2 * (t2 - t1);
-        constraints[14][11] = 3 * Math.pow(t2 - t1, 2);
+        constraints[13][8]  = 0;
+        constraints[13][9]  = 0;
+        constraints[13][10]  = -2 * (t2 - t1);
+        constraints[13][11]  = -3 * Math.pow(t2 - t1, 2);
+        constraints[13][12]  = 0;
+        constraints[13][13]  = 0;
+        constraints[13][14]  = 2 * (t3 - t2);
+        constraints[13][15]  = 3 * Math.pow(t3 - t2, 2);
 
-        constraints[13][4]  = 0;
-        constraints[13][5]  = 0;
-        constraints[13][6]  = 2 * (t3 - t2);
-        constraints[13][7]  = 3 * Math.pow(t3 - t2, 2);
+        constraints[14][4]  =  0;
+        constraints[14][5]  = 1;
+        constraints[14][6] = 2 * (t2 - t1);
+        constraints[14][7] = 3 * Math.pow(t2 - t1, 2);
 
         constraints[15][12] = 0;
-        constraints[15][13] = 0 ;
+        constraints[15][13] = 1;
         constraints[15][14] = 2 * (t3 - t2);
         constraints[15][15] = 3 * Math.pow(t3 - t2, 2);
 
