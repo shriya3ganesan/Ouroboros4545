@@ -104,8 +104,10 @@ public class VisionWebcam {
 
             // top left = (0,0)
 
+        while(opMode.opModeIsActive() && !opMode.isStarted()) {
+
             // scan 3 columns
-            for (int colNum = bitmap.getWidth() / 2; colNum < bitmap.getWidth() ; colNum++) {
+            for (int colNum = bitmap.getWidth() / 2; colNum < bitmap.getWidth(); colNum++) {
 
                 for (int rowNum = bitmap.getHeight() / 2; rowNum < bitmap.getHeight(); rowNum++) {
                     int pixel = bitmap.getPixel(colNum, rowNum);
@@ -135,7 +137,7 @@ public class VisionWebcam {
                 stonexAvg += x;
             }
 
-             stonexAvg /= StoneX.size();
+            stonexAvg /= StoneX.size();
 
 
             // get average x-coordinate value of all yellow pixels
@@ -148,7 +150,7 @@ public class VisionWebcam {
 
             if (stonexAvg < 500) {
                 pos = "left";
-            } else if (stonexAvg >600) {
+            } else if (stonexAvg > 600) {
                 pos = "right";
             } else {
                 pos = "center";
@@ -156,7 +158,7 @@ public class VisionWebcam {
 
             opMode.telemetry.addData("Position", pos);
             opMode.telemetry.update();
-
+        }
         return pos;
     }
 

@@ -121,6 +121,7 @@ public class AMLPathingBlue extends LinearOpMode {
         sleep(250);
         outtake.rightVex.setPower(-.5);
         outtake.leftVex.setPower(.5);
+
         //drive back
         drive.encoderDrive(this, .7, 20, 20, 5);
         //sleep(1000);
@@ -129,41 +130,38 @@ public class AMLPathingBlue extends LinearOpMode {
         drive.strafeMove(this, 120 - offset, 10, -.75);
 //        sleep(1000);
 
+
         // loosen
-     /*   outtake.rightVex.setPower(.5);
+        outtake.rightVex.setPower(.5);
         outtake.leftVex.setPower(-.5);
         sleep(250);
         outtake.leftVex.setPower(0);
-        outtake.rightVex.setPower(0);*/
+        outtake.rightVex.setPower(0);
 
         //lift up
         outtake.raiseLiftAuto(this);
 
-        sleep(2000);
 
-      /*  drive.gyroTurn(this, 360, false, 4000);
-
-
-        //drive out of way
-        drive.encoderDrive(this, .7, 20, 20, 5);
-        //      sleep(1000);
-
+        //drive back
+        drive.encoderDrive(this, .7, 15, 15, 5);
 
         //lift down
         outtake.lowerLiftAuto(this);
 
         //strafe to stone 2
-        drive.strafeMove(this, 40, 10, .5);
-        //drive.gyroTurn(this, 0, false, 4000);
+        drive.strafeMove(this, 160 - offset, 10, .75);
 
-        drive.encoderDrive(this, .4, -12, -12, 3);*/
-
-
-
-       /* //lift up
+        //lift up
         outtake.raiseLiftAuto(this);
 
-        sleep(500);
+        //lift out
+        outtake.rightVex.setPower(.5);
+        outtake.leftVex.setPower(-.5);
+        sleep(250);
+        outtake.leftVex.setPower(0);
+        outtake.rightVex.setPower(0);
+
+
         //drive to stone
         drive.encoderDrive(this, -.7, -37.5, -37.5, 5);
 
@@ -173,13 +171,12 @@ public class AMLPathingBlue extends LinearOpMode {
         //tighten
         outtake.rightVex.setPower(-.5);
         outtake.leftVex.setPower(.5);
-        sleep(1000);
+        sleep(250);
         outtake.leftVex.setPower(0);
         outtake.rightVex.setPower(0);
 
         //drive back
         drive.encoderDrive(this, .7, 20, 20, 5);
-        sleep(1000);
 
         //strafe across bridge
         drive.strafeMove(this, 145 - offset, 10, -1);
@@ -187,34 +184,16 @@ public class AMLPathingBlue extends LinearOpMode {
         //raise lift
         outtake.raiseLiftAuto(this);
 
-        drive.strafeMove(this, 7 - offset, 10, 1);
-
-        *//*//*/ /*
-        drive.encoderDrive(this, .5, 12, 12, 5);
-    //    sleep(1000);
+        //move back
+        drive.encoderDrive(this, .7, 20, 20, 5);
 
         //lower lift
-        outtake.lowerLiftAuto();
+        outtake.lowerLiftAuto(this);
 
         //park
-        drive.strafeMove(this, -24, 2, 5);
+        drive.strafeMove(this, 20 - offset, 10, 1);
 
 
-
-*/
-
-        /*drive.encoderDrive(this, -.5, 24, 24, 2);
-        drive.strafeMove(this, 24, 2, -.5); //hopefully left
-        outtake.hookLeft.setPosition(1);
-        outtake.hookRight.setPosition(1);
-        drive.strafeMove(this, 36, 2, .5);
-        outtake.hookLeft.setPosition(0);
-        outtake.hookRight.setPosition(0);
-        //outtake.outTake_Auto(this);
-        drive.encoderDrive(this, .5, 24, 24, 2);
-
-
-*/
     }
 }
 
