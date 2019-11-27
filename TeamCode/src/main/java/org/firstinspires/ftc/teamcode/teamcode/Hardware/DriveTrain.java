@@ -8,7 +8,7 @@ import java.text.DecimalFormat;
 
 public class DriveTrain {
 
-    private static double motorCounts = 288;
+    private static double motorCounts = 518.4;
     private static double gearUp = 1;
     public static double wheelDiam = 4;
     public static double noLoadSpeed = 31.4 ; // Max Angular Velocity in radians/second for 20 : 1 motor
@@ -455,8 +455,7 @@ public class DriveTrain {
 
         }
         while (opMode.opModeIsActive() && runtime.seconds() < timeoutS &&
-                (Math.abs(newLeftTarget) - Math.abs(getEncoderAverage())) > 5 );
-
+                (Math.abs(newLeftTarget - getEncoderAverage())) > 5 );
 
 
 /*            opMode.telemetry.addData("Targets: ", "fl %7d : fr %7d : bl %7d : br %7d",
@@ -467,10 +466,9 @@ public class DriveTrain {
             opMode.telemetry.update();*/
 
         snowWhite();
+        opMode.idle();
 
-
-
-        opMode.sleep(50);
+        //opMode.sleep(50);
     }
 
     public double[] hermite (double[] lStick) {
@@ -479,7 +477,7 @@ public class DriveTrain {
             gyre -= 90;
             quadrant++;
         }
-
+              // ┌∩┐(◣_◢)┌∩┐
         primeSin = (Math.sin(gyre / 2) * 2);
         alpha = Math.acos(primeSin);
         bOffset = primeSin * Math.cos(alpha);

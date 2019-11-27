@@ -88,6 +88,33 @@ public class TeleOpMecanum extends OpMode {
             right_stick_x = gamepad1.right_stick_x;
 
 
+            // Normalizing Values
+
+        double max = 0;
+        double lx = Math.abs(left_stick_x);
+        double rx = Math.abs(right_stick_x);
+        double ly = Math.abs(left_stick_y);
+        if(lx > 1 || ly > 1 || rx > 1)
+        {
+            if(ly > lx)
+            {
+                max = ly;
+            }
+            else if(lx > ly)
+            {
+                max = lx;
+            }
+            if(rx > max)
+            {
+                max = rx;
+            }
+
+            right_stick_x = right_stick_x / max;
+            left_stick_y = left_stick_y / max;
+            left_stick_x = left_stick_x / max;
+        }
+
+
 
 
         /*if (gamepad1.x != pastX) {

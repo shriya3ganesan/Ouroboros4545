@@ -365,7 +365,7 @@ public class Outtake {
         liftRight.setPower(LIFTPOWER);
         liftLeft.setPower(LIFTPOWER);
 
-        while (encoderLevelCount * blockHeight * 2 > averageLiftPosition() && opMode.opModeIsActive()) {
+        while (encoderLevelCount * blockHeight * 1.5 > averageLiftPosition() && opMode.opModeIsActive()) {
 
             if(top && averageLiftPosition() > MAXHEIGHT * encoderLevelCount)
             {

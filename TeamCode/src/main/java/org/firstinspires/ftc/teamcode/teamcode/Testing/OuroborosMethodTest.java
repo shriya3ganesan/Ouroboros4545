@@ -24,16 +24,17 @@ public class OuroborosMethodTest extends LinearOpMode {
         drive.initDriveTrain(this);
         ArrayList<Point> points = new ArrayList<>();
         points.add(new Point(0, 0));
-        points.add(new Point(10, 5));
-        points.add(new Point(30, 5.5));
+        points.add(new Point(5, 5));
+        points.add(new Point(0, 0));
         ArrayList<Motor_Power_Spline> m = CubicSpline.getMotor_power_splines(points);
+
         waitForStart();
 
         for(Motor_Power_Spline motor : m)
         {
             drive.leftTank(motor.getLeftPower());
             drive.rightTank(motor.getRightPower());
-            wait(100);
+            sleep(10);
         }
 
 

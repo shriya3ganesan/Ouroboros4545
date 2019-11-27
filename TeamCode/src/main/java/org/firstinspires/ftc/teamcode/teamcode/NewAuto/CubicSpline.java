@@ -20,7 +20,9 @@ public class CubicSpline {
 
     public static void main(String[] args) {
         CubicSpline s = new CubicSpline();
-        s.SplineOut(0, 0, 1, .5 , 3, .5);
+        s.SplineOut(0, 0,
+                    5,  5,
+                    10, 0);
     }
 
     public static ArrayList<Motor_Power_Spline> getMotor_power_splines(ArrayList<Point> p) {
@@ -71,21 +73,14 @@ public class CubicSpline {
 
         ArrayList<Point> splinePoints = new ArrayList<>();
 
+
         for(Function f : functions)
         {
-            for(double t = f.startT + .1 ; t  < f.endT; t += .1)
+            double deltax = (f.endT - f.startT) / 500;
+            for(double t = f.startT + deltax ; t  < f.endT; t += deltax)
             {
 
-                der = f.getDerY(t);
-                secondDer = f.getSecondDerY(t);
-
-
-
-
-                splinePoints.add(new Point(t, f.getFuncX(t), f.getFuncY(t), der, secondDer, f.getDerX(t),
-                        f.getDerY(t), f.getSecondDerX(t), f.getSecondDerY(t)));
-
-
+                splinePoints.add(new Point(t, f.getFuncY(t), f.getDerY(t), f.getSecondDerY(t), deltax));
             }
         }
         double av = 0;
@@ -95,18 +90,29 @@ public class CubicSpline {
         for(Point points : splinePoints)
         {
 
-            av = Motor_Power_Spline.aungular_velocity(points.getdY(), points.getSdY());
-            leftpower = Motor_Power_Spline.setLeftPower(av);
-            rightpower = Motor_Power_Spline.setRightPower(av);
+            av = Motor_Power_Spline.aungular_velocity(points.getDerivative(), points.getSecondDerivative());
+            leftpower = Math.abs(Motor_Power_Spline.setLeftPower(av));
+            rightpower = Math.abs(Motor_Power_Spline.setRightPower(av));
 
             //Normalize motor powers
 
-            d = Math.abs(leftpower) + Math.abs(rightpower);
-            leftpower = Math.abs(leftpower) / d;
-            rightpower = Math.abs(rightpower) / d;
+            double max = 0;
+            if(rightpower > 1 || leftpower > 1)
+            {
+                if(rightpower > leftpower)
+                {
+                    max = rightpower;
+                }
+                else
+                {
+                    max = leftpower;
+                }
+                rightpower = rightpower / max;
+                leftpower = leftpower / max;
+            }
 
 
-            motor_power_splines.add(new Motor_Power_Spline(leftpower, rightpower));
+            motor_power_splines.add(new Motor_Power_Spline(leftpower, rightpower, points.getDeltax()));
         }
 
         for(int i = 0; i < motor_power_splines.size(); i++)

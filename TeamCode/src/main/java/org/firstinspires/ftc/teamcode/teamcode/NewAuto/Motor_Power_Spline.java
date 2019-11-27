@@ -5,12 +5,19 @@ public class Motor_Power_Spline {
     double rightPower;
     public static double noLoadSpeed = 31.4 ; // Max Angular Velocity in radians/second for 20 : 1 motor
     public static double stallTorque = 2.1; // Max Torque in Newton Meters for 20 : 1 motor
-    public static double robotlength = 17.5;
+    public static double robotlength = 16 / 2;
+    double deltax;
+    static int i = 0;
 
 
     @Override
     public String toString() {
-        return "Left Motor : " + leftPower + "    Right Power : " + rightPower;
+        i++;
+        return i + "  Left Motor : " + leftPower + "    Right Power : " + rightPower + "   " + deltax;
+    }
+
+    public double getDeltax() {
+        return deltax;
     }
 
     public double getLeftPower() {
@@ -42,9 +49,10 @@ public class Motor_Power_Spline {
         //return rightVelocity;
     }
 
-    public Motor_Power_Spline(double leftPower, double rightPower) {
-        this.leftPower = leftPower;
-        this.rightPower = rightPower;
+    public Motor_Power_Spline(double leftPower, double rightPower, double deltax) {
+        this.leftPower = Math.round(leftPower * 1000.0) / 1000.0;
+        this.rightPower = Math.round(rightPower * 1000.0) / 1000.0;
+        this.deltax = deltax;
     }
 }
 
