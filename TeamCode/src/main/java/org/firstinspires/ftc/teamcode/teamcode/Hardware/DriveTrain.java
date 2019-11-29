@@ -159,7 +159,7 @@ public class DriveTrain {
             fl.setPower(speed);
             fr.setPower(-speed);
             bl.setPower(speed);
-            br.setPower(speed);
+            br.setPower(-speed);
         }
     }
 
@@ -290,11 +290,17 @@ public class DriveTrain {
         resetEncoders();
 
         double averageStrafe = 0.0;
+        double speed = power * .6;
 
-        setStrafePower(power);
+
         while(Math.abs(averageStrafe) < target * inchCounts && runtime.seconds() < timeout && opMode.opModeIsActive())
         {
+           if(Math.abs(averageStrafe) < (((target * inchCounts) / 2) + 15) &&
+                    Math.abs(averageStrafe) > (((target * inchCounts) / 2) - 15)) {
+                gyroTurnStraight(opMode, 1000);
+            }
 
+            setStrafePower(speed);
             // strafeEqualizer();
             averageStrafe = getStrafeEncoderAverage(power);
 
@@ -302,17 +308,45 @@ public class DriveTrain {
             opMode.telemetry.addData("Encoder ", averageStrafe);
             opMode.telemetry.update();
 
+            if (Math.abs(speed) < Math.abs(power)){
+                speed = speed * 1.05;
+            }
+
         }
 
+        gyroTurnStraight(opMode, 1000);
         snowWhite();
     }
 
     public void setStrafePower(double power)
     {
-        fr.setPower(-power);
-        br.setPower(power);
-        fl.setPower(power);
-        bl.setPower(-power);
+        runtime.reset();
+        if(power < 0) {
+            if (runtime.seconds() < 1) {
+                fr.setPower(-power);
+                br.setPower(power * .87);
+                fl.setPower(power);
+                bl.setPower(-power);
+            } else {
+                fr.setPower(-power);
+                br.setPower(power);
+                fl.setPower(power);
+                bl.setPower(-power);
+            }
+        }
+        else {
+            if (runtime.seconds() < 1) {
+                fr.setPower(-power);
+                br.setPower(power );
+                fl.setPower(power);
+                bl.setPower(-power);
+            } else {
+                fr.setPower(-power);
+                br.setPower(power);
+                fl.setPower(power * .97);
+                bl.setPower(-power);
+            }
+        }
     }
 
     private double getStrafeEncoderAverage(double direction) {
@@ -455,7 +489,7 @@ public class DriveTrain {
 
         }
         while (opMode.opModeIsActive() && runtime.seconds() < timeoutS &&
-                (Math.abs(newLeftTarget - getEncoderAverage())) > 5 );
+                (Math.abs(newLeftTarget) - Math.abs(getEncoderAverage())) > 5 );
 
 
 /*            opMode.telemetry.addData("Targets: ", "fl %7d : fr %7d : bl %7d : br %7d",
@@ -466,7 +500,7 @@ public class DriveTrain {
             opMode.telemetry.update();*/
 
         snowWhite();
-        opMode.idle();
+
 
         //opMode.sleep(50);
     }
@@ -477,7 +511,7 @@ public class DriveTrain {
             gyre -= 90;
             quadrant++;
         }
-              // ┌∩┐(◣_◢)┌∩┐
+        // ┌∩┐(◣_◢)┌∩┐
         primeSin = (Math.sin(gyre / 2) * 2);
         alpha = Math.acos(primeSin);
         bOffset = primeSin * Math.cos(alpha);
@@ -772,23 +806,36 @@ public class DriveTrain {
 
         snowWhite();
     }
-    public void gyroTurn(LinearOpMode opMode, double goal, boolean isRight, double timeOutMS) {
+    public void gyroTurnStraight(LinearOpMode opMode, double timeOutMS) {
 
+        double goal = 0;
+        boolean isRight;
         runtime.reset();
-        //sensors.angles = sensors.gyro.getAngularOrientation();
+        do  {
 
-        if (goal - sensors.getGyroYaw() <= 180)
-            isRight = true;
-        else if (goal - sensors.getGyroYaw() > 180)
-            isRight = false;
+            if (sensors.getGyroYaw() > 0 && sensors.getGyroYaw() < 180) {
+                goal = 0;
+            }
+            else {
+                goal = 360;
+            }
 
-        while (opMode.opModeIsActive() && runtime.milliseconds() <= timeOutMS && Math.abs(goal - sensors.getGyroYaw()) > 5 ) {
+            opMode.telemetry.addData("Goal", goal);
+            opMode.telemetry.addData("Current Heading", sensors.getGyroYaw());
+            opMode.telemetry.update();
+            if (sensors.getGyroYaw() < goal) {
+                turn(.2, false);
+            }
+            else {
+                turn(.2, true);
+            }
 
-            //  sensors.angles = sensors.gyro.getAngularOrientation();
-            turn(.25, isRight);
 
-        }
+        } while (opMode.opModeIsActive() && Math.abs(goal - sensors.getGyroYaw()) > 2 && runtime.milliseconds() < timeOutMS);
+
+        snowWhite();
     }
+
 
 
     public void align()
@@ -809,7 +856,6 @@ public class DriveTrain {
                 br.setPower(.25);
                 fr.setPower(.25);
             }
-            snowWhite();
         }
     }
 

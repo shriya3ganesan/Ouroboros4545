@@ -11,10 +11,9 @@ import org.firstinspires.ftc.teamcode.teamcode.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Sensors;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.VisionWebcam;
-import org.firstinspires.ftc.teamcode.teamcode.Hardware.ZeroMap;
 
-@Autonomous(name ="Troll Auto Square", group="Auto Basic")
-public class AutoTrollSquare extends LinearOpMode {
+@Autonomous(name ="Strafe Left", group="Auto Basic")
+public class StrafeLeft extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
     private double driveSpeed = 0.6;
