@@ -10,8 +10,8 @@ public class CubicSpline {
     public static void main(String[] args) {
         CubicSpline s = new CubicSpline();
         s.SplineOut(0, 0,
-                    10,  10,
-                    20, 0);
+                    5,  5,
+                    30, 5.5);
     }
 
     public void SplineOut(double t1, double y1, double t2, double y2, double t3, double y3)
@@ -74,7 +74,7 @@ public class CubicSpline {
                 }
             }
 
-            s.add(new Motor_Power_Spline(leftp, rightp, p.getDeltat()));
+            s.add(new Motor_Power_Spline(leftp, rightp, p.getDeltat(),p.getArcS()));
 
         }
 
@@ -95,24 +95,25 @@ public class CubicSpline {
         double arclength = spline1.getArcLength() + spline2.getArcLength();
 
         System.out.println(arclength);
-        double delta_arclength = arclength / 501.0;
+        double delta_arclength = arclength / 100.0;
 
         double t = 0;
-        for(Function f : functions)
+        double delta_t = delta_arclength / Math.sqrt(1 + Math.pow(spline1.getFuncY(functions[0].getStartT()) ,2));
+
+        int i = 0;
+        for(double s = 0 + delta_arclength; s < arclength;  s += delta_arclength)
         {
-            double delta_t = delta_arclength / Math.sqrt(1 + Math.pow(spline1.getFuncY(f.getStartT()) ,2));
-
-            //change from time parameter to arc length paraemter
-            for(double s = 0 + delta_arclength; s  < arclength; s += delta_arclength)
+            Function f = functions[i];
+            if(s > f.getArcLength() && i < 1)
             {
-
-                t += delta_t;
-
-                delta_t = delta_arclength / Math.sqrt(1 + Math.pow(spline1.getDerY(t) ,2));
-
-                splinePoints.add(new Point(t, f.getFuncY(t), f.getDerY(t), f.getSecondDerY(t), delta_t));
+                i++;
             }
+
+            t += delta_t;
+            delta_t = delta_arclength / Math.sqrt(1 + Math.pow(spline1.getDerY(t) ,2));
+            splinePoints.add(new Point(t, f.getFuncY(t), f.getDerY(t), f.getSecondDerY(t), delta_t, delta_arclength));
         }
+
         return splinePoints;
     }
 
