@@ -22,22 +22,16 @@ public class OuroborosMethodTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         drive.initDriveTrain(this);
+
         ArrayList<Point> points = new ArrayList<>();
         points.add(new Point(0, 0));
-        points.add(new Point(5, 5));
-        points.add(new Point(0, 0));
-        ArrayList<Motor_Power_Spline> m = CubicSpline.getMotor_power_splines(points);
+        points.add(new Point(10, 10));
+        points.add(new Point(20, 0));
 
         waitForStart();
 
-        for(Motor_Power_Spline motor : m)
-        {
-            drive.leftTank(motor.getLeftPower());
-            drive.rightTank(motor.getRightPower());
-            sleep(10);
-        }
 
-
+        drive.splineMove(this, points, 15, 1);
 
         drive.snowWhite();
 
