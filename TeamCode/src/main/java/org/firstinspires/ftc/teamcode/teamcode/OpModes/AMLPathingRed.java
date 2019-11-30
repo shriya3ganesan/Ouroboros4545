@@ -63,7 +63,7 @@ public class AMLPathingRed extends LinearOpMode {
         drive.initDriveTrain(this);
         intake.initIntakeAuto(this);
         outtake.initOuttakeAuto(this);
-       // vuf.initVision(this);
+        vuf.initVision(this);
 
         if (robotWidth >= robotLength) {
             greatLength = robotWidth;
@@ -77,13 +77,13 @@ public class AMLPathingRed extends LinearOpMode {
 
 
         waitForStart();
-       /* if(vuf.senseRed(this) == "left")
+        if(vuf.senseRed(this) == "left")
             offset = -10;
         else if(vuf.senseRed(this) == "right")
             offset = 10;
         else
             offset = 0;
-*/
+
         //lift up
         outtake.raiseLiftAuto(this);
 
@@ -145,7 +145,7 @@ public class AMLPathingRed extends LinearOpMode {
         outtake.lowerLiftAuto(this);
 
         //strafe to stone 2
-        drive.strafeMove(this, 100 - offset, 10, .75);
+        drive.strafeMove(this, 100 - offset, 10, -.75);
 
         //lift up
         outtake.raiseLiftAuto(this);
@@ -168,7 +168,7 @@ public class AMLPathingRed extends LinearOpMode {
         //tighten
         outtake.rightVex.setPower(-.5);
         outtake.leftVex.setPower(.5);
-        sleep(300);
+        sleep(400);
         outtake.leftVex.setPower(0);
         outtake.rightVex.setPower(0);
 
@@ -176,7 +176,7 @@ public class AMLPathingRed extends LinearOpMode {
         drive.encoderDrive(this, .7, 10, 10, 5);
 
         //strafe across bridge
-        drive.strafeMove(this, 100 - offset, 10, -1);
+        drive.strafeMove(this, 105 - offset, 10, .7);
 
         //raise lift
         outtake.raiseLiftAuto(this);
@@ -188,7 +188,7 @@ public class AMLPathingRed extends LinearOpMode {
         outtake.lowerLiftAuto(this);
 
         //park
-        drive.strafeMove(this, 20 - offset, 10, 1);
+        drive.strafeMove(this, 20 - offset, 10, -1);
 
 
     }
