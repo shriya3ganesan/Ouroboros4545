@@ -29,7 +29,7 @@ public class FoundationAutoRed extends LinearOpMode{
         waitForStart();
 
        // sleep(5000);
-        out.raiseLiftAuto(this);
+        /*out.raiseLiftAuto(this);
         drive.encoderDrive(this, .4, -10, -10, 4);
         drive.strafeMove(this, 20, 5, .6);
         drive.encoderDrive(this, .4, -60, -60, 4);
@@ -45,6 +45,8 @@ public class FoundationAutoRed extends LinearOpMode{
         drive.strafeMove(this, 70, 5, -.7);
         out.lowerLiftAuto(this);
         drive.strafeMove(this, 40 , 5, -.7);
+
+*/
 
         drive.snowWhite();
     }

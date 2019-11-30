@@ -97,7 +97,7 @@ public class AMLPathingBlue extends LinearOpMode {
         outtake.leftVex.setPower(0);
         outtake.rightVex.setPower(0);
 
-        drive.encoderDrive(this, -.7, -10, -10, 5);
+        /*drive.encoderDrive(this, -.7, -10, -10, 5);
 
 
         if(offset == -20) {

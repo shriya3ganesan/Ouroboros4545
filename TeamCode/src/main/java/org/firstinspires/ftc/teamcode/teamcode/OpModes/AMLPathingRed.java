@@ -107,7 +107,7 @@ public class AMLPathingRed extends LinearOpMode {
        // drive.strafeMove(this, offset, 5, .7);
 
         //drive to block
-        drive.encoderDrive(this, -.7, -50.5, -50.5, 5);
+        /*drive.encoderDrive(this, -.7, -50.5, -50.5, 5);
         //sleep(1000);
 
         //lift down

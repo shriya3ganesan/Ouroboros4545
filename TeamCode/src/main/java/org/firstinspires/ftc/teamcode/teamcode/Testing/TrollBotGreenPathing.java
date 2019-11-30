@@ -27,7 +27,7 @@ public class TrollBotGreenPathing extends LinearOpMode {
         //drive.encoderDrive(this,.7, 24, 24, 3);
         switch (1) {
             case 1:
-                drive.encoderDrive(this, .7, 24, 24, 3);
+                /*drive.encoderDrive(this, .7, 24, 24, 3);
 
                 drive.encoderDrive(this, .6, -24, -24,3);
 
@@ -68,11 +68,14 @@ public class TrollBotGreenPathing extends LinearOpMode {
                 break;
         }
 
+                 */
 
-        sleep(1000);
 
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
+                sleep(1000);
+
+                telemetry.addData("Path", "Complete");
+                telemetry.update();
+        }
+
     }
-
 }
