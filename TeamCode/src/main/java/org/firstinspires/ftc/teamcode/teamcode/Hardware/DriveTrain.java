@@ -933,20 +933,30 @@ public class DriveTrain {
     public double average (double first, double second) { return (first + second) / 2; }
 
     public double getFlux (DcMotor motor) {
+        runtime.reset();
 
-        return
+        double currentEncoderTix = (motor.getCurrentPosition());
+
+        double newEncoderTix = (motor.getCurrentPosition());
+        double encoderTikChange = -(newEncoderTix - currentEncoderTix);
+        double storedRuntime = runtime.seconds();
+
+        double encoderVelocity = ((encoderTikChange / 1800)
+                * (4 * Math.PI)) / storedRuntime;
+        double encoderInches = encoderVelocity * storedRuntime;
+        return encoderVelocity;
     }
 
     public double getRadiaxVertical() {
-        return average(average(fr.getPower(), bl.getPower()),
-                average(fl.getPower(), br.getPower()));
+        return average(average(getFlux(fr), getFlux(bl)),
+                average(getFlux(fl), getFlux(br)));
     }
 
     public double getRadiaxHorizontal () {
-        double frSpeed = fr.getPower() - getRadiaxVertical();
-        double flSpeed = -(fl.getPower() - getRadiaxVertical());
-        double blSpeed = bl.getPower() - getRadiaxVertical();
-        double brSpeed = -(br.getPower() - getRadiaxVertical());
+        double frSpeed = getFlux(fr) - getRadiaxVertical();
+        double flSpeed = -(getFlux(fl) - getRadiaxVertical());
+        double blSpeed = getFlux(bl) - getRadiaxVertical();
+        double brSpeed = -(getFlux(br) - getRadiaxVertical());
         return average(average(brSpeed, frSpeed), average(flSpeed, blSpeed));
     }
 

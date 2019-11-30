@@ -471,7 +471,7 @@ public class Outtake {
         leftVex.setPower(0);
     }
     //  opens up the output basket using the Servos
-    public void openBasket(OpMode opMode)
+    /*public void openBasket(OpMode opMode)
     {
         // pushes front servo in while as rotating CRServos to open basket
             blockCount++;
@@ -504,6 +504,8 @@ public class Outtake {
             if(pushBlock.getPosition() != .6) pushBlock.setPosition(.6);
             return;
     }
+
+     */
 
     //  resets all variables and sets lift back to initial position
     public void resetOuttake(OpMode opMode)
