@@ -46,6 +46,10 @@ public class TeleOpMecanum extends OpMode {
     double left_stick_y;
     double right_stick_y;
 
+    boolean toggled;
+    boolean top;
+    boolean bottom;
+
     double flTestPower = 0;
     double frTestPower = 0;
     double blTestPower = 0;
@@ -222,9 +226,37 @@ public class TeleOpMecanum extends OpMode {
 
         intake.Intake_TeleOp();
 
-        outtake.outTake_TeleOp(this);
+        //outtake.outTake_TeleOp(this);
 
         telemetry.update();
+
+        if(!toggled && gamepad2.y)
+        {
+            toggled = true;
+
+            time.reset();
+            while(time.milliseconds() < 300)
+            {
+
+            }
+
+            //Hook Down
+            outtake.hookLeft.setPosition(1);
+            outtake.hookRight.setPosition(0);
+        }
+        else if(toggled && gamepad2.y)
+        {
+            toggled = false;
+
+
+            time.reset();
+            while (time.milliseconds() < 300)
+            {
+
+            }
+            outtake.hookLeft.setPosition(0);
+            outtake.hookRight.setPosition(1);
+        }
 
         if(Math.abs(gamepad2.left_trigger) > .5)
         {
@@ -234,6 +266,8 @@ public class TeleOpMecanum extends OpMode {
         {
             outtake.pushBlock.setPosition(1);
         }
+
+
 
         right_stick_y = gamepad2.right_stick_y;
 
@@ -245,7 +279,48 @@ public class TeleOpMecanum extends OpMode {
             outtake.rightVex.setPower(0);
             outtake.leftVex.setPower(0);
         }
+
+        left_stick_y = gamepad2.left_stick_y;
+
+
+        if (outtake.averageLiftPosition() <= 0) {
+            bottom = true;
+            outtake.resetLiftEncoders();
         }
+        else if (outtake.averageLiftPosition() >= outtake.MAXHEIGHT * outtake.encoderLevelCount) {
+            top = true;
+        }
+        else
+        {
+            top = false;
+            bottom = false;
+        }
+
+        if(gamepad2.b)
+        {
+            time.reset();
+            while(time.milliseconds() < 100){}
+            top = false;
+            bottom = false;
+        }
+
+        if (top && -left_stick_y > 0) {
+            outtake.liftRight.setPower(0);
+            outtake.liftLeft.setPower(0);
+        }
+        else if (bottom && -left_stick_y < 0) {
+            outtake.liftRight.setPower(0);
+            outtake.liftLeft.setPower(0);
+        }else if (Math.abs(left_stick_y) > .05) {
+            outtake.liftRight.setPower(-left_stick_y);
+            outtake.liftLeft.setPower(-left_stick_y);
+        }
+        else {
+            outtake.liftRight.setPower(0);
+            outtake.liftLeft.setPower(0);
+        }
+
+    }
 
     @Override
     public void stop()

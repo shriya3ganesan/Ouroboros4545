@@ -12,9 +12,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Outtake {
 
-    private static final double MAXLEVEL = 14;
-    private static final double MAXHEIGHT = 36; // Inches
-    private static final double DISTANCE_TO_BUILD_ZONE = 1; // what ever distance is from foundation to build zone
+    public static final double MAXLEVEL = 14;
+    public static final double MAXHEIGHT = 36; // Inches
+    public static final double DISTANCE_TO_BUILD_ZONE = 1; // what ever distance is from foundation to build zone
     public Servo pushBlock;
     public Servo hookRight;
     public Servo hookLeft;
@@ -41,7 +41,7 @@ public class Outtake {
     static final double DISTANCE_BETWEEN_BLOCKS = 4.0; // In Inches
     static final double HORIZONTALEXTENSIONTIME = 5000 ; // Time it takes for lift to extend out = length of lift / speed of motors
     static final double INITIAL_HORIZONTALEXTENSIONTIME = 4500;
-    static final double encoderLevelCount = (360 / (Math.PI * .5));
+    public static final double encoderLevelCount = (360 / (Math.PI * .5));
 
     //262 encoder ticks per inch
     static double LIFTPOWER = 1;
@@ -280,7 +280,7 @@ public class Outtake {
         return (int) (level * 2 + blockCount);
     }
 
-    private void resetLiftEncoders() {
+    public void resetLiftEncoders() {
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -564,10 +564,6 @@ public class Outtake {
         top = false;
         bottom = true;
 
-
-        if(pushBlock.getPosition() != .6) pushBlock.setPosition(.6);
-        //resetLiftEncoders();
-        return;
 
     }
 

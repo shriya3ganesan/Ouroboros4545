@@ -31,14 +31,18 @@ public class AutoTrollSquare extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         drive.initDriveTrain(this);
+        outtake.initOuttake(this);
         sensors.initSensors(this);
         telemetry.addData("current", sensors.getGyroYaw());
         telemetry.update();
 
         waitForStart();
 
+        outtake.pushBlock.setPosition(1);
+        sleep(1000);
+        outtake.pushBlock.setPosition(.3);
 
-        drive.strafeMove(this, 72, 4, .7);
+
 
     }
 
