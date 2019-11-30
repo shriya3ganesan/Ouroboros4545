@@ -1035,6 +1035,34 @@ public class DriveTrain {
         return vector;
     }
 
+    public double getNirIsBadFlux () {
+
+        double currentEncoderTix = (br.getCurrentPosition() +
+                bl.getCurrentPosition() +
+                fl.getCurrentPosition() +
+                fr.getCurrentPosition());
+
+        double newEncoderTix = (br.getCurrentPosition() +
+                bl.getCurrentPosition() +
+                fl.getCurrentPosition() +
+                fr.getCurrentPosition());
+        double encoderTikChange = -(newEncoderTix - currentEncoderTix);
+        double storedRuntime = runtime.seconds();
+
+        double encoderVelocity = ((encoderTikChange / 1800)
+                * (4 * Math.PI)) / storedRuntime;
+
+        return encoderVelocity * storedRuntime;
+    }
+
+    public double getVectorX () {
+        return Math.sin(getVector()) * getNirIsBadFlux();
+    }
+
+    public double getVectorY () {
+        return Math.cos(getVector()) * getNirIsBadFlux();
+    }
+
     public double getBaseRadiax (double x1, double y1) {
         return Math.atan(x1/y1);
     }
