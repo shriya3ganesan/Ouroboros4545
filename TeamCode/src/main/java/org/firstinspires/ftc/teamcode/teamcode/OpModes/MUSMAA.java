@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.teamcode.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -10,8 +11,9 @@ import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Sensors;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.ZeroMap;
 
+@Disabled
 @Autonomous(name = "MUSMAA", group= "Phase Infinity")
-public class MUSMAA extends LinearOpMode {
+public class MUSMAA{
 
     private ElapsedTime runtime = new ElapsedTime();
     private ElapsedTime vortex = new ElapsedTime();
@@ -30,7 +32,7 @@ public class MUSMAA extends LinearOpMode {
     Outtake outtake = new Outtake();
     ZeroMap vuf = new ZeroMap();
 
-    public double[] miasmat (double[] dubSet) {
+    /*public double[] miasmat (double[] dubSet) {
         if (vortex.seconds() >= 10) {
             vortex.reset();
             dubSet[angleCount] = 1;
@@ -64,4 +66,6 @@ public class MUSMAA extends LinearOpMode {
             }
         }
     }
+
+     */
 }

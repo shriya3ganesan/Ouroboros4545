@@ -30,6 +30,9 @@ public class TCOM extends LinearOpMode {
     double sky;
     double intDown;
 
+    double minimumConfidence = 1;
+    double maximumConfidence = 0;
+
     private VuforiaLocalizer vuforia;
 
     private TFObjectDetector tfod;
@@ -60,15 +63,27 @@ public class TCOM extends LinearOpMode {
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
                       telemetry.addData("# Object Detected", updatedRecognitions.size());
+                      telemetry.addData("Minimum Confidence",
+                                minimumConfidence);
+                      telemetry.addData("Maximum Confidence",
+                                maximumConfidence);
                       int i = 0;
                       for (Recognition recognition : updatedRecognitions) {
                           height = recognition.getImageHeight();
+                          //height = 448
                           width = recognition.getImageWidth();
+                          //width = 800
                           intLeft = recognition.getLeft();
                           sky = recognition.getTop();
                           intDown = recognition.getBottom();
                           intRight = recognition.getRight();
                           telemetry.addData(String.format("Label (%d)", i), recognition.getLabel());
+                          telemetry.addData(String.format("Confidence (%d)", i),
+                                  recognition.getConfidence());
+                          if (recognition.getConfidence() < minimumConfidence)
+                              minimumConfidence = recognition.getConfidence();
+                          if (recognition.getConfidence() > maximumConfidence)
+                              maximumConfidence = recognition.getConfidence();
                           telemetry.addData(String.format("Down Bound (%d)", i), intDown);
                           telemetry.addData(String.format("Sky Bound (%d)", i), sky);
                           telemetry.addData(String.format("Left Bound (%d)", i), intLeft);
@@ -123,7 +138,7 @@ public class TCOM extends LinearOpMode {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
             "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-       tfodParameters.minimumConfidence = 0.6;
+       tfodParameters.minimumConfidence = 0.7;
        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }

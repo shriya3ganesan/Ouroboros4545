@@ -5,15 +5,15 @@ public class Function {
 
     double arclength = 0;
 
-    double aX = 0;
-    double bX = 0;
-    double cX = 0;
-    double dX = 0;
+    public double aX = 0;
+    public double bX = 0;
+    public double cX = 0;
+    public double dX = 0;
 
-    double aY = 0;
-    double bY = 0;
-    double cY = 0;
-    double dY = 0;
+    public double aY = 0;
+    public double bY = 0;
+    public double cY = 0;
+    public double dY = 0;
 
     double startT;
     double endT;
