@@ -143,7 +143,7 @@ public class Outtake {
     public void outTake_TeleOp(OpMode opMode)
     {
 
-        //horizontalLiftTele();
+        horizontalLiftTele();
         raiseLiftMacro(opMode);
         hookToggle();
         lift(opMode);

@@ -245,7 +245,7 @@ public class TeleOpMecanum extends OpMode {
             outtake.rightVex.setPower(0);
             outtake.leftVex.setPower(0);
         }
-        }
+    }
 
     @Override
     public void stop()

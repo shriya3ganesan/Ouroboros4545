@@ -24,14 +24,14 @@ public class OuroborosMethodTest extends LinearOpMode {
         drive.initDriveTrain(this);
 
         ArrayList<Point> points = new ArrayList<>();
-        points.add(new Point(0, 0));
-        points.add(new Point(10, 10));
-        points.add(new Point(20, 0));
+        points.add(new Point(0, 50));
+        points.add(new Point(100, 0));
+        points.add(new Point(300, 0));
 
         waitForStart();
 
 
-        drive.splineMove(this, points, 15, 1);
+        drive.splineMove(this, points, 15, 10);
 
         drive.snowWhite();
 

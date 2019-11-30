@@ -57,30 +57,12 @@ public class Playground extends LinearOpMode {
 
         waitForStart();
 
-
-
-        drive.turnPID(this, 45, true, .6 / 45, .1/45,
-        0.03 / 90, 5);
+        outtake.pushBlock.setPosition(.3);
 
         sleep(500);
 
-        drive.turnPID(this, 90, true, .6 / 45, .1/45,
-                0.03 / 45, 5);
+        outtake.pushBlock.setPosition(1);
 
-        //drive.RDXVector(45, 24, 3000);
-        //zero.zeroBrowse(this);
-
-
-        //drive.shaftChange(35, 5000, 48,
-                //0.6);
-
-        //!
-        //drive.strafeMove(this, 24, 5, 0.6);
-
-        //!!!
-        //drive.turnPID(this, 90, true, 0.6/90, 0.4, 0.03, 3000);
-        //drive.zeroRun(this);
-        //drive.postChange(this, true);
     }
 
 }
