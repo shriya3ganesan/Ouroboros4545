@@ -65,7 +65,7 @@ public class AMLPathingBlue extends LinearOpMode {
         drive.initDriveTrain(this);
         intake.initIntakeAuto(this);
         outtake.initOuttakeAuto(this);
-       // vuf.initVision(this);
+        vuf.initVision(this);
 
         if (robotWidth >= robotLength) {
             greatLength = robotWidth;
@@ -79,14 +79,12 @@ public class AMLPathingBlue extends LinearOpMode {
 
 
         waitForStart();
-        offset = 10;
-       /* if(vuf.senseBlue(this) == "left")
-            offset = 20;
+        if(vuf.senseBlue(this) == "left")
+            offset = 10;
         else if(vuf.senseBlue(this) == "right")
-            offset = -20;
+            offset = -10;
         else
             offset = 0;
-*/
 
         //lift up
         outtake.raiseLiftAuto(this);
@@ -107,7 +105,6 @@ public class AMLPathingBlue extends LinearOpMode {
         else if(offset == 10) {
             drive.strafeMove(this, 10, 5, -.5);
         }
-
 
         //drive to block
         drive.encoderDrive(this, -.5, -17, -17, 5);
