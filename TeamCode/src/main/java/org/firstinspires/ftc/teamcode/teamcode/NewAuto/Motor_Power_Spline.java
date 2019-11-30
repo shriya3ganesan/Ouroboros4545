@@ -16,7 +16,7 @@ public class Motor_Power_Spline {
     public String toString() {
         i++;
         arc += deltaS;
-        return i + "  Left Motor : " + leftPower + "    Right Power : " + rightPower + "   " + arc;
+        return i + "  Left Motor : " + leftPower + "    Right Power : " + rightPower + "    Arc Length :     " + arc + "     T :     " + deltaT;
     }
 
     public double getDeltaT() {

@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.teamcode.NewAuto;
 
-import java.lang.reflect.Array;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class CubicSpline {
@@ -9,9 +7,9 @@ public class CubicSpline {
 
     public static void main(String[] args) {
         CubicSpline s = new CubicSpline();
-        s.SplineOut(0, 0,
-                    5,  5,
-                    30, 5.5);
+        s.SplineOut(0, 50,
+                    100,  0,
+                    300, 0);
     }
 
     public void SplineOut(double t1, double y1, double t2, double y2, double t3, double y3)
@@ -32,8 +30,12 @@ public class CubicSpline {
 
         System.out.println(f[0] + "\n" + f[1]);
 
-        splinePointsToMotorPoints(SplineToPoints(f));
+        ArrayList<Motor_Power_Spline> s = splinePointsToMotorPoints(SplineToPoints(f));
 
+        for(Motor_Power_Spline p : s)
+        {
+            System.out.println(p);
+        }
 
     }
 
@@ -78,10 +80,7 @@ public class CubicSpline {
 
         }
 
-        for(Motor_Power_Spline p : s)
-        {
-            System.out.println(p);
-        }
+
         return s;
 
 

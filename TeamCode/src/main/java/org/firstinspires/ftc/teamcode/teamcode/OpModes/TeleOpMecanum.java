@@ -44,6 +44,7 @@ public class TeleOpMecanum extends OpMode {
     double right_stick_x;
     double left_stick_x;
     double left_stick_y;
+    double right_stick_y;
 
     double flTestPower = 0;
     double frTestPower = 0;
@@ -224,7 +225,27 @@ public class TeleOpMecanum extends OpMode {
         outtake.outTake_TeleOp(this);
 
         telemetry.update();
-    }
+
+        if(Math.abs(gamepad2.left_trigger) > .5)
+        {
+            outtake.pushBlock.setPosition(.3);
+        }
+        else if(Math.abs(gamepad2.right_trigger) > .5)
+        {
+            outtake.pushBlock.setPosition(1);
+        }
+
+        right_stick_y = gamepad2.right_stick_y;
+
+        if (Math.abs(right_stick_y) >= .075) {
+            outtake.rightVex.setPower(-right_stick_y / 2);
+            outtake.leftVex.setPower(right_stick_y / 2);
+        }
+        else {
+            outtake.rightVex.setPower(0);
+            outtake.leftVex.setPower(0);
+        }
+        }
 
     @Override
     public void stop()

@@ -143,7 +143,7 @@ public class Outtake {
     public void outTake_TeleOp(OpMode opMode)
     {
 
-        horizontalLiftTele();
+        //horizontalLiftTele();
         raiseLiftMacro(opMode);
         hookToggle();
         lift(opMode);
@@ -171,14 +171,6 @@ public class Outtake {
             blockCount = 0;
         }
 
-        if(Math.abs(opMode.gamepad2.left_trigger) > .5)
-        {
-            pushBlock.setPosition(.3);
-        }
-        else if(Math.abs(opMode.gamepad2.right_trigger) > .5)
-        {
-            pushBlock.setPosition(1);
-        }
 
         Output_Telemetry();
 
