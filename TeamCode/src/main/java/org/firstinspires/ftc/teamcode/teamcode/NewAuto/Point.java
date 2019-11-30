@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.teamcode.NewAuto;
 
 
 public class Point {
+    double deltaT = 0;
     double x = 0;
     double y = 0;
     double t = 0;
@@ -11,6 +12,11 @@ public class Point {
     double dY = 0;
     double sdX = 0;
     double sdY = 0;
+    double arcS = 0;
+
+    public double getDeltat() {
+        return deltaT;
+    }
 
     public double getdX() {
         return dX;
@@ -39,18 +45,17 @@ public class Point {
         this.y = y;
         this.t = t;
     }
-    public Point(double t, double x, double y, double derivative, double secondDerivative, double dX, double dY, double sdX, double sdY) {
+    public Point(double t, double y, double derivative, double secondDerivative, double deltaT, double s)
+    {
         this.x = x;
         this.y = y;
         this.t = t;
         this.derivative = derivative;
         this.secondDerivative = secondDerivative;
-        this.dX = dX;
-        this.dY = dY;
-        this.sdX = sdX;
-        this.sdY = sdY;
+        this.deltaT = deltaT;
+        this.arcS = s;
     }
-
+    public double getArcS(){return arcS;}
     public double getDerivative() {
         return derivative;
     }

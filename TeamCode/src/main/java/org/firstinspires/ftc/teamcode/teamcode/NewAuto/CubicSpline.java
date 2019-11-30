@@ -1,165 +1,126 @@
 package org.firstinspires.ftc.teamcode.teamcode.NewAuto;
 
-import java.lang.reflect.Array;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class CubicSpline {
 
 
-
     public static void main(String[] args) {
         CubicSpline s = new CubicSpline();
-        s.main();
+        s.SplineOut(0, 50,
+                    100,  0,
+                    300, 0);
     }
 
-    public ArrayList<Motor_Power_Spline> getMotor_power_splines(ArrayList<Point> p) {
-        CubicSpline q = new CubicSpline();
-        ArrayList<Function> functions = new ArrayList<>();
-
-        Function[] temp;
-        ArrayList<Motor_Power_Spline> motor_power_splines = new ArrayList<>();
-
-        int number_of_equations = p.size() - 2;
-
-        ArrayList<Point> inpoints;
-
-
-
-        for(int i = 0; i < number_of_equations; i++)
-        {
-            inpoints = new ArrayList<>();
-            inpoints.add(p.get(i));
-            inpoints.add(p.get(i + 1));
-            inpoints.add(p.get(i + 2));
-
-
-            if(i < 1)
-            {
-                temp = q.makeSpline(inpoints);
-                functions.add(temp[0]);
-                functions.add(temp[1]);
-
-            }
-            else if(i >= 1)
-            {
-                functions.add(q.makeSplineSecond(functions.get(i), inpoints));
-            }
-
-        }
-
-        for(Function f : functions)
-        {
-            System.out.println(f);
-        }
-
-        double leftpower;
-        double rightpower;
-        double secondDer;
-        double der;
-
-
-        ArrayList<Point> splinePoints = new ArrayList<>();
-
-        for(Function f : functions)
-        {
-            for(double t = f.startT + 1 ; t  < f.endT; t += 1)
-            {
-                der = f.getDerY(t) / f.getDerX(t);
-                secondDer = f.getSecondDerY(t) / f.getSecondDerX(t);
-
-                splinePoints.add(new Point(t, f.getFuncX(t), f.getFuncY(t), der, secondDer, f.getDerX(t),
-                        f.getDerY(t), f.getSecondDerX(t), f.getSecondDerY(t)));
-
-
-            }
-        }
-        double av = 0;
-        double avg = 0;
-        DecimalFormat df = new DecimalFormat("0.000");
-        for(Point points : splinePoints)
-        {
-
-            av = Motor_Power_Spline.aungular_velocity(points.getdX(), points.getdY(), points.getSdX(), points.getSdY());
-            leftpower = Motor_Power_Spline.setLeftPower(av);
-            rightpower = Motor_Power_Spline.setRightPower(av);
-
-            //Normalize motor powers
-
-
-            if(leftpower > rightpower)
-            {
-                rightpower = rightpower / leftpower;
-                if(leftpower > 1)
-                {
-                    leftpower = 1;
-                }
-                else
-                {
-                    leftpower = leftpower;
-                }
-            }
-            else if(rightpower > leftpower)
-            {
-                leftpower = leftpower / rightpower;
-                if(rightpower > 1)
-                {
-                    rightpower = 1;
-                }
-                else
-                {
-                    rightpower = rightpower;
-                }
-            }
-            else {
-                if(rightpower > 1)
-                {
-                    rightpower = 1;
-                }
-                if(leftpower > 1)
-                {
-                    leftpower = 1;
-                }
-            }
-
-            leftpower = Math.abs(leftpower);
-            rightpower = Math.abs(rightpower);
-
-            motor_power_splines.add(new Motor_Power_Spline(leftpower, rightpower));
-        }
-
-        for(int i = 0; i < motor_power_splines.size(); i++)
-        {
-            System.out.println(motor_power_splines.get(i));
-        }
-
-        return motor_power_splines;
-    }
-
-    public void main()
+    public void SplineOut(double t1, double y1, double t2, double y2, double t3, double y3)
     {
+        if(t1 == t2 || t2 == t3 || t1 == t3)
+        {
+            System.out.println("ERROR : Incorrect Value Input");
+            return;
+        }
+
         ArrayList<Point> points = new ArrayList<>();
 
-        points.add(new Point(0, 0));
-        points.add(new Point(50, 50));
-        points.add(new Point(75, 100));
+        points.add(new Point(t1, y1));
+        points.add(new Point(t2, y2));
+        points.add(new Point(t3,y3));
 
-        ArrayList<Motor_Power_Spline> motor = getMotor_power_splines(points);
+        Function[] f = makeSpline(points);
+
+        System.out.println(f[0] + "\n" + f[1]);
+
+        ArrayList<Motor_Power_Spline> s = splinePointsToMotorPoints(SplineToPoints(f));
+
+        for(Motor_Power_Spline p : s)
+        {
+            System.out.println(p);
+        }
 
     }
 
+    public ArrayList<Motor_Power_Spline> splinePointsToMotorPoints(ArrayList<Point> splinePoints)
+    {
+        ArrayList<Motor_Power_Spline> s = new ArrayList<>();
+        double rightp;
+        double leftp;
+        for(Point p : splinePoints)
+        {
 
-    public CubicSpline(){
+            leftp = Motor_Power_Spline.LeftPower(p.getDerivative(), p.getSecondDerivative());
+            rightp = Motor_Power_Spline.RightPower(p.getDerivative(), p.getSecondDerivative());
+
+
+            leftp = Math.abs(Math.round(leftp * 1000.0) / 1000.0);
+            rightp = Math.abs(Math.round(rightp * 1000.0) / 1000.0);
+
+            // Normalize Values
+            if(leftp > 1 || rightp > 1)
+            {
+                if(leftp > rightp)
+                {
+                    rightp = rightp / leftp;
+                    leftp = 1;
+
+                }
+                else if(rightp > leftp)
+                {
+                    leftp = leftp / rightp;
+                    rightp = 1;
+
+                }
+                else
+                {
+                    rightp = 1;
+                    leftp = 1;
+                }
+            }
+
+            s.add(new Motor_Power_Spline(leftp, rightp, p.getDeltat(),p.getArcS()));
+
+        }
+
+
+        return s;
+
 
     }
 
+    public ArrayList<Point> SplineToPoints(Function[] functions)
+    {
+        ArrayList<Point> splinePoints = new ArrayList<>();
+        Function spline1 = functions[0];
+        Function spline2 = functions[1];
+        double arclength = spline1.getArcLength() + spline2.getArcLength();
 
+        System.out.println(arclength);
+        double delta_arclength = arclength / 100.0;
 
+        double t = 0;
+        double delta_t = delta_arclength / Math.sqrt(1 + Math.pow(spline1.getFuncY(functions[0].getStartT()) ,2));
 
+        int i = 0;
+        for(double s = 0 + delta_arclength; s < arclength;  s += delta_arclength)
+        {
+            Function f = functions[i];
+            if(s > f.getArcLength() && i < 1)
+            {
+                i++;
+            }
+
+            t += delta_t;
+            delta_t = delta_arclength / Math.sqrt(1 + Math.pow(spline1.getDerY(t) ,2));
+            splinePoints.add(new Point(t, f.getFuncY(t), f.getDerY(t), f.getSecondDerY(t), delta_t, delta_arclength));
+        }
+
+        return splinePoints;
+    }
 
 
     public Function[] makeSpline(ArrayList<Point> points)
     {
+
+
 
         double[][] constraints = new double[16][16];
         double[] solutions = new double[16];
@@ -169,31 +130,11 @@ public class CubicSpline {
         double t3 = points.get(2).getT();
 
 
-        int Xc1 = 1;
-        int Xc2 = 1;
-        int Yc1 = 1;
-        int Yc2 = 1;
-
-        if(points.get(0).getX() < points.get(1).getX()) Xc1 = 1;
-        else if (points.get(0).getX() > points.get(1).getX()) Xc1 = -1;
-
-        if(points.get(1).getX() < points.get(2).getX()) Xc2 = 1;
-        else if (points.get(1).getX() > points.get(2).getX()) Xc2 = -1;
-
-        if(points.get(0).getY() < points.get(1).getY()) Yc1 = 1;
-        else if (points.get(0).getY() > points.get(1).getY()) Yc1 = -1;
-
-        if(points.get(1).getY() < points.get(2).getY()) Yc2 = 1;
-        else if(points.get(1).getY() > points.get(2).getY()) Yc2 = -1;
-        /*
-            1.) Set solutions to constraints
-            2.) Fix constraints matrix
-            3.) Use gaussian elimination to find solutions
-            4.) First 10 rows are X functions, Second set of 10 rows is Y functions
-            5.) Create functions and put them into array and return them
-         */
-
-
+        if(t1 == t2 || t2 == t3 || t1 == t3)
+        {
+            System.out.println("ERROR : Incorrect Value Input");
+            return null;
+        }
         //1.)   Solutions for Constraints
 
         solutions[0] = points.get(0).getX();
@@ -208,7 +149,6 @@ public class CubicSpline {
         solutions[9] = points.get(2).getY();
         solutions[10] = 0;
         solutions[11] = 0;
-
         solutions[12] = 0;
         solutions[13] = 0;
         solutions[14] = 0;
@@ -272,50 +212,29 @@ public class CubicSpline {
 
         //X and Y Optimization Constraints - Ouroboros Method
 
-        double cx1 = Math.sqrt(1 + Math.pow(points.get(0).getX(),2));
-        double cx2 = Math.sqrt(1 + Math.pow(points.get(1).getX(),2));
-        double cx3 = Math.sqrt(1 + Math.pow(points.get(2).getX(),2));
 
-        double cy1 = Math.sqrt(1 + Math.pow(points.get(0).getY(),2));
-        double cy2 = Math.sqrt(1 + Math.pow(points.get(1).getY(),2));
-        double cy3 = Math.sqrt(1 + Math.pow(points.get(2).getY(),2));
+        constraints[12][0]  = 0;
+        constraints[12][1]  = 0;
+        constraints[12][2]  = -2 * (t2 - t1);
+        constraints[12][3]  = -3 * Math.pow(t2 - t1, 2);
+        constraints[12][4]  = 0;
+        constraints[12][5]  = 0;
+        constraints[12][6]  = 2 * (t3 - t2);
+        constraints[12][7]  = 3 * Math.pow(t3 - t2, 2);
 
+        constraints[13][8]  = 0;
+        constraints[13][9]  = 0;
+        constraints[13][10]  = -2 * (t2 - t1);
+        constraints[13][11]  = -3 * Math.pow(t2 - t1, 2);
+        constraints[13][12]  = 0;
+        constraints[13][13]  = 0;
+        constraints[13][14]  = 2 * (t3 - t2);
+        constraints[13][15]  = 3 * Math.pow(t3 - t2, 2);
 
-        /*constraints[12][0] = 0;
-        constraints[12][1] = cx1 - cx2;
-        constraints[12][2] = 2 * cx1 * (t2 - t1);
-        constraints[12][3] = 3 * cx1 * Math.pow(t2 - t1, 2);
-
-        constraints[14][8] = 0;
-        constraints[14][9] = cy2 - cy1;
-        constraints[14][10] = 2 * cy2 * (t2 - t1);
-        constraints[14][11] = 3 * cy2 * Math.pow(t2 - t1, 2);
-
-        constraints[13][4] = 0;
-        constraints[13][5] = cx2 - cx3;
-        constraints[13][6] = 2 * cx2 * (t3 - t2);
-        constraints[13][7] = 3 * cx2 * Math.pow(t3 - t2, 2);
-
-        constraints[15][12] = 0;
-        constraints[15][13] = cy3 - cy2;
-        constraints[15][14] = 2 * cy3 * (t3 - t2);
-        constraints[15][15] = 3 * cy3 * Math.pow(t3 - t2, 2);*/
-
-
-        constraints[12][0] = 0;
-        constraints[12][1] = 1;
-        constraints[12][2] = 2 * (t2 - t1);
-        constraints[12][3] = 3 * Math.pow(t2 - t1, 2);
-
-        constraints[14][8] = 0;
-        constraints[14][9] = 1;
-        constraints[14][10] = 2 * (t2 - t1);
-        constraints[14][11] = 3 * Math.pow(t2 - t1, 2);
-
-        constraints[13][4] = 0;
-        constraints[13][5] = 1;
-        constraints[13][6] = 2 * (t3 - t2);
-        constraints[13][7] = 3 * Math.pow(t3 - t2, 2);
+        constraints[14][4]  =  0;
+        constraints[14][5]  = 1;
+        constraints[14][6] = 2 * (t2 - t1);
+        constraints[14][7] = 3 * Math.pow(t2 - t1, 2);
 
         constraints[15][12] = 0;
         constraints[15][13] = 1;
@@ -344,14 +263,6 @@ public class CubicSpline {
         solvedConstraints = eq.lsolve(constraints, solutions);
 
 
-        for(int i = 0; i < solvedConstraints.length; i++)
-        {
-            if(Math.abs(solvedConstraints[i]) < .000001)
-            {
-                solvedConstraints[i] = 0;
-            }
-        }
-
 
         Function[] funcs = new Function[2];
 
@@ -363,115 +274,4 @@ public class CubicSpline {
         return funcs;
     }
 
-
-    public Function makeSplineSecond(Function f, ArrayList<Point> points)
-    {
-
-        double ax = f.aX;
-        double bx = f.bX;
-        double cx = f.cX;
-        double dx = f.dX;
-        double ay = f.aY;
-        double by = f.bY;
-        double cy = f.cY;
-        double dy = f.dY;
-
-
-
-
-
-        double[][] constraints = new double[8][8];
-        double[] solutions = new double[8];
-
-        double t2 = points.get(1).getT();
-        double t3 = points.get(2).getT();
-
-        int Xc2 = 1;
-        int Yc2 = 1;
-
-        if(points.get(1).getX() < points.get(2).getX()) Xc2 = 1;
-        else if (points.get(1).getX() > points.get(2).getX()) Xc2 = -1;
-
-
-        if(points.get(1).getY() < points.get(2).getY()) Yc2 = 1;
-        else if(points.get(1).getY() > points.get(2).getY()) Yc2 = -1;
-
-        /*
-            1.) Set solutions to constraints
-            2.) Fix constraints matrix
-            3.) Use gaussian elimination to find solutions
-            4.) First 10 rows are X functions, Second set of 10 rows is Y functions
-            5.) Create functions and put them into array and return them
-         */
-
-
-        //1.)   Solutions for Constraints
-
-        solutions[0] = points.get(1).getX();
-        solutions[1] = points.get(2).getX();
-        solutions[2] = f.getDerX(t2);
-        solutions[3] = 0;
-        solutions[4] = points.get(1).getY();
-        solutions[5] = points.get(2).getY();
-        solutions[6] = f.getDerY(t2);
-        solutions[7] = 0;
-
-
-        //2.)   Set Constraints
-
-
-        //X constraints
-
-
-        constraints[0][0] =  1;
-
-        constraints[1][0] =  1;
-        constraints[1][1] = t3 - t2;
-        constraints[1][2] = Math.pow(t3 - t2, 2);
-        constraints[1][3] = Math.pow(t3 - t2, 3);
-
-        constraints[2][1] = 1;
-        constraints[2][2] = 2 * (t2 - t2);
-        constraints[2][3] = 3 * Math.pow((t2 - t2), 2);
-
-        constraints[3][1] = 1 - 1 * Xc2;
-        constraints[3][2] = 2*(t2 - t2) - Xc2 * 2 * (t3 - t2);
-        constraints[3][4] = 3*(t2 - t2) - Xc2 * 3 * Math.pow(t3 - t2, 2);
-
-        constraints[4][4] = 1;
-
-        constraints[5][4] = 1;
-        constraints[5][5] = t3 - t2;
-        constraints[5][6] = Math.pow(t3 - t2, 2);
-        constraints[5][7] = Math.pow(t3 - t2, 3);
-
-        constraints[6][5] = 1;
-        constraints[6][6] = 2 * (t2 - t2);
-        constraints[6][7] = 3 * Math.pow((t2 - t2), 2);
-
-        constraints[7][5] = 1 - 1 * Yc2;
-        constraints[7][6] = 2*(t2 - t2) - Yc2 * 2 * (t3 - t2);
-        constraints[7][7] = 3*(t2 - t2) - Yc2 * 3 * Math.pow(t3 - t2, 2);
-
-
-
-        double[] solvedConstraints = new double[8];
-
-        GaussianElimination eq = new GaussianElimination();
-
-        solvedConstraints = eq.lsolve(constraints, solutions);
-
-
-        for(int i = 0; i < solvedConstraints.length; i++)
-        {
-            if(solvedConstraints[i] < 1E-10)
-            {
-                solvedConstraints[i] = 0;
-            }
-        }
-
-
-        return new Function(solvedConstraints[0], solvedConstraints[1], solvedConstraints[2],
-                solvedConstraints[3], solvedConstraints[4], solvedConstraints[5], solvedConstraints[6], solvedConstraints[7], t2, t3);
-    }
 }

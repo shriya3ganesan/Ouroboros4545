@@ -57,6 +57,7 @@ public class TeleOpMecanum extends OpMode {
     double right_stick_x;
     double left_stick_x;
     double left_stick_y;
+    double right_stick_y;
 
     double flTestPower = 0;
     double frTestPower = 0;
@@ -220,6 +221,33 @@ public class TeleOpMecanum extends OpMode {
             right_stick_x = gamepad1.right_stick_x;
 
 
+            // Normalizing Values
+
+        double max = 0;
+        double lx = Math.abs(left_stick_x);
+        double rx = Math.abs(right_stick_x);
+        double ly = Math.abs(left_stick_y);
+        if(lx > 1 || ly > 1 || rx > 1)
+        {
+            if(ly > lx)
+            {
+                max = ly;
+            }
+            else if(lx > ly)
+            {
+                max = lx;
+            }
+            if(rx > max)
+            {
+                max = rx;
+            }
+
+            right_stick_x = right_stick_x / max;
+            left_stick_y = left_stick_y / max;
+            left_stick_x = left_stick_x / max;
+        }
+
+
 
 
         /*if (gamepad1.x != pastX) {
@@ -347,7 +375,27 @@ public class TeleOpMecanum extends OpMode {
                 * (wheelDiam * Math.PI)) / storedRuntime;
 
         telemetry.update();
-    }
+
+        if(Math.abs(gamepad2.left_trigger) > .5)
+        {
+            outtake.pushBlock.setPosition(.3);
+        }
+        else if(Math.abs(gamepad2.right_trigger) > .5)
+        {
+            outtake.pushBlock.setPosition(1);
+        }
+
+        right_stick_y = gamepad2.right_stick_y;
+
+        if (Math.abs(right_stick_y) >= .075) {
+            outtake.rightVex.setPower(-right_stick_y / 2);
+            outtake.leftVex.setPower(right_stick_y / 2);
+        }
+        else {
+            outtake.rightVex.setPower(0);
+            outtake.leftVex.setPower(0);
+        }
+        }
 
     @Override
     public void stop()

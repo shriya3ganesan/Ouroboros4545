@@ -18,6 +18,31 @@ public class Function {
     double startT;
     double endT;
 
+    public double getArcLength()
+    {
+
+        double delta_t = (endT - startT) / 1000.0;
+        double t_i;
+        double sum = 0.0;
+
+        for(double i = 0; i < 1000.0; i++)
+        {
+            t_i = startT + i * delta_t;
+            sum += Math.sqrt(1 + Math.pow(getDerY(t_i), 2));
+
+        }
+        return delta_t * sum;
+    }
+
+
+    public double getStartT() {
+        return startT;
+    }
+
+    public double getEndT() {
+        return endT;
+    }
+
     public Function(double aX, double bX, double cX, double dX, double aY, double bY, double cY, double dY, double startT, double endT) {
 
 
@@ -33,6 +58,8 @@ public class Function {
         this.bY = bY;
         this.cY = cY;
         this.dY = dY;
+
+        this.arclength = getArcLength();
     }
 
     public double getFuncX(double t)

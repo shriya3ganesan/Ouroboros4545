@@ -26,31 +26,25 @@ public class FoundationAutoBlue extends LinearOpMode{
     @Override
     public void runOpMode() throws InterruptedException {
 
-        //sensors.initSensors(this);
+        sensors.initSensors(this);
         drive.initDriveTrain(this);
         out.initOuttakeAuto(this);
 
         waitForStart();
 
        // sleep(5000);
-        /*out.raiseLiftAuto(this);
-        drive.encoderDrive(this, .4, -10, -10, 4);
-        drive.strafeMove(this, 20, 5, -.6);
-        drive.encoderDrive(this, .4, -60, -60, 4);
-        sleep(500);
+        drive.encoderDrive(this, -1, -72, -72, 5);
+        drive.strafeMove(this, 24, 5, 1); //hopefully left
+        drive.encoderDrive(this, 1, 25, 25, 5);
+        out.raiseLiftAuto(this);
+        drive.strafeMove(this, 24, 5, 1); //hopefully left
+        drive.encoderDrive(this, -.5, -10, -10, 5);
         out.hookLeft.setPosition(1);
         out.hookRight.setPosition(1);
-        sleep(3000);
-        drive.encoderDrive(this, .4, 72, 72, 10);
-        //drive.strafeMove(this, 40, 5, -.7);
+        drive.encoderDrive(this, .25, 48, 48, 5);
         out.hookLeft.setPosition(0);
         out.hookRight.setPosition(0);
-        sleep(500);
-        drive.strafeMove(this, 70, 5, .7);
-        out.lowerLiftAuto(this);
-        drive.strafeMove(this, 40 , 5, .7);
-        */
-
+        drive.strafeMove(this, 100, 5, -1); //hopefully right
 
         drive.snowWhite();
     }

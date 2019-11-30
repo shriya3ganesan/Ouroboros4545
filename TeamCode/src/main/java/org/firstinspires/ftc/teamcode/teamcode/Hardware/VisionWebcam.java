@@ -96,18 +96,20 @@ public class VisionWebcam {
 
     public String senseBlue(LinearOpMode opMode) throws InterruptedException {
 
-            Bitmap bitmap = getBitmap();
-            ArrayList<Integer> StoneX = new ArrayList<Integer>();
+        Bitmap bitmap = getBitmap();
+        ArrayList<Integer> StoneX = new ArrayList<Integer>();
 
-            String pos = "";
-            int stonexAvg = 0;
+        String pos = "";
+        int stonexAvg = 0;
 
-            // top left = (0,0)
+        // top left = (0,0)
+
+        while(opMode.opModeIsActive()) {
 
             // scan 3 columns
-            for (int colNum = bitmap.getWidth() / 2; colNum < bitmap.getWidth() ; colNum++) {
+            for (int colNum = bitmap.getWidth() / 2; colNum < bitmap.getWidth(); colNum++) {
 
-                for (int rowNum = bitmap.getHeight() / 2; rowNum < bitmap.getHeight(); rowNum++) {
+                for (int rowNum = (bitmap.getHeight() / 2) + 50; rowNum < (bitmap.getHeight() / 2) + 200; rowNum++) {
                     int pixel = bitmap.getPixel(colNum, rowNum);
 
                     // receive R, G, and B values for each pixel
@@ -130,12 +132,12 @@ public class VisionWebcam {
             }
 
 
-            // get sum of all yellow pixels' x coordinates
+            // get sum of all black pixels' x coordinates
             for (int x : StoneX) {
                 stonexAvg += x;
             }
 
-             stonexAvg /= StoneX.size();
+            stonexAvg /= StoneX.size();
 
 
             // get average x-coordinate value of all yellow pixels
@@ -143,12 +145,11 @@ public class VisionWebcam {
             opMode.telemetry.addData("AVG X = ", stonexAvg);
             opMode.telemetry.update();
 
-            // use constants (235, 500) to determine which third of the image cube is in
 
 
             if (stonexAvg < 500) {
                 pos = "left";
-            } else if (stonexAvg >600) {
+            } else if (stonexAvg > 670) {
                 pos = "right";
             } else {
                 pos = "center";
@@ -156,7 +157,8 @@ public class VisionWebcam {
 
             opMode.telemetry.addData("Position", pos);
             opMode.telemetry.update();
-
+            break;
+        }
         return pos;
     }
 
@@ -171,11 +173,14 @@ public class VisionWebcam {
         // top left = (0,0)
         while (opMode.opModeIsActive()) {
 
+            opMode.telemetry.addData("width", bitmap.getWidth());
+            opMode.telemetry.addData("height", bitmap.getHeight());
+
 
             // scan 3 columns
-            for (int colNum = bitmap.getWidth() / 2; colNum < bitmap.getWidth() ; colNum++) {
+            for (int colNum = bitmap.getWidth() / 2; colNum < bitmap.getWidth(); colNum++) {
 
-                for (int rowNum = bitmap.getHeight()/2; rowNum < bitmap.getHeight(); rowNum++){
+                for (int rowNum = (bitmap.getHeight() / 2) + 50; rowNum < (bitmap.getHeight() / 2) + 200; rowNum++){
                     int pixel = bitmap.getPixel(colNum, rowNum);
 
                     // receive R, G, and B values for each pixel
@@ -183,22 +188,20 @@ public class VisionWebcam {
                     int greenPixel = green(pixel);
                     int bluePixel = blue(pixel);
 
-                   /* opMode.telemetry.addData("Red", redPixel);
+                  /*  opMode.telemetry.addData("Red", redPixel);
                     opMode.telemetry.addData("Green", greenPixel);
                     opMode.telemetry.addData("Blue", bluePixel);
                     opMode.telemetry.update();*/
                     // only add x-coordinates of black pixels to list
 
-                    if (bluePixel < 50) {
+                    if (redPixel < 30 && greenPixel < 30 && bluePixel < 30) {
                         StoneX.add(colNum);
                     }
-
-
                 }
             }
 
 
-            // get sum of all yellow pixels' x coordinates
+            // get sum of all black pixels' x coordinates
             for (int x : StoneX) {
                 stonexAvg += x;
             }
@@ -206,17 +209,15 @@ public class VisionWebcam {
             stonexAvg /= StoneX.size();
 
 
-            // get average x-coordinate value of all yellow pixels
+            // get average x-coordinate value of all black pixels
 
             opMode.telemetry.addData("AVG X = ", stonexAvg);
-            opMode.telemetry.update();
-
-            // use constants (235, 500) to determine which third of the image cube is in
 
 
-            if (stonexAvg < 500) {
+
+            if (stonexAvg < 570) {
                 pos = "left";
-            } else if (stonexAvg > 600) {
+            } else if (stonexAvg > 700) {
                 pos = "right";
             } else {
                 pos = "center";
@@ -224,6 +225,7 @@ public class VisionWebcam {
 
             opMode.telemetry.addData("Position", pos);
             opMode.telemetry.update();
+            break;
         }
 
         return pos;

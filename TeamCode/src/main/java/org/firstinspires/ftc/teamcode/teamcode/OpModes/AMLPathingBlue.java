@@ -65,7 +65,7 @@ public class AMLPathingBlue extends LinearOpMode {
         drive.initDriveTrain(this);
         intake.initIntakeAuto(this);
         outtake.initOuttakeAuto(this);
-       // vuf.initVision(this);
+        vuf.initVision(this);
 
         if (robotWidth >= robotLength) {
             greatLength = robotWidth;
@@ -79,13 +79,12 @@ public class AMLPathingBlue extends LinearOpMode {
 
 
         waitForStart();
-       /* if(vuf.senseBlue(this) == "left")
-            offset = 20;
+        if(vuf.senseBlue(this) == "left")
+            offset = 10;
         else if(vuf.senseBlue(this) == "right")
-            offset = -20;
+            offset = -10;
         else
             offset = 0;
-*/
 
         //lift up
         outtake.raiseLiftAuto(this);
@@ -93,23 +92,22 @@ public class AMLPathingBlue extends LinearOpMode {
         //lift out
         outtake.rightVex.setPower(.5);
         outtake.leftVex.setPower(-.5);
-        sleep(500);
+        sleep(600);
         outtake.leftVex.setPower(0);
         outtake.rightVex.setPower(0);
 
         /*drive.encoderDrive(this, -.7, -10, -10, 5);
 
 
-        if(offset == -20) {
-            drive.strafeMove(this, 20, 5, .5);
+        if(offset == -10) {
+            drive.strafeMove(this, 10, 5, .5);
         }
-        else if(offset == 20) {
-            drive.strafeMove(this, 20, 5, -.5);
+        else if(offset == 10) {
+            drive.strafeMove(this, 10, 5, -.5);
         }
-
 
         //drive to block
-        drive.encoderDrive(this, -.7, -40, -40, 5);
+        drive.encoderDrive(this, -.5, -17, -17, 5);
         //sleep(1000);
 
         //lift down
@@ -121,51 +119,50 @@ public class AMLPathingBlue extends LinearOpMode {
         sleep(250);
         outtake.rightVex.setPower(-.5);
         outtake.leftVex.setPower(.5);
+
         //drive back
-        drive.encoderDrive(this, .7, 20, 20, 5);
+        drive.encoderDrive(this, .7, 10, 10, 5);
         //sleep(1000);
 
         //strafe across bridge
-        drive.strafeMove(this, 120 - offset, 10, -.75);
+        drive.strafeMove(this, 72 - offset, 10, -.75);
 //        sleep(1000);
 
+
         // loosen
-     /*   outtake.rightVex.setPower(.5);
+        outtake.rightVex.setPower(.5);
         outtake.leftVex.setPower(-.5);
         sleep(250);
         outtake.leftVex.setPower(0);
-        outtake.rightVex.setPower(0);*/
+        outtake.rightVex.setPower(0);
 
         //lift up
         outtake.raiseLiftAuto(this);
 
-        sleep(2000);
 
-      /*  drive.gyroTurn(this, 360, false, 4000);
-
-
-        //drive out of way
-        drive.encoderDrive(this, .7, 20, 20, 5);
-        //      sleep(1000);
-
+        //drive back
+        drive.encoderDrive(this, .7, 8, 8, 5);
 
         //lift down
         outtake.lowerLiftAuto(this);
 
         //strafe to stone 2
-        drive.strafeMove(this, 40, 10, .5);
-        //drive.gyroTurn(this, 0, false, 4000);
+        drive.strafeMove(this, 100 - offset, 10, .75);
 
-        drive.encoderDrive(this, .4, -12, -12, 3);*/
-
-
-
-       /* //lift up
+        //lift up
         outtake.raiseLiftAuto(this);
 
-        sleep(500);
+        //lift out
+        outtake.rightVex.setPower(.5);
+        outtake.leftVex.setPower(-.5);
+        sleep(100);
+        outtake.leftVex.setPower(0);
+        outtake.rightVex.setPower(0);
+
+
+        sleep(250);
         //drive to stone
-        drive.encoderDrive(this, -.7, -37.5, -37.5, 5);
+        drive.encoderDrive(this, -.7, -15, -15, 5);
 
         //lift down
         outtake.lowerLiftAuto(this);
@@ -173,48 +170,29 @@ public class AMLPathingBlue extends LinearOpMode {
         //tighten
         outtake.rightVex.setPower(-.5);
         outtake.leftVex.setPower(.5);
-        sleep(1000);
+        sleep(300);
         outtake.leftVex.setPower(0);
         outtake.rightVex.setPower(0);
 
         //drive back
-        drive.encoderDrive(this, .7, 20, 20, 5);
-        sleep(1000);
+        drive.encoderDrive(this, .7, 10, 10, 5);
 
         //strafe across bridge
-        drive.strafeMove(this, 145 - offset, 10, -1);
+        drive.strafeMove(this, 100 - offset, 10, -1);
 
         //raise lift
         outtake.raiseLiftAuto(this);
 
-        drive.strafeMove(this, 7 - offset, 10, 1);
-
-        *//*//*/ /*
-        drive.encoderDrive(this, .5, 12, 12, 5);
-    //    sleep(1000);
+        //move back
+        drive.encoderDrive(this, .7, 8, 8, 5);
 
         //lower lift
-        outtake.lowerLiftAuto();
+        outtake.lowerLiftAuto(this);
 
         //park
-        drive.strafeMove(this, -24, 2, 5);
+        drive.strafeMove(this, 20 - offset, 10, 1);
 
 
-
-*/
-
-        /*drive.encoderDrive(this, -.5, 24, 24, 2);
-        drive.strafeMove(this, 24, 2, -.5); //hopefully left
-        outtake.hookLeft.setPosition(1);
-        outtake.hookRight.setPosition(1);
-        drive.strafeMove(this, 36, 2, .5);
-        outtake.hookLeft.setPosition(0);
-        outtake.hookRight.setPosition(0);
-        //outtake.outTake_Auto(this);
-        drive.encoderDrive(this, .5, 24, 24, 2);
-
-
-*/
     }
 }
 
