@@ -1,18 +1,13 @@
 package org.firstinspires.ftc.teamcode.teamcode.OpModes;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
-import org.firstinspires.ftc.teamcode.teamcode.Hardware.Sensors;
 
 @TeleOp(name="Arcade", group= "Tele Op")
 public class TeleOpMecanum extends OpMode {
@@ -21,18 +16,12 @@ public class TeleOpMecanum extends OpMode {
     Intake intake = new Intake();
     Outtake outtake = new Outtake();
     ElapsedTime time = new ElapsedTime();
-    ElapsedTime runtime = new ElapsedTime();
 
     double direction;
     double velocity;
     double speed;
     double speedProp = 1.0;
     boolean pastX = false;
-
-    double currentEncoderTix;
-    double newEncoderTix;
-    double encoderTikChange;
-    double calculatedSpeed;
 
     // CFM variables
 
@@ -49,35 +38,12 @@ public class TeleOpMecanum extends OpMode {
     double cfm_power = 0.0;
 
     int numberStackedBlocks = 0;
-    double storedRuntime;
-    double encoderVelocity;
 
 
     //  Game pad Control Stick Variables
     double right_stick_x;
     double left_stick_x;
     double left_stick_y;
-    double right_stick_y;
-
-    double flTestPower = 0;
-    double frTestPower = 0;
-    double blTestPower = 0;
-    double brTestPower = 0;
-
-    double wheelDiam = 4;
-    double encoderRevolutionTix = 1800;
-    double vectorPositionX;
-    double vectorPositionY;
-    double encoderInches;
-
-    public BNO055IMU gyro;
-    public Orientation angles;
-    BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-
-    double gyroOffset = 0;
-    double targetSlope;
-    double firstBlank;
-    boolean secondBlank;
 
     @Override
     public void init() {
@@ -100,152 +66,21 @@ public class TeleOpMecanum extends OpMode {
         intake.initIntakeTele(this);
         outtake.initOuttake(this);
 
-            parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-            parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-            parameters.calibrationDataFile = "BNO055IMUCalibration.json";
-            parameters.loggingEnabled = true;
-            parameters.loggingTag = "IMU";
-            parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-
-            gyro = hardwareMap.get(BNO055IMU.class, "imu");
-
-            gyro.initialize(parameters);
-            angles = gyro.getAngularOrientation();
-
-            gyroOffset = getGyroYaw();
-            while (gyroOffset >= 360) gyroOffset -= 360;
-            while (gyroOffset < 0) gyroOffset += 360;
-            gyroOffset = 0 - gyroOffset;
 
         drive.runtime.reset();
         time.reset();
-    }
-
-    public double MRConvert (double angle) {
-        while (angle <= 0) angle += 360;
-        while (angle >= 360) angle -= 360;
-        return angle;
-    }
-
-    public double getGyroYaw() {
-        angles = gyro.getAngularOrientation();
-        return MRConvert(angles.firstAngle) + gyroOffset;
     }
 
     //Main Loop
     @Override
     public void loop() {
 
-        encoderInches = encoderVelocity * storedRuntime;
-
-        telemetry.addData("Predicted Inches",
-                encoderInches);
-
-        telemetry.addData("Heading",
-                getGyroYaw());
-
-        vectorPositionX += Math.sin(getGyroYaw())
-                * (encoderInches);
-
-        vectorPositionY += Math.cos(getGyroYaw())
-                * (encoderInches);
-
-        telemetry.addData("Vector Position",
-                "(" + vectorPositionX + ", " +
-                vectorPositionY + ")");
-
-        currentEncoderTix = (drive.br.getCurrentPosition() +
-                drive.bl.getCurrentPosition() +
-                drive.fl.getCurrentPosition() +
-                drive.fr.getCurrentPosition());
-
         //  Set Join Sticks for Arcade Drive
 
-        if (gamepad1.y) {
-            currentEncoderTix = (drive.br.getCurrentPosition() +
-                    drive.bl.getCurrentPosition() +
-                    drive.fl.getCurrentPosition() +
-                    drive.fr.getCurrentPosition());
-                    runtime.reset();
-            while (gamepad1.y) {
-                drive.fl.setPower(1);
-                drive.fr.setPower(1);
-                drive.bl.setPower(1);
-                drive.br.setPower(1);
-            }
-            newEncoderTix = (drive.br.getCurrentPosition() +
-                    drive.bl.getCurrentPosition() +
-                    drive.fl.getCurrentPosition() +
-                    drive.fr.getCurrentPosition());
-            encoderTikChange = newEncoderTix - currentEncoderTix;
-            storedRuntime = runtime.seconds();
 
-            encoderVelocity = ((encoderTikChange / encoderRevolutionTix)
-                    * (wheelDiam * Math.PI)) / storedRuntime;
-
-            telemetry.addData("Predicted Inches",
-                    encoderVelocity * storedRuntime);
-
-            telemetry.addData("Predicted Speed in in/s",
-                    encoderVelocity);
-
-            telemetry.addData("Predicted Acceleration in in/s",
-                    encoderVelocity / storedRuntime);
-
-            telemetry.addData("Precise+ Predicted Inches",
-                    (encoderVelocity * storedRuntime) + (0.5 *
-                            (encoderVelocity / storedRuntime) *
-                            (storedRuntime * storedRuntime)));
-
-            telemetry.update();
-        }
-
-        //telemetry.addData("Delta etx",
-        //        encoderTikChange);
-
-        /*
-        telemetry.addData("Predicted Speed in in/s",
-                encoderVelocity);
-
-        telemetry.addData("Predicted Acceleration in in/s",
-                encoderVelocity / storedRuntime);
-
-        telemetry.addData("Precise+ Predicted Inches",
-                (encoderVelocity * storedRuntime) + (0.5 *
-                        (encoderVelocity / storedRuntime) *
-                        (storedRuntime * storedRuntime)));
-         */
-
-            left_stick_y = gamepad1.left_stick_y;
-            left_stick_x = gamepad1.left_stick_x;
-            right_stick_x = gamepad1.right_stick_x;
-
-
-            // Normalizing Values
-
-        double max = 0;
-        double lx = Math.abs(left_stick_x);
-        double rx = Math.abs(right_stick_x);
-        double ly = Math.abs(left_stick_y);
-        if(lx > 1 || ly > 1 || rx > 1)
-        {
-            if(ly > lx)
-            {
-                max = ly;
-            }
-            else if(lx > ly)
-            {
-                max = lx;
-            }
-            if(rx > max)
-            {
-                max = rx;
-            }
-
-            right_stick_x = right_stick_x / max;
-            left_stick_y = left_stick_y / max;
-            left_stick_x = left_stick_x / max;
-        }
+        left_stick_y = gamepad1.left_stick_y;
+        left_stick_x = gamepad1.left_stick_x;
+        right_stick_x = gamepad1.right_stick_x;
 
 
 
@@ -287,15 +122,7 @@ public class TeleOpMecanum extends OpMode {
 
             telemetry.addData("Number of Blocks : ", numberStackedBlocks);*/
 
-        if (gamepad1.b) {
-             firstBlank = Math.atan((0 - vectorPositionX) /
-                     (20 - vectorPositionY));
-             drive.turnPID(firstBlank, true, 0.6/90, 0.1/90,
-                     0.03/90, 3);
-             firstBlank = Math.sqrt(((20 - vectorPositionY) * (20 - vectorPositionY)) +
-                     ((0 - vectorPositionX) * (0 - vectorPositionX)));
-             //drive.encoderDrive(1, firstBlank, firstBlank, 5);
-        }
+
 
         if(gamepad1.x)
         {
@@ -311,12 +138,6 @@ public class TeleOpMecanum extends OpMode {
         }
 
         telemetry.addData("Speed", speedProp);
-        telemetry.addData("Vertical", drive.getRadiaxVertical());
-        telemetry.addData("Hypotenuse", drive.getRadiaxHypotenuse());
-        //telemetry.addData("Radiaz Faux", drive.getNodalRadiax());
-        telemetry.addData("Horizontal", drive.getRadiaxHorizontal());
-        telemetry.addData("Radiax", drive.getRadiax());
-        //telemetry.addData("Vector", drive.getVector());
 
         if(gamepad1.dpad_left)
         {
@@ -327,8 +148,8 @@ public class TeleOpMecanum extends OpMode {
             drive.setStrafePower(1);
         }
         else if (Math.abs(left_stick_x) > 0.05 ||
-                 Math.abs(left_stick_y) > 0.05 ||
-                 Math.abs(right_stick_x) > 0.05) {
+                Math.abs(left_stick_y) > 0.05 ||
+                Math.abs(right_stick_x) > 0.05) {
 
             drive.fl.setPower(speedProp * ((left_stick_y - left_stick_x) - right_stick_x));
             drive.fr.setPower(speedProp * ((left_stick_y + left_stick_x) + right_stick_x));
@@ -339,67 +160,10 @@ public class TeleOpMecanum extends OpMode {
             drive.snowWhite();
         }
 
-        /*if (gamepad1.left_trigger > 0.05f) {
-            drive.fl.setPower(flTestPower++);
-        }
-        if (gamepad1.left_bumper) {
-            drive.bl.setPower(blTestPower++);
-        }
-        if (gamepad1.right_trigger > 0.05f) {
-            drive.fr.setPower(frTestPower++);
-        }
-        if (gamepad1.right_bumper) {
-            drive.br.setPower(brTestPower++);
-        }*/
-
-        telemetry.addData("FL Power: ", flTestPower);
-
-        telemetry.addData("BL Power: ", blTestPower);
-
-        telemetry.addData("FR Power: ", frTestPower);
-
-        telemetry.addData("BR Power: ", brTestPower);
-
         intake.Intake_TeleOp();
 
         outtake.outTake_TeleOp(this);
 
-        newEncoderTix = (drive.br.getCurrentPosition() +
-                drive.bl.getCurrentPosition() +
-                drive.fl.getCurrentPosition() +
-                drive.fr.getCurrentPosition());
-        encoderTikChange = -(newEncoderTix - currentEncoderTix);
-        storedRuntime = runtime.seconds();
-
-        encoderVelocity = ((encoderTikChange / encoderRevolutionTix)
-                * (wheelDiam * Math.PI)) / storedRuntime;
-
         telemetry.update();
-
-        if(Math.abs(gamepad2.left_trigger) > .5)
-        {
-            outtake.pushBlock.setPosition(.3);
-        }
-        else if(Math.abs(gamepad2.right_trigger) > .5)
-        {
-            outtake.pushBlock.setPosition(1);
-        }
-
-        right_stick_y = gamepad2.right_stick_y;
-
-        if (Math.abs(right_stick_y) >= .075) {
-            outtake.rightVex.setPower(-right_stick_y / 2);
-            outtake.leftVex.setPower(right_stick_y / 2);
-        }
-        else {
-            outtake.rightVex.setPower(0);
-            outtake.leftVex.setPower(0);
-        }
-        }
-
-    @Override
-    public void stop()
-    {
-
     }
 }

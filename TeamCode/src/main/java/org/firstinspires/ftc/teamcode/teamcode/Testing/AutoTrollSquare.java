@@ -30,15 +30,25 @@ public class AutoTrollSquare extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        drive.initDriveTrain(this);
-        sensors.initSensors(this);
-        telemetry.addData("current", sensors.getGyroYaw());
+        //drive.initDriveTrain(this);
+        //sensors.initSensors(this);
+        outtake.initOuttakeAuto(this);
+        //telemetry.addData("current", sensors.getGyroYaw());
         telemetry.update();
 
         waitForStart();
 
 
-        drive.strafeMove(this, 72, 4, .7);
+
+        outtake.pushBlock.setPosition(.3);
+        telemetry.addData("servo pos", outtake.pushBlock.getPosition());
+
+
+
+        sleep(10000);
+
+        outtake.pushBlock.setPosition(1);
+        telemetry.addData("servo pos", outtake.pushBlock.getPosition());
 
     }
 

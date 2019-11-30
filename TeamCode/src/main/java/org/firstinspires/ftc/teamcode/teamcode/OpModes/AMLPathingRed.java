@@ -63,7 +63,7 @@ public class AMLPathingRed extends LinearOpMode {
         drive.initDriveTrain(this);
         intake.initIntakeAuto(this);
         outtake.initOuttakeAuto(this);
-        vuf.initVision(this);
+       // vuf.initVision(this);
 
         if (robotWidth >= robotLength) {
             greatLength = robotWidth;
@@ -77,13 +77,13 @@ public class AMLPathingRed extends LinearOpMode {
 
 
         waitForStart();
-        if(vuf.senseBlue(this) == "left")
+       /* if(vuf.senseRed(this) == "left")
             offset = -10;
-        else if(vuf.senseBlue(this) == "right")
+        else if(vuf.senseRed(this) == "right")
             offset = 10;
         else
             offset = 0;
-
+*/
         //lift up
         outtake.raiseLiftAuto(this);
 

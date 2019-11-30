@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Outtake {
 
     private static final double MAXLEVEL = 14;
-    private static final double MAXHEIGHT = 36; // Inches
+    private static final double MAXHEIGHT = 34; // Inches
     private static final double DISTANCE_TO_BUILD_ZONE = 1; // what ever distance is from foundation to build zone
     public Servo pushBlock;
     public Servo hookRight;
@@ -41,9 +41,8 @@ public class Outtake {
     static final double DISTANCE_BETWEEN_BLOCKS = 4.0; // In Inches
     static final double HORIZONTALEXTENSIONTIME = 5000 ; // Time it takes for lift to extend out = length of lift / speed of motors
     static final double INITIAL_HORIZONTALEXTENSIONTIME = 4500;
-    static final double encoderLevelCount = (360 / (Math.PI * .5));
+    static final double encoderLevelCount = (288 / (Math.PI * .53));
 
-    //262 encoder ticks per inch
     static double LIFTPOWER = 1;
     static double HOOKDOWN = .60;
     static double HOOKUP = 1.0;
@@ -107,7 +106,7 @@ public class Outtake {
     public void initOuttakeAuto(LinearOpMode opMode) {
 
         time.reset();
-        this.opMode = opMode;
+
         top = false;
         bottom = true;
 
@@ -143,32 +142,25 @@ public class Outtake {
     public void outTake_TeleOp(OpMode opMode)
     {
 
-        //horizontalLiftTele();
-        raiseLiftMacro(opMode);
+        horizontalLiftTele();
         hookToggle();
         lift(opMode);
         encoderCalibrate();
 
 
-        if (opMode.gamepad2.dpad_down && !bottom && averageLiftPosition() > 4 * encoderLevelCount)
-        {
-            time.reset();
-            while (time.milliseconds() < 300) { }
-            // resetOuttake(opMode);
-        }
-
-        if(opMode.gamepad2.a)
-        {
-            time.reset();
-            while(time.milliseconds() < 300){ }
-            // openBasket(opMode);
-
-        }
-
         if(blockCount == 2)
         {
             level++;
             blockCount = 0;
+        }
+
+        if(Math.abs(opMode.gamepad2.left_trigger) > .5)
+        {
+            pushBlock.setPosition(.3);
+        }
+        else if(Math.abs(opMode.gamepad2.right_trigger) > .5)
+        {
+            pushBlock.setPosition(1);
         }
 
 
@@ -182,7 +174,7 @@ public class Outtake {
         liftLeft.setPower(-1);
 
         time.reset();
-        while(averageLiftPosition() >= 0 && time.milliseconds() < 1500 && opMode.opModeIsActive())
+        while(averageLiftPosition() >= 0 && time.milliseconds() < 1000 && opMode.opModeIsActive())
         {
 
         }
@@ -444,6 +436,7 @@ public class Outtake {
         opMode.telemetry.addData("Vex Power Left", leftVex.getPower());
         opMode.telemetry.addData("Left Hook", hookLeft.getPosition());
         opMode.telemetry.addData("Right Hook", hookRight.getPosition());
+        opMode.telemetry.addData("push block", pushBlock.getPosition());
     }
 
     public void openBasketAuto()
@@ -471,41 +464,39 @@ public class Outtake {
         leftVex.setPower(0);
     }
     //  opens up the output basket using the Servos
-    /*public void openBasket(OpMode opMode)
+    public void openBasket(OpMode opMode)
     {
         // pushes front servo in while as rotating CRServos to open basket
-            blockCount++;
+        blockCount++;
 
-            if(pushBlock.getPosition() != 1) pushBlock.setPosition(1);
+        if(pushBlock.getPosition() != 1) pushBlock.setPosition(1);
 
-            rightVex.setPower(.5);
-            leftVex.setPower(-.5);
+        rightVex.setPower(.5);
+        leftVex.setPower(-.5);
 
-            //8.78 inches extends out
-            time.reset();
-            while(time.milliseconds() < HORIZONTALEXTENSIONTIME)
+        //8.78 inches extends out
+        time.reset();
+        while(time.milliseconds() < HORIZONTALEXTENSIONTIME)
+        {
+            if(opMode.gamepad2.right_stick_button)
             {
-                if(opMode.gamepad2.right_stick_button)
-                {
-                    rightVex.setPower(0);
-                    leftVex.setPower(0);
-                }
+                rightVex.setPower(0);
+                leftVex.setPower(0);
             }
-            //set position direction on angle - ask  trevor
+        }
+        //set position direction on angle - ask  trevor
 
-            rightVex.setPower(0);
-            leftVex.setPower(0);
+        rightVex.setPower(0);
+        leftVex.setPower(0);
 
 
 
-            // should push block out at that point
+        // should push block out at that point
 
-            // back to open position
-            if(pushBlock.getPosition() != .6) pushBlock.setPosition(.6);
-            return;
+        // back to open position
+        if(pushBlock.getPosition() != .6) pushBlock.setPosition(.6);
+        return;
     }
-
-     */
 
     //  resets all variables and sets lift back to initial position
     public void resetOuttake(OpMode opMode)
@@ -513,7 +504,7 @@ public class Outtake {
 
         if(bottom && averageLiftPosition() < 4 * encoderLevelCount)
         {
-           return;
+            return;
         }
 
         opMode.telemetry.addData("RESET OUTTAKE IS RUNNING", " PREPARE RIGHT STICK BUTTON");

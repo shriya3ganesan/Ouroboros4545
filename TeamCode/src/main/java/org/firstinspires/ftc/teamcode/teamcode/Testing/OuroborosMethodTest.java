@@ -31,7 +31,7 @@ public class OuroborosMethodTest extends LinearOpMode {
         waitForStart();
 
 
-        drive.splineMove(this, points, 15, 1);
+        //drive.splineMove(this, points, 15, 1);
 
         drive.snowWhite();
 

@@ -1,3 +1,4 @@
+/*
 package org.firstinspires.ftc.teamcode.teamcode.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -32,7 +33,8 @@ public class MUSMAA{
     Outtake outtake = new Outtake();
     ZeroMap vuf = new ZeroMap();
 
-    /*public double[] miasmat (double[] dubSet) {
+    */
+/*public double[] miasmat (double[] dubSet) {
         if (vortex.seconds() >= 10) {
             vortex.reset();
             dubSet[angleCount] = 1;
@@ -67,5 +69,7 @@ public class MUSMAA{
         }
     }
 
-     */
+     *//*
+
 }
+*/

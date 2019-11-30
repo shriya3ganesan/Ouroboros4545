@@ -1,3 +1,4 @@
+/*
 package org.firstinspires.ftc.teamcode.teamcode.OpModes;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -42,7 +43,8 @@ public class Playground extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        /*drive.fl = hardwareMap.dcMotor.get("fl");
+        */
+/*drive.fl = hardwareMap.dcMotor.get("fl");
         drive.fr = hardwareMap.dcMotor.get("fr");
         drive.bl = hardwareMap.dcMotor.get("bl");
         drive.br = hardwareMap.dcMotor.get("br");
@@ -55,7 +57,8 @@ public class Playground extends LinearOpMode {
         drive.fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         drive.fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         drive.bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        drive.br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*/
+        drive.br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*//*
+
 
         telemetry.addLine("Drive motors initialized");
 
@@ -141,4 +144,5 @@ public class Playground extends LinearOpMode {
     }
 
 }
+*/
 

@@ -2,20 +2,13 @@ package org.firstinspires.ftc.teamcode.teamcode.Hardware;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.teamcode.teamcode.NewAuto.CubicSpline;
-import org.firstinspires.ftc.teamcode.teamcode.NewAuto.Function;
-import org.firstinspires.ftc.teamcode.teamcode.NewAuto.Point;
-import org.firstinspires.ftc.teamcode.teamcode.OpModes.TeleOpMecanum;
-
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 
-@SuppressWarnings("ALL")
 public class DriveTrain {
 
-    private static double motorCounts = 288;
+    private static double motorCounts = 518.4;
     private static double gearUp = 1;
     public static double wheelDiam = 4;
     public static double noLoadSpeed = 31.4 ; // Max Angular Velocity in radians/second for 20 : 1 motor
@@ -166,7 +159,7 @@ public class DriveTrain {
             fl.setPower(speed);
             fr.setPower(-speed);
             bl.setPower(speed);
-            br.setPower(speed);
+            br.setPower(-speed);
         }
     }
 
@@ -297,11 +290,17 @@ public class DriveTrain {
         resetEncoders();
 
         double averageStrafe = 0.0;
+        double speed = power * .6;
 
-        setStrafePower(power);
+
         while(Math.abs(averageStrafe) < target * inchCounts && runtime.seconds() < timeout && opMode.opModeIsActive())
         {
+           /* if(Math.abs(averageStrafe) < (((target * inchCounts) / 2) + 15) &&
+                    Math.abs(averageStrafe) > (((target * inchCounts) / 2) - 15)) {
+                gyroTurnStraight(opMode, 1000);
+            }*/
 
+            setStrafePower(speed);
             // strafeEqualizer();
             averageStrafe = getStrafeEncoderAverage(power);
 
@@ -309,17 +308,45 @@ public class DriveTrain {
             opMode.telemetry.addData("Encoder ", averageStrafe);
             opMode.telemetry.update();
 
+            if (Math.abs(speed) < Math.abs(power)){
+                speed = speed * 1.05;
+            }
+
         }
 
+        gyroTurnStraight(opMode, 1000);
         snowWhite();
     }
 
     public void setStrafePower(double power)
     {
-        fr.setPower(-power);
-        br.setPower(power);
-        fl.setPower(power);
-        bl.setPower(-power);
+        runtime.reset();
+        if(power < 0) {
+            if (runtime.seconds() < 1) {
+                fr.setPower(-power);
+                br.setPower(power * .87);
+                fl.setPower(power);
+                bl.setPower(-power);
+            } else {
+                fr.setPower(-power);
+                br.setPower(power);
+                fl.setPower(power);
+                bl.setPower(-power);
+            }
+        }
+        else {
+            if (runtime.seconds() < 1) {
+                fr.setPower(-power);
+                br.setPower(power );
+                fl.setPower(power);
+                bl.setPower(-power);
+            } else {
+                fr.setPower(-power);
+                br.setPower(power);
+                fl.setPower(power * .97);
+                bl.setPower(-power);
+            }
+        }
     }
 
     private double getStrafeEncoderAverage(double direction) {
@@ -452,12 +479,17 @@ public class DriveTrain {
             fr.setPower(-speed);
             bl.setPower(-speed);
             br.setPower(-speed);
-;
+
+            opMode.telemetry.addData("Targets: ", "fl %7d : fr %7d : bl %7d : br %7d",
+                    newLeftTarget, newRightTarget, newLeftBlarget, newRightBlarget);
+            opMode.telemetry.addData("Current Positions: ", "fl %7d : fr %7d : bl %7d : br %7d",
+                    fl.getCurrentPosition(), fr.getCurrentPosition(), bl.getCurrentPosition(), br.getCurrentPosition());
+
+            opMode.telemetry.update();
 
         }
         while (opMode.opModeIsActive() && runtime.seconds() < timeoutS &&
                 (Math.abs(newLeftTarget) - Math.abs(getEncoderAverage())) > 5 );
-
 
 
 /*            opMode.telemetry.addData("Targets: ", "fl %7d : fr %7d : bl %7d : br %7d",
@@ -470,8 +502,7 @@ public class DriveTrain {
         snowWhite();
 
 
-
-        opMode.sleep(50);
+        //opMode.sleep(50);
     }
 
     public double[] hermite (double[] lStick) {
@@ -480,7 +511,7 @@ public class DriveTrain {
             gyre -= 90;
             quadrant++;
         }
-
+        // ┌∩┐(◣_◢)┌∩┐
         primeSin = (Math.sin(gyre / 2) * 2);
         alpha = Math.acos(primeSin);
         bOffset = primeSin * Math.cos(alpha);
@@ -740,7 +771,7 @@ public class DriveTrain {
 
     //PID Turns for Macanum Wheels
     //Proportional Integral Derivative Turn
-    public void turnPID (double goal, boolean isRight, double kP, double kI,
+    public void turnPID (LinearOpMode opMode, double goal, boolean isRight, double kP, double kI,
                          double kD, double timeOutS) {
 
         runtime.reset();
@@ -749,7 +780,7 @@ public class DriveTrain {
         prevTime = runtime.seconds();
         error = goal - sensors.getGyroYaw();
 
-        while (runtime.seconds() <= timeOutS && Math.abs(error) > 1 ) {
+        while (opMode.opModeIsActive() && runtime.seconds() <= timeOutS && Math.abs(error) > 1 ) {
 
             //  sensors.angles = sensors.gyro.getAngularOrientation();
 
@@ -775,23 +806,36 @@ public class DriveTrain {
 
         snowWhite();
     }
-    public void gyroTurn(LinearOpMode opMode, double goal, boolean isRight, double timeOutMS) {
+    public void gyroTurnStraight(LinearOpMode opMode, double timeOutMS) {
 
+        double goal = 0;
+        boolean isRight;
         runtime.reset();
-        //sensors.angles = sensors.gyro.getAngularOrientation();
+        do  {
 
-        if (goal - sensors.getGyroYaw() <= 180)
-            isRight = true;
-        else if (goal - sensors.getGyroYaw() > 180)
-            isRight = false;
+            if (sensors.getGyroYaw() > 0 && sensors.getGyroYaw() < 180) {
+                goal = 0;
+            }
+            else {
+                goal = 360;
+            }
 
-        while (opMode.opModeIsActive() && runtime.milliseconds() <= timeOutMS && Math.abs(goal - sensors.getGyroYaw()) > 5 ) {
+            opMode.telemetry.addData("Goal", goal);
+            opMode.telemetry.addData("Current Heading", sensors.getGyroYaw());
+            opMode.telemetry.update();
+            if (sensors.getGyroYaw() < goal) {
+                turn(.2, false);
+            }
+            else {
+                turn(.2, true);
+            }
 
-            //  sensors.angles = sensors.gyro.getAngularOrientation();
-            turn(.25, isRight);
 
-        }
+        } while (opMode.opModeIsActive() && Math.abs(goal - sensors.getGyroYaw()) > 2 && runtime.milliseconds() < timeOutMS);
+
+        snowWhite();
     }
+
 
 
     public void align()
@@ -812,7 +856,6 @@ public class DriveTrain {
                 br.setPower(.25);
                 fr.setPower(.25);
             }
-            snowWhite();
         }
     }
 
@@ -932,31 +975,16 @@ public class DriveTrain {
 
     public double average (double first, double second) { return (first + second) / 2; }
 
-    public double getFlux (DcMotor motor) {
-        runtime.reset();
-
-        double currentEncoderTix = (motor.getCurrentPosition());
-
-        double newEncoderTix = (motor.getCurrentPosition());
-        double encoderTikChange = -(newEncoderTix - currentEncoderTix);
-        double storedRuntime = runtime.seconds();
-
-        double encoderVelocity = ((encoderTikChange / 1800)
-                * (4 * Math.PI)) / storedRuntime;
-        double encoderInches = encoderVelocity * storedRuntime;
-        return encoderVelocity;
-    }
-
     public double getRadiaxVertical() {
-        return average(average(getFlux(fr), getFlux(bl)),
-                average(getFlux(fl), getFlux(br)));
+        return average(average(fr.getPower(), bl.getPower()),
+                average(fl.getPower(), br.getPower()));
     }
 
     public double getRadiaxHorizontal () {
-        double frSpeed = getFlux(fr) - getRadiaxVertical();
-        double flSpeed = -(getFlux(fl) - getRadiaxVertical());
-        double blSpeed = getFlux(bl) - getRadiaxVertical();
-        double brSpeed = -(getFlux(br) - getRadiaxVertical());
+        double frSpeed = fr.getPower() - getRadiaxVertical();
+        double flSpeed = -(fl.getPower() - getRadiaxVertical());
+        double blSpeed = bl.getPower() - getRadiaxVertical();
+        double brSpeed = -(br.getPower() - getRadiaxVertical());
         return average(average(brSpeed, frSpeed), average(flSpeed, blSpeed));
     }
 
@@ -970,7 +998,6 @@ public class DriveTrain {
         fl.setPower(power);
         bl.setPower(power);
     }
-
     public void rightTank(double power)
     {
         fr.setPower(power);
@@ -987,13 +1014,13 @@ public class DriveTrain {
         return Math.abs(refact);
     }
 
-    /*public double getNodalRadiax () {
+    public double getNodalRadiax () {
         double frSpeed = fr.getPower() - (getRadiaxVertical() + getRadiaxHorizontal());
         double flSpeed = (fl.getPower() - (getRadiaxVertical() - getRadiaxHorizontal()));
         double blSpeed = bl.getPower() - (getRadiaxVertical() + getRadiaxHorizontal());
         double brSpeed = (br.getPower() - (getRadiaxVertical() - getRadiaxHorizontal()));
         return average(average(brSpeed, frSpeed), average(flSpeed, blSpeed));
-    }*/
+    }
 
     double currentRadiax;
 
@@ -1028,75 +1055,9 @@ public class DriveTrain {
     }*/
 
     public double getVector () {
-        double yaw = sensors.getGyroYaw();
-        while (yaw >= 360) yaw -= 360;
-        double vector = getRadiax() + yaw;
+        double vector = getRadiax() + sensors.getGyroYaw();
         while (vector > 360) vector -= 360;
         return vector;
-    }
-
-    public double getBaseRadiax (double x1, double y1) {
-        return Math.atan(x1/y1);
-    }
-
-    public ArrayList<Point> conflictArray;
-
-    public void setBaseConflictArray () {
-        //ADD FOR STATEMENT
-
-        //conflictArray.add(new Point());
-        //conflictArray.add(new Point());
-        //conflictArray.add(new Point());
-        //conflictArray.add(new Point());
-        //conflictArray.add(new Point());
-    }
-
-    //public boolean checkArrayConflict () {
-
-    //}
-
-    public void VectorSpline (double x1, double x2,
-                              double y1, double y2,
-                              boolean radiaxStrafeRight) {
-
-        ArrayList<Point> points = new ArrayList<>();
-
-        points.add(new Point(0, 0, 0));
-        points.add(new Point(0.5, x1, y1));
-        points.add(new Point(1, x2, y2));
-
-        double baseRadiax = getBaseRadiax(x2, y2);
-        double leftRadiax;
-        double rightRadiax;
-
-        //while () {
-            if (radiaxStrafeRight) {
-
-            }
-            else {
-
-            }
-        //}
-
-        CubicSpline c = new CubicSpline();
-
-        Function[] functions = c.makeSpline(points);
-
-        for(double t = 0; t < 1; t += .01)
-        {
-            if(t <= .5) {
-                System.out.println(functions[0].getFuncX(t));
-                System.out.println(functions[0].getFuncY(t));
-            }
-            if(t <= 1 && t >= .5) {
-                System.out.println(functions[1].getFuncX(t));
-                System.out.println(functions[1].getFuncY(t));
-            }
-
-        }
-
-
-
     }
 
 }
