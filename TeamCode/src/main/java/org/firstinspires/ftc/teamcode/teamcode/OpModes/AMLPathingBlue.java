@@ -90,11 +90,7 @@ public class AMLPathingBlue extends LinearOpMode {
         outtake.raiseLiftAuto(this);
 
         //lift out
-        outtake.rightVex.setPower(.5);
-        outtake.leftVex.setPower(-.5);
-        sleep(600);
-        outtake.leftVex.setPower(0);
-        outtake.rightVex.setPower(0);
+
 
         drive.encoderDrive(this, -.7, -10, -10, 5);
 
@@ -192,8 +188,7 @@ public class AMLPathingBlue extends LinearOpMode {
 
         //park
         drive.strafeMove(this, 20 - offset, 10, 1);
-
+*/
 
     }
 }
-

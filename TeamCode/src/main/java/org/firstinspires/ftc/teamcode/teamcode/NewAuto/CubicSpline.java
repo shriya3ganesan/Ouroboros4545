@@ -7,9 +7,9 @@ public class CubicSpline {
 
     public static void main(String[] args) {
         CubicSpline s = new CubicSpline();
-        s.SplineOut(0, 50,
-                    100,  0,
-                    300, 0);
+        s.SplineOut(0, 0,
+                    100,  100,
+                    500, 80);
     }
 
     public void SplineOut(double t1, double y1, double t2, double y2, double t3, double y3)
@@ -222,14 +222,24 @@ public class CubicSpline {
         constraints[12][6]  = 2 * (t3 - t2);
         constraints[12][7]  = 3 * Math.pow(t3 - t2, 2);
 
-        constraints[13][8]  = 0;
-        constraints[13][9]  = 0;
-        constraints[13][10]  = -2 * (t2 - t1);
-        constraints[13][11]  = -3 * Math.pow(t2 - t1, 2);
+       /* constraints[13][8]  = 0;
+        constraints[13][9]  = 1/2;
+        constraints[13][10]  = 0;
+        constraints[13][11]  = 0;
         constraints[13][12]  = 0;
-        constraints[13][13]  = 0;
-        constraints[13][14]  = 2 * (t3 - t2);
-        constraints[13][15]  = 3 * Math.pow(t3 - t2, 2);
+        constraints[13][13]  = -1/2;
+        constraints[13][14]  = (t3 - t2);
+        constraints[13][15]  = (3/2) * Math.pow(t3 - t2, 2);*/
+
+
+        constraints[13][8]   = 0;
+        constraints[13][9]   = 1;
+        constraints[13][10]  = 0;
+        constraints[13][11]  = 0;
+        constraints[13][12]  = 0;
+        constraints[13][13]  = -1;
+        constraints[13][14]  = 2.0 * (t3 - t2);
+        constraints[13][15]  = 3.0 * Math.pow((t3 - t2), 2);
 
         constraints[14][4]  =  0;
         constraints[14][5]  = 1;
