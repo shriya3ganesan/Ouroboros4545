@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.teamcode.NewAuto.CubicSpline;
 import org.firstinspires.ftc.teamcode.teamcode.NewAuto.Function;
+import org.firstinspires.ftc.teamcode.teamcode.NewAuto.Motor_Power_Spline;
 import org.firstinspires.ftc.teamcode.teamcode.NewAuto.Point;
 import org.firstinspires.ftc.teamcode.teamcode.OpModes.TeleOpMecanum;
 
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 @SuppressWarnings("ALL")
 public class DriveTrain {
 
-    private static double motorCounts = 288;
+    private static double motorCounts = 518.4;
     private static double gearUp = 1;
     public static double wheelDiam = 4;
     public static double noLoadSpeed = 31.4 ; // Max Angular Velocity in radians/second for 20 : 1 motor
@@ -1126,5 +1127,34 @@ public class DriveTrain {
 
 
     }
+    public void splineMove(LinearOpMode linearOpMode, ArrayList<Point> points, double runtime, double kT)
+    {
 
+        ElapsedTime t = new ElapsedTime();
+        t.reset();
+
+        CubicSpline c = new CubicSpline();
+        Function[] functions = c.makeSpline(points);
+        ArrayList<Point> splinePoints = c.SplineToPoints(functions);
+        ArrayList<Motor_Power_Spline> motorPoints = c.splinePointsToMotorPoints(splinePoints);
+
+        double rightp = 0;
+        double leftp = 0;
+        for(Motor_Power_Spline m : motorPoints)
+        {
+
+            if(t.seconds() > runtime)
+            {
+                return;
+            }
+            leftp = m.getLeftPower();
+            rightp = m.getRightPower();
+
+            leftTank(leftp);
+            rightTank(rightp);
+
+            linearOpMode.sleep((long)(m.getDeltaT() * kT));
+        }
+
+    }
 }
