@@ -489,7 +489,7 @@ public class DriveTrain {
 
         }
         while (opMode.opModeIsActive() && runtime.seconds() < timeoutS &&
-                (Math.abs(newLeftTarget) - Math.abs(getEncoderAverage())) > 5 );
+                Math.abs((Math.abs(newLeftTarget) - Math.abs(getEncoderAverage()))) > 5 );
 
 
 /*            opMode.telemetry.addData("Targets: ", "fl %7d : fr %7d : bl %7d : br %7d",
@@ -771,6 +771,21 @@ public class DriveTrain {
 
     //PID Turns for Macanum Wheels
     //Proportional Integral Derivative Turn
+
+    public void gyroTurn(LinearOpMode opMode, Sensors yaw, double goal, boolean isRight, double timeOutMS) {
+
+        runtime.reset();
+        //sensors.angles = sensors.gyro.getAngularOrientation();
+
+
+        do {
+
+            turn(.3, isRight);
+
+        } while (opMode.opModeIsActive() && runtime.milliseconds() <= timeOutMS && Math.abs(goal - yaw.getGyroYaw()) > 5 );
+    }
+
+
     public void turnPID (LinearOpMode opMode, double goal, boolean isRight, double kP, double kI,
                          double kD, double timeOutS) {
 
@@ -1058,6 +1073,16 @@ public class DriveTrain {
         double vector = getRadiax() + sensors.getGyroYaw();
         while (vector > 360) vector -= 360;
         return vector;
+    }
+
+    public void strafeSim (LinearOpMode opMode, boolean right,
+                           double error, double targetInches, double timeOut) {
+        turnPID(opMode, error, right,0.6/error,
+                0.1/error, 0.03/error, timeOut);
+        encoderDrive(opMode, .75
+                ,targetInches,targetInches, timeOut++);
+        turnPID(opMode, error, !right,0.6/error,
+                0.1/error, 0.03/error, timeOut);
     }
 
 }

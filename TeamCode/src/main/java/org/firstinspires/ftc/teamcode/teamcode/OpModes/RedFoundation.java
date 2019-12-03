@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Sensors;
 
-@Autonomous(name ="Red Foundation - 20p", group="Auto Basic")
+@Autonomous(name ="Red Foundation REAL", group="Auto Basic")
 public class RedFoundation extends LinearOpMode{
     private ElapsedTime runtime = new ElapsedTime();
     private double driveSpeed = 0.6;
@@ -43,8 +43,7 @@ public class RedFoundation extends LinearOpMode{
         //Drive backward at very beginning (assuming vector position
         // is borderline red depot)
         out.raiseLiftAuto(this);
-        drive.encoderDrive(this, -1, -24, -24, 3);
-        drive.encoderDrive(this, -0.6, -12, -12, 2);
+        drive.encoderDrive(this, -0.6, -35, -35, 2);
         drive.encoderDrive(this, -0.2, -2, -2, 1);
         //Report:
         //1. Raises Lift - Check
@@ -52,12 +51,15 @@ public class RedFoundation extends LinearOpMode{
         //2a. Estimated Target Distance - 30~32
 
         //Captures the foundation and turns to place foundation
-        setHook(DOWN);
-        drive.encoderDrive(this, -1, 24, 24, 3);
-        drive.encoderDrive(this, -0.2, 2, 2, 1);
-        drive.gyroTurn(this, 90, false, 4000);
+        out.hookRight.setPosition(1);
+        out.hookLeft.setPosition(1);
+        drive.encoderDrive(this, .5, 24, 24, 3);
+        drive.encoderDrive(this, 0.2, 2, 2, 1);
+        drive.gyroTurn(this, sensors, 90, false, 2800);
         drive.encoderDrive(this, -0.6, -6, -6, 2);
-        setHook(UP);
+        out.hookRight.setPosition(0);
+        out.hookLeft.setPosition(0);
+
         //Report:
         //1. Lowers hook for foundation abduction - Check
         //2. Moves back(?forward) accumulated 26 inches in timeout 4s.

@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.teamcode.Hardware.Sensors;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.VisionWebcam;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.ZeroMap;
 
-@Autonomous(name ="Blue Foundation - 20p", group="Auto Basic")
+@Autonomous(name ="Blue Foundation REAL", group="Auto Basic")
 public class BlueFoundation extends LinearOpMode{
     private ElapsedTime runtime = new ElapsedTime();
     private double driveSpeed = 0.6;
@@ -60,7 +60,7 @@ public class BlueFoundation extends LinearOpMode{
         setHook(DOWN);
         drive.encoderDrive(this, -1, 24, 24, 3);
         drive.encoderDrive(this, -0.2, 2, 2, 1);
-        drive.gyroTurn(this, 90, true, 4000);
+        drive.gyroTurn(this, sensors, 90, true, 4000);
         drive.encoderDrive(this, -0.6, -6, -6, 2);
         setHook(UP);
         //Report:

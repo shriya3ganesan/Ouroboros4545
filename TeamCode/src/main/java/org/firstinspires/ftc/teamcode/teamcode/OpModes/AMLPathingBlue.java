@@ -188,7 +188,7 @@ public class AMLPathingBlue extends LinearOpMode {
 
         //park
         drive.strafeMove(this, 20 - offset, 10, 1);
-*/
+
 
     }
 }

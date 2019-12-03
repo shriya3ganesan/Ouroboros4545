@@ -145,7 +145,7 @@ public class AMLPathingRed extends LinearOpMode {
         outtake.lowerLiftAuto(this);
 
         //strafe to stone 2
-        drive.strafeMove(this, 100 - offset, 10, -.75);
+        drive.strafeMove(this, 105 - offset, 10, -.75);
 
         //lift up
         outtake.raiseLiftAuto(this);
@@ -176,7 +176,7 @@ public class AMLPathingRed extends LinearOpMode {
         drive.encoderDrive(this, .7, 10, 10, 5);
 
         //strafe across bridge
-        drive.strafeMove(this, 105 - offset, 10, .7);
+        drive.strafeMove(this, 90 - offset, 10, .7);
 
         //raise lift
         outtake.raiseLiftAuto(this);
@@ -188,7 +188,7 @@ public class AMLPathingRed extends LinearOpMode {
         outtake.lowerLiftAuto(this);
 
         //park
-        drive.strafeMove(this, 20 - offset, 10, -1);
+        drive.strafeMove(this, 30 - offset, 10, -1);
 
 
     }

@@ -28,19 +28,26 @@ public class FoundationAutoRed extends LinearOpMode{
 
         waitForStart();
 
-       // sleep(5000);
-        drive.encoderDrive(this, -1, -72, -72, 5);
-        drive.strafeMove(this, 24, 5, -1); //hopefully right
-        drive.encoderDrive(this, 1, 25, 25, 5);
+        // sleep(5000);
         out.raiseLiftAuto(this);
-        drive.strafeMove(this, 24, 5, -1); //hopefully right
-        drive.encoderDrive(this, -.5, -10, -10, 5);
+        drive.encoderDrive(this, .4, -10/1.8, -10/1.8, 4);
+        drive.strafeMove(this, 20/1.8, 5, .6);
+        drive.encoderDrive(this, .4, -54/1.8, -54/1.8, 4);
+        sleep(500);
         out.hookLeft.setPosition(1);
         out.hookRight.setPosition(1);
-        drive.encoderDrive(this, .25, 48, 48, 5);
+        sleep(2000);
+        drive.encoderDrive(this, .4, 65/1.8, 65/1.8, 10);
+        //drive.strafeMove(this, 40, 5, -.7);
         out.hookLeft.setPosition(0);
         out.hookRight.setPosition(0);
-        drive.strafeMove(this, 100, 5, 1); //hopefully left
+        sleep(500);
+        drive.strafeMove(this, 70/1.8, 5, -.7);
+        out.lowerLiftAuto(this);
+        drive.encoderDrive(this, -.4, -10, -10, 3);
+        drive.strafeMove(this, 10, 3, .7);
+        drive.encoderDrive(this, .4, 10, 10, 3);
+        drive.strafeMove(this, 60/1.8 , 5, -.7);
 
         drive.snowWhite();
     }

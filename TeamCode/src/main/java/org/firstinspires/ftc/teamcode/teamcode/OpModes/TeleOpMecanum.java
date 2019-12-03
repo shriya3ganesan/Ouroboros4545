@@ -75,35 +75,15 @@ public class TeleOpMecanum extends OpMode {
     @Override
     public void loop() {
 
-        //  Set Join Sticks for Arcade Drive
-
-
         left_stick_y = gamepad1.left_stick_y;
         left_stick_x = gamepad1.left_stick_x;
         right_stick_x = gamepad1.right_stick_x;
-
-
-
-
-        /*if (gamepad1.x != pastX) {
-            pastX = gamepad1.x;
-            if (gamepad1.x) {
-                if (speedProp == 1) {
-                    speedProp = 0.5;
-                } else {
-                    speedProp = 1;
-                }
-            }
-        }*/
-
-
 
             /*//Foundation Moving Toggle
             //Toggle sets speed such that the robot can move the fastest
             //while moving the foundation and not dropping any blocks
             //Takes into account the mass of the foundation and block stack
             //and the friction of the floor
-
 
             numberStackedBlocks = outtake.getNumberOfBlocks();
             //  Mass of Whole Object
@@ -121,8 +101,6 @@ public class TeleOpMecanum extends OpMode {
                     + DriveTrain.stallTorque * CFM_AngularVelocity;
 
             telemetry.addData("Number of Blocks : ", numberStackedBlocks);*/
-
-
 
         if(gamepad1.x)
         {
