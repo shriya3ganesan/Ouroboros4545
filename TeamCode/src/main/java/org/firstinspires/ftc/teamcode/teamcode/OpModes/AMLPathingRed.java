@@ -65,7 +65,7 @@ public class AMLPathingRed extends LinearOpMode {
         outtake.initOuttakeAuto(this);
         vuf.initVision(this);
 
-        if (robotWidth >= robotLength) {
+       /* if (robotWidth >= robotLength) {
             greatLength = robotWidth;
         }
         else {
@@ -75,7 +75,7 @@ public class AMLPathingRed extends LinearOpMode {
         clearance = (dicot - greatLength) / 2;
 
 
-
+*/
         waitForStart();
         if(vuf.senseRed(this) == "left")
             offset = -10;
@@ -123,7 +123,7 @@ public class AMLPathingRed extends LinearOpMode {
         //sleep(1000);
 
         //strafe across bridge
-        drive.strafeMove(this, 72 - offset, 10, .75);
+        drive.strafeMove(this, 60 - offset, 10, 1);
 //        sleep(1000);
 
 
@@ -145,7 +145,7 @@ public class AMLPathingRed extends LinearOpMode {
         outtake.lowerLiftAuto(this);
 
         //strafe to stone 2
-        drive.strafeMove(this, 105 - offset, 10, -.75);
+        drive.strafeMove(this, 90 - offset, 10, -1);
 
         //lift up
         outtake.raiseLiftAuto(this);
@@ -160,7 +160,7 @@ public class AMLPathingRed extends LinearOpMode {
 
         sleep(250);
         //drive to stone
-        drive.encoderDrive(this, -.7, -15, -15, 5);
+        drive.encoderDrive(this, -.5, -15, -15, 5);
 
         //lift down
         outtake.lowerLiftAuto(this);
@@ -176,7 +176,7 @@ public class AMLPathingRed extends LinearOpMode {
         drive.encoderDrive(this, .7, 10, 10, 5);
 
         //strafe across bridge
-        drive.strafeMove(this, 90 - offset, 10, .7);
+        drive.strafeMove(this, 85 - offset, 10, 1);
 
         //raise lift
         outtake.raiseLiftAuto(this);
@@ -188,7 +188,7 @@ public class AMLPathingRed extends LinearOpMode {
         outtake.lowerLiftAuto(this);
 
         //park
-        drive.strafeMove(this, 30 - offset, 10, -1);
+        drive.strafeMove(this, 25 - offset, 10, -1);
 
 
     }

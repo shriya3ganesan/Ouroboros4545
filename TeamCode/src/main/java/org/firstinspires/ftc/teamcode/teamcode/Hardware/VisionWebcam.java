@@ -107,7 +107,7 @@ public class VisionWebcam {
         while(opMode.opModeIsActive()) {
 
             // scan 3 columns
-            for (int colNum = bitmap.getWidth() / 2; colNum < bitmap.getWidth(); colNum++) {
+            for (int colNum = (bitmap.getWidth() / 2); colNum < bitmap.getWidth(); colNum++) {
 
                 for (int rowNum = (bitmap.getHeight() / 2) + 50; rowNum < (bitmap.getHeight() / 2) + 200; rowNum++) {
                     int pixel = bitmap.getPixel(colNum, rowNum);
@@ -178,7 +178,7 @@ public class VisionWebcam {
 
 
             // scan 3 columns
-            for (int colNum = bitmap.getWidth() / 2; colNum < bitmap.getWidth(); colNum++) {
+            for (int colNum = (bitmap.getWidth() / 2) + 50; colNum < bitmap.getWidth(); colNum++) {
 
                 for (int rowNum = (bitmap.getHeight() / 2) + 50; rowNum < (bitmap.getHeight() / 2) + 200; rowNum++){
                     int pixel = bitmap.getPixel(colNum, rowNum);
@@ -215,7 +215,7 @@ public class VisionWebcam {
 
 
 
-            if (stonexAvg < 570) {
+            if (stonexAvg < 520) {
                 pos = "left";
             } else if (stonexAvg > 700) {
                 pos = "right";

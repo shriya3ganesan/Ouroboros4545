@@ -91,6 +91,11 @@ public class AMLPathingBlue extends LinearOpMode {
 
         //lift out
 
+        outtake.rightVex.setPower(.5);
+        outtake.leftVex.setPower(-.5);
+        sleep(600);
+        outtake.leftVex.setPower(0);
+        outtake.rightVex.setPower(0);
 
         drive.encoderDrive(this, -.7, -10, -10, 5);
 
@@ -122,7 +127,7 @@ public class AMLPathingBlue extends LinearOpMode {
         //sleep(1000);
 
         //strafe across bridge
-        drive.strafeMove(this, 72 - offset, 10, -.75);
+        drive.strafeMove(this, 72 - offset, 10, -1);
 //        sleep(1000);
 
 
@@ -144,7 +149,7 @@ public class AMLPathingBlue extends LinearOpMode {
         outtake.lowerLiftAuto(this);
 
         //strafe to stone 2
-        drive.strafeMove(this, 100 - offset, 10, .75);
+        drive.strafeMove(this, 100 - offset, 10, 1);
 
         //lift up
         outtake.raiseLiftAuto(this);
@@ -159,7 +164,7 @@ public class AMLPathingBlue extends LinearOpMode {
 
         sleep(250);
         //drive to stone
-        drive.encoderDrive(this, -.7, -15, -15, 5);
+        drive.encoderDrive(this, -.5, -22, -22, 5);
 
         //lift down
         outtake.lowerLiftAuto(this);
@@ -167,7 +172,7 @@ public class AMLPathingBlue extends LinearOpMode {
         //tighten
         outtake.rightVex.setPower(-.5);
         outtake.leftVex.setPower(.5);
-        sleep(300);
+        sleep(400);
         outtake.leftVex.setPower(0);
         outtake.rightVex.setPower(0);
 
@@ -175,19 +180,19 @@ public class AMLPathingBlue extends LinearOpMode {
         drive.encoderDrive(this, .7, 10, 10, 5);
 
         //strafe across bridge
-        drive.strafeMove(this, 100 - offset, 10, -1);
+        drive.strafeMove(this, 90 - offset, 10, -1);
 
         //raise lift
         outtake.raiseLiftAuto(this);
 
         //move back
-        drive.encoderDrive(this, .7, 8, 8, 5);
+        drive.encoderDrive(this, .5, 3, 3, 5);
 
         //lower lift
         outtake.lowerLiftAuto(this);
 
         //park
-        drive.strafeMove(this, 20 - offset, 10, 1);
+        drive.strafeMove(this, 15 - offset, 10, 1);
 
 
     }
