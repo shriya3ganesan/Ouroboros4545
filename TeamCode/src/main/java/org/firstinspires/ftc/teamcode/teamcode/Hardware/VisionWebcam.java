@@ -35,7 +35,9 @@ public class VisionWebcam {
         this.opMode = opMode;
 
         // variable allows image to show up on robot controller phone
-        int cameraMonitorViewId = opMode.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", opMode.hardwareMap.appContext.getPackageName());
+        int cameraMonitorViewId = opMode.hardwareMap.appContext.getResources()
+                .getIdentifier("cameraMonitorViewId", "id",
+                        opMode.hardwareMap.appContext.getPackageName());
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
