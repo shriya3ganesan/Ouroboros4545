@@ -2,9 +2,10 @@ package org.firstinspires.ftc.teamcode.teamcode.practice;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
+@Disabled
 @Autonomous(name= "Practice Autonomous", group= "PracticeAuto")
 public class PracticeAuto extends LinearOpMode {
 

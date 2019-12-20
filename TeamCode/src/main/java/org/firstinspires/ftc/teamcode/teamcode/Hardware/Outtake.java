@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Outtake {
 
     private static final double MAXLEVEL = 14;
-    private static final double MAXHEIGHT = 34; // Inches
+    private static final double MAXHEIGHT = 34; // Inches; set to 20 inches cap for broken wire
     private static final double DISTANCE_TO_BUILD_ZONE = 1; // what ever distance is from foundation to build zone
     public Servo pushBlock;
     public Servo hookRight;
@@ -77,6 +77,7 @@ public class Outtake {
         leftVex = opMode.hardwareMap.crservo.get("LOut");
         liftLeft = opMode.hardwareMap.dcMotor.get("LLift");
         liftRight = opMode.hardwareMap.dcMotor.get("RLift");
+
         hookLeft = opMode.hardwareMap.servo.get("LHook");
         hookRight = opMode.hardwareMap.servo.get("RHook");
 

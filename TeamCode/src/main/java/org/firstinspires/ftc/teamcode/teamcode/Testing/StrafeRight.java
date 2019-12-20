@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.teamcode.Testing;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Sensors;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.VisionWebcam;
 
+@Disabled
 @Autonomous(name ="Strafe Right", group="Auto Basic")
 public class StrafeRight extends LinearOpMode {
 

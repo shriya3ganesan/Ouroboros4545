@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.teamcode.Testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Sensors;
 
+@Disabled
 @Autonomous(name ="troll Basic Blue Green Path", group="Auto Basic")
 public class TrollBotGreenPathing extends LinearOpMode {
 

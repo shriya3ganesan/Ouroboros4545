@@ -206,7 +206,12 @@ public class VisionWebcam {
                 stonexAvg += x;
             }
 
-            stonexAvg /= StoneX.size();
+            if(StoneX.size() > 0) stonexAvg /= StoneX.size();
+            else{
+                stonexAvg = 550;
+                opMode.telemetry.addData("Failed", "Divided by Zero");
+            }
+
 
 
             // get average x-coordinate value of all black pixels

@@ -1,8 +1,7 @@
 package org.firstinspires.ftc.teamcode.teamcode.NewAuto;
 
-
-public class Function {
-
+public class FunctionX { double arclengthY = 0;
+    double arclengthX = 0;
     double arclength = 0;
 
     public double aX = 0;
@@ -18,6 +17,38 @@ public class Function {
     double startT;
     double endT;
 
+    public double getArcLengthY()
+    {
+
+        double delta_t = (endT - startT) / 100000.0;
+        double t_i;
+        double sum = 0.0;
+
+        for(double i = 0; i < 100000.0; i++)
+        {
+            t_i = startT + i * delta_t;
+            sum += Math.sqrt(1 + Math.pow(getDerY(t_i), 2));
+
+        }
+        return delta_t * sum;
+    }
+
+    public double getArcLengthX()
+    {
+
+        double delta_t = (endT - startT) / 100000.0;
+        double t_i;
+        double sum = 0.0;
+
+        for(double i = 0; i < 1000.0; i++)
+        {
+            t_i = startT + i * delta_t;
+            sum += Math.sqrt(1 + Math.pow(getDerX(t_i), 2));
+
+        }
+        return delta_t * sum;
+    }
+
     public double getArcLength()
     {
 
@@ -28,12 +59,23 @@ public class Function {
         for(double i = 0; i < 1000.0; i++)
         {
             t_i = startT + i * delta_t;
-            sum += Math.sqrt(1 + Math.pow(getDerY(t_i), 2));
+            sum += Math.sqrt(Math.pow(getDerY(t_i), 2) + Math.pow(getDerX(t_i), 2));
 
         }
         return delta_t * sum;
     }
 
+    public double getArclengthY() {
+        return arclengthY;
+    }
+
+    public double getArclengthX() {
+        return arclengthX;
+    }
+
+    public double getArclength() {
+        return arclength;
+    }
 
     public double getStartT() {
         return startT;
@@ -43,7 +85,7 @@ public class Function {
         return endT;
     }
 
-    public Function(double aX, double bX, double cX, double dX, double aY, double bY, double cY, double dY, double startT, double endT) {
+    public FunctionX(double aX, double bX, double cX, double dX, double aY, double bY, double cY, double dY, double startT, double endT) {
 
 
         this.startT = startT;
@@ -59,6 +101,8 @@ public class Function {
         this.cY = cY;
         this.dY = dY;
 
+        this.arclengthY = getArcLengthY();
+        this.arclengthX = getArcLengthX();
         this.arclength = getArcLength();
     }
 
@@ -102,7 +146,9 @@ public class Function {
 
 
 
-        return "( t,"  + aY + " + " + bY + "(t -" + startT + ") + " + cY + "(t -" + startT + ")^2 + " +
+        return "( " + aX + " + " + bX + "(t -" + startT + ") + " + cX + "(t -" + startT + ")^2 + " +
+                dX + "(t -" + startT + ")^3 , " + aY + " + " + bY + "(t -" + startT + ") + " + cY + "(t -" + startT + ")^2 + " +
                 dY + "(t -" + startT + ")^3 ) ";
     }
+
 }

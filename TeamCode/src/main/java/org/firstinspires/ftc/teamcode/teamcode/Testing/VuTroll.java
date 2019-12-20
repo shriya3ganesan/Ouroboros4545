@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.teamcode.Testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 
+@Disabled
 @Autonomous(name ="Troll vuforia", group="Auto Basic")
 public class VuTroll extends LinearOpMode {
 

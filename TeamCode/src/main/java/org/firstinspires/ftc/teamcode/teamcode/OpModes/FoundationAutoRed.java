@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.teamcode.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.teamcode.teamcode.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Sensors;
 
+@Disabled
 @Autonomous(name ="AML Red Green Foundation Move", group="Auto Basic")
 public class FoundationAutoRed extends LinearOpMode{
     private ElapsedTime runtime = new ElapsedTime();

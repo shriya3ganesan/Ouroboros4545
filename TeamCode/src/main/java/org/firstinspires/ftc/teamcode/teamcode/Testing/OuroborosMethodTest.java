@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.teamcode.Testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.teamcode.NewAuto.Point;
 
 import java.util.ArrayList;
 
+@Disabled
 @Autonomous(name="Ouroboros Method", group = "Testing")
 public class OuroborosMethodTest extends LinearOpMode {
 
@@ -24,18 +26,16 @@ public class OuroborosMethodTest extends LinearOpMode {
         drive.initDriveTrain(this);
 
         ArrayList<Point> points = new ArrayList<>();
-        points.add(new Point(0, 50));
-        points.add(new Point(100, 0));
+        points.add(new Point(0, 0));
+        points.add(new Point(150, 50));
         points.add(new Point(300, 0));
 
         waitForStart();
 
 
-        //drive.splineMove(this, points, 15, 10);
-
         drive.snowWhite();
 
-
+        drive.splineMove(this, points, 5, 1);
 
 
     }

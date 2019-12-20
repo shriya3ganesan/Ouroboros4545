@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.teamcode.OpModes;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -15,6 +16,7 @@ import org.firstinspires.ftc.teamcode.teamcode.Hardware.Sensors;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.VisionWebcam;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.ZeroMap;
 
+@Disabled
 @Autonomous(name ="AML Blue Green Path", group="Auto Basic")
 public class AMLPathingBlue extends LinearOpMode {
 

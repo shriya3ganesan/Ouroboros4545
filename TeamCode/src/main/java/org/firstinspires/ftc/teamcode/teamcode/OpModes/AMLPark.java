@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.teamcode.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 
+@Disabled
 @Autonomous(name="Park", group="Auto Basic")
 public class AMLPark extends LinearOpMode {
 

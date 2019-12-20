@@ -2,10 +2,17 @@ package org.firstinspires.ftc.teamcode.teamcode.Hardware;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import java.text.DecimalFormat;
 
+import org.firstinspires.ftc.teamcode.teamcode.NewAuto.CubicSpline;
+import org.firstinspires.ftc.teamcode.teamcode.NewAuto.FunctionY;
+import org.firstinspires.ftc.teamcode.teamcode.NewAuto.Motor_Power_Spline;
+import org.firstinspires.ftc.teamcode.teamcode.NewAuto.Point;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+
+@SuppressWarnings("ALL")
 public class DriveTrain {
 
     private static double motorCounts = 518.4;
@@ -115,6 +122,8 @@ public class DriveTrain {
 
     public void initDriveTrain(LinearOpMode opMode) {
 
+        this.opMode = opMode;
+
         sensors = new Sensors();
         sensors.initSensors(opMode);
 
@@ -149,17 +158,17 @@ public class DriveTrain {
     public void turn(double speed, boolean isRight) {
 
         if (isRight) {
-            fl.setPower(-speed);
-            fr.setPower(speed);
-            bl.setPower(-speed);
-            br.setPower(speed);
+            fl.setPower(-1);
+            fr.setPower(1);
+            bl.setPower(-1);
+            br.setPower(1);
         }
         else
         {
-            fl.setPower(speed);
-            fr.setPower(-speed);
-            bl.setPower(speed);
-            br.setPower(-speed);
+            fl.setPower(1);
+            fr.setPower(-1);
+            bl.setPower(1);
+            br.setPower(-1);
         }
     }
 
@@ -181,6 +190,11 @@ public class DriveTrain {
         {
             count--;
         }
+        if(count == 0)
+        {
+          return 0;
+        }
+
         return (fl.getCurrentPosition() + fr.getCurrentPosition()
                 + br.getCurrentPosition() + bl.getCurrentPosition()) / count;
     }
@@ -192,14 +206,28 @@ public class DriveTrain {
         opMode.telemetry.update();
 */
         fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        opMode.idle();
+
         fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        opMode.idle();
+
         bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        opMode.idle();
+
         br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        opMode.idle();
 
         fl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        opMode.idle();
+
         fr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        opMode.idle();
+
         bl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        opMode.idle();
+
         br.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        opMode.idle();
 
         /*opMode.telemetry.addData("Path0", "Starting at %7d : %7d",
                 bl.getCurrentPosition(),
@@ -295,18 +323,10 @@ public class DriveTrain {
 
         while(Math.abs(averageStrafe) < target * inchCounts && runtime.seconds() < timeout && opMode.opModeIsActive())
         {
-           /* if(Math.abs(averageStrafe) < (((target * inchCounts) / 2) + 15) &&
-                    Math.abs(averageStrafe) > (((target * inchCounts) / 2) - 15)) {
-                gyroTurnStraight(opMode, 1000);
-            }*/
 
             setStrafePower(speed);
-            // strafeEqualizer();
             averageStrafe = getStrafeEncoderAverage(power);
 
-            opMode.telemetry.addData("Target : ", target * inchCounts);
-            opMode.telemetry.addData("Encoder ", averageStrafe);
-            opMode.telemetry.update();
 
             if (Math.abs(speed) < Math.abs(power)){
                 speed = speed * 1.05;
@@ -320,33 +340,10 @@ public class DriveTrain {
 
     public void setStrafePower(double power)
     {
-        runtime.reset();
-        if(power < 0) {
-            if (runtime.seconds() < 1) {
-                fr.setPower(-power);
-                br.setPower(power * .87);
-                fl.setPower(power);
-                bl.setPower(-power);
-            } else {
-                fr.setPower(-power);
-                br.setPower(power);
-                fl.setPower(power);
-                bl.setPower(-power);
-            }
-        }
-        else {
-            if (runtime.seconds() < 1) {
-                fr.setPower(-power);
-                br.setPower(power );
-                fl.setPower(power);
-                bl.setPower(-power);
-            } else {
-                fr.setPower(-power);
-                br.setPower(power);
-                fl.setPower(power * .97);
-                bl.setPower(-power);
-            }
-        }
+        fr.setPower(-power);
+        br.setPower(power);
+        fl.setPower(power);
+        bl.setPower(-power);
     }
 
     private double getStrafeEncoderAverage(double direction) {
@@ -455,7 +452,7 @@ public class DriveTrain {
                              double timeoutS) {
         runtime.reset();
         resetEncoders();
-        count = 0;
+        opMode.sleep(100);
 
         newLeftTarget = fl.getCurrentPosition() + (int) (leftInches * inchCounts);
         newRightTarget = fr.getCurrentPosition() + (int) (rightInches * inchCounts);
@@ -467,8 +464,7 @@ public class DriveTrain {
         bl.setTargetPosition(-newLeftBlarget);
         br.setTargetPosition(-newRightBlarget);
 
-
-        do {
+       do {
 
             fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -480,29 +476,16 @@ public class DriveTrain {
             bl.setPower(-speed);
             br.setPower(-speed);
 
-            opMode.telemetry.addData("Targets: ", "fl %7d : fr %7d : bl %7d : br %7d",
-                    newLeftTarget, newRightTarget, newLeftBlarget, newRightBlarget);
-            opMode.telemetry.addData("Current Positions: ", "fl %7d : fr %7d : bl %7d : br %7d",
-                    fl.getCurrentPosition(), fr.getCurrentPosition(), bl.getCurrentPosition(), br.getCurrentPosition());
-
-            opMode.telemetry.update();
-
         }
         while (opMode.opModeIsActive() && runtime.seconds() < timeoutS &&
-                Math.abs((Math.abs(newLeftTarget) - Math.abs(getEncoderAverage()))) > 5 );
+               Math.abs((Math.abs(newLeftTarget) - Math.abs(getEncoderAverage()))) > 5 );
 
 
-/*            opMode.telemetry.addData("Targets: ", "fl %7d : fr %7d : bl %7d : br %7d",
-                    newLeftTarget, newRightTarget, newLeftBlarget, newRightBlarget);
-            opMode.telemetry.addData("Current Positions: ", "fl %7d : fr %7d : bl %7d : br %7d",
-            fl.getCurrentPosition(), fr.getCurrentPosition(), bl.getCurrentPosition(), br.getCurrentPosition());
 
-            opMode.telemetry.update();*/
 
         snowWhite();
 
-
-        //opMode.sleep(50);
+        opMode.sleep(50);
     }
 
     public double[] hermite (double[] lStick) {
@@ -511,7 +494,7 @@ public class DriveTrain {
             gyre -= 90;
             quadrant++;
         }
-        // ┌∩┐(◣_◢)┌∩┐
+
         primeSin = (Math.sin(gyre / 2) * 2);
         alpha = Math.acos(primeSin);
         bOffset = primeSin * Math.cos(alpha);
@@ -534,6 +517,26 @@ public class DriveTrain {
         }
 
         return lStick;
+    }
+
+    public void turnGyro(double yaw) {
+        ElapsedTime time = new ElapsedTime();
+
+        double initYaw = sensors.getGyroYaw();
+
+        opMode.telemetry.addLine("Entered method");
+        opMode.telemetry.update();
+
+        while (Math.abs(sensors.getGyroYaw() - initYaw) < yaw) {
+            turn(1, true);
+
+            opMode.telemetry.addData("CU=urr angle", sensors.getGyroYaw());
+            opMode.telemetry.update();
+        }
+
+        opMode.telemetry.addLine("Finished turn");
+        opMode.telemetry.update();
+        snowWhite();
     }
 
     public boolean[] RDXsplineOptimize (boolean[] procReport, double aOff, double bOff, double cOff,
@@ -743,6 +746,8 @@ public class DriveTrain {
         runtime.reset();
         resetEncoders();
 
+        opMode.sleep(100);
+
         double average = 0.0;
 
         setMotorsPower(power);
@@ -771,22 +776,7 @@ public class DriveTrain {
 
     //PID Turns for Macanum Wheels
     //Proportional Integral Derivative Turn
-
-    public void gyroTurn(LinearOpMode opMode, Sensors yaw, double goal, boolean isRight, double timeOutMS) {
-
-        runtime.reset();
-        //sensors.angles = sensors.gyro.getAngularOrientation();
-
-
-        do {
-
-            turn(.3, isRight);
-
-        } while (opMode.opModeIsActive() && runtime.milliseconds() <= timeOutMS && Math.abs(goal - yaw.getGyroYaw()) > 5 );
-    }
-
-
-    public void turnPID (LinearOpMode opMode, double goal, boolean isRight, double kP, double kI,
+    public void turnPID (double goal, boolean isRight, double kP, double kI,
                          double kD, double timeOutS) {
 
         runtime.reset();
@@ -795,7 +785,7 @@ public class DriveTrain {
         prevTime = runtime.seconds();
         error = goal - sensors.getGyroYaw();
 
-        while (opMode.opModeIsActive() && runtime.seconds() <= timeOutS && Math.abs(error) > 1 ) {
+        while (runtime.seconds() <= timeOutS && Math.abs(error) > 1 ) {
 
             //  sensors.angles = sensors.gyro.getAngularOrientation();
 
@@ -852,7 +842,6 @@ public class DriveTrain {
     }
 
 
-
     public void align()
     {
         if(sensors.getGyroYaw() > 1) {
@@ -871,7 +860,28 @@ public class DriveTrain {
                 br.setPower(.25);
                 fr.setPower(.25);
             }
+            snowWhite();
         }
+    }
+
+    public void move(LinearOpMode opMode, double power, double distance, double timeout) {
+        resetEncoders();
+
+        ElapsedTime t2 = new ElapsedTime();
+
+        double initEncoder = getEncoderAverage();
+        double average = initEncoder;
+
+        t2.reset();
+
+        setMotorsPower(power);
+
+        while (Math.abs(average - initEncoder) < distance * inchCounts && t2.seconds() < timeout && opMode.opModeIsActive()) {
+
+            average = getEncoderAverage();
+        }
+        snowWhite();
+
     }
 
     public void setMotorsPower(double power)
@@ -1013,6 +1023,7 @@ public class DriveTrain {
         fl.setPower(power);
         bl.setPower(power);
     }
+
     public void rightTank(double power)
     {
         fr.setPower(power);
@@ -1029,13 +1040,13 @@ public class DriveTrain {
         return Math.abs(refact);
     }
 
-    public double getNodalRadiax () {
+    /*public double getNodalRadiax () {
         double frSpeed = fr.getPower() - (getRadiaxVertical() + getRadiaxHorizontal());
         double flSpeed = (fl.getPower() - (getRadiaxVertical() - getRadiaxHorizontal()));
         double blSpeed = bl.getPower() - (getRadiaxVertical() + getRadiaxHorizontal());
         double brSpeed = (br.getPower() - (getRadiaxVertical() - getRadiaxHorizontal()));
         return average(average(brSpeed, frSpeed), average(flSpeed, blSpeed));
-    }
+    }*/
 
     double currentRadiax;
 
@@ -1070,19 +1081,168 @@ public class DriveTrain {
     }*/
 
     public double getVector () {
-        double vector = getRadiax() + sensors.getGyroYaw();
+        double yaw = sensors.getGyroYaw();
+        while (yaw >= 360) yaw -= 360;
+        double vector = getRadiax() + yaw;
         while (vector > 360) vector -= 360;
         return vector;
     }
 
-    public void strafeSim (LinearOpMode opMode, boolean right,
-                           double error, double targetInches, double timeOut) {
-        turnPID(opMode, error, right,0.6/error,
-                0.1/error, 0.03/error, timeOut);
-        encoderDrive(opMode, .75
-                ,targetInches,targetInches, timeOut++);
-        turnPID(opMode, error, !right,0.6/error,
-                0.1/error, 0.03/error, timeOut);
+    public double getNirIsBadFlux () {
+
+        double currentEncoderTix = (br.getCurrentPosition() +
+                bl.getCurrentPosition() +
+                fl.getCurrentPosition() +
+                fr.getCurrentPosition());
+
+        double newEncoderTix = (br.getCurrentPosition() +
+                bl.getCurrentPosition() +
+                fl.getCurrentPosition() +
+                fr.getCurrentPosition());
+        double encoderTikChange = -(newEncoderTix - currentEncoderTix);
+        double storedRuntime = runtime.seconds();
+
+        double encoderVelocity = ((encoderTikChange / 1800)
+                * (4 * Math.PI)) / storedRuntime;
+
+        return encoderVelocity * storedRuntime;
     }
 
+    public double getVectorX () {
+        return Math.sin(getVector()) * getNirIsBadFlux();
+    }
+
+    public double getVectorY () {
+        return Math.cos(getVector()) * getNirIsBadFlux();
+    }
+
+    public double getBaseRadiax (double x1, double y1) {
+        return Math.atan(x1/y1);
+    }
+
+    public ArrayList<Point> conflictArray;
+
+    public void setBaseConflictArray () {
+        //ADD FOR STATEMENT
+
+        //conflictArray.add(new Point());
+        //conflictArray.add(new Point());
+        //conflictArray.add(new Point());
+        //conflictArray.add(new Point());
+        //conflictArray.add(new Point());
+    }
+
+    //public boolean checkArrayConflict () {
+
+    //}
+
+    public void splineMove(LinearOpMode linearOpMode, ArrayList<Point> points, double runtime, double kT)
+    {
+
+        ElapsedTime t = new ElapsedTime();
+        t.reset();
+
+        CubicSpline c = new CubicSpline();
+        //FunctionY[] functions = c.makeSpline(points, endHeading);
+        FunctionY[] functions = c.FindOptimizedSpline(points);
+        ArrayList<Point> splinePoints = c.SplineToPoints(functions);
+        ArrayList<Motor_Power_Spline> motorPoints = c.splinePointsToMotorPoints(splinePoints);
+
+        double rightp = 0;
+        double leftp = 0;
+        for(Motor_Power_Spline m : motorPoints)
+        {
+
+            if(t.seconds() > runtime)
+            {
+                return;
+            }
+            leftp = m.getLeftPower();
+            rightp = m.getRightPower();
+
+            leftTank(leftp);
+            rightTank(rightp);
+
+            linearOpMode.sleep((long)(m.getDeltaT() * kT));
+        }
+
+    }
+
+    public void gyroForward(LinearOpMode LopMode, Sensors sensor, double distance, double power, double runtime, double heading)
+    {
+        ElapsedTime t = new ElapsedTime();
+        t.reset();
+        resetEncoders();
+        distance = distance * inchCounts;
+
+        double powerR = power;
+        double powerL = power;
+        double changeHeading;
+
+        while(LopMode.opModeIsActive() &&  Math.abs(getEncoderAverage()) < distance && t.seconds() < runtime)
+        {
+            changeHeading = heading - (360 - sensor.getGyroYaw());
+
+            if(Math.abs(changeHeading) != 0)
+            {
+                powerR = power + Math.sin(changeHeading);
+                powerL = power - Math.sin(changeHeading);
+            }
+            else
+            {
+                powerR = power;
+                powerL = power;
+            }
+
+            rightTank(powerR);
+            leftTank(powerL);
+        }
+
+        snowWhite();
+    }
+
+    public void gyroStrafe(LinearOpMode LopMode, Sensors sensor, double distance, double power, double runtime, double heading)
+    {
+        ElapsedTime t = new ElapsedTime();
+        t.reset();
+        resetEncoders();
+        distance = distance * inchCounts;
+
+        double changeHeading;
+        double powerR = power;
+        double powerL = power;
+
+        double fr_power = power;
+        double fl_power = -power;
+        double bl_power = power;
+        double br_power = -power;
+
+        while(LopMode.opModeIsActive() &&  Math.abs((Math.abs(distance) - Math.abs(getStrafeEncoderAverage(power)))) > 5 && t.seconds() < runtime)
+        {
+            changeHeading = heading - (360 - sensor.getGyroYaw());
+
+            if(Math.abs(changeHeading) > 1)
+            {
+                fr_power = fr_power + Math.sin(changeHeading);
+                fl_power = fl_power - Math.sin(changeHeading);
+                br_power = br_power + Math.sin(changeHeading);
+                bl_power = bl_power - Math.sin(changeHeading);
+            }
+            else
+            {
+                powerR = power;
+                powerL = power;
+            }
+
+            // Set Strafe Motor Powers
+
+            fr.setPower(fr_power);
+            br.setPower(br_power);
+            fl.setPower(fl_power);
+            bl.setPower(bl_power);
+
+        }
+
+        snowWhite();
+    }
 }

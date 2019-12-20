@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.teamcode.OpModes;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -14,7 +15,8 @@ import org.firstinspires.ftc.teamcode.teamcode.Hardware.Sensors;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.VisionWebcam;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.ZeroMap;
 
-@Autonomous(name ="AML red Green Path", group="Auto Basic")
+@Disabled
+@Autonomous(name ="AML Red Green Path", group="Auto Basic")
 public class AMLPathingRed extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -94,7 +96,7 @@ public class AMLPathingRed extends LinearOpMode {
         outtake.leftVex.setPower(0);
         outtake.rightVex.setPower(0);
 
-        drive.encoderDrive(this, -.7, -10, -10, 5);
+        drive.encoderDrive(this, -.7, -15, -15, 5);
 
 
         if(offset == -10) {
@@ -119,7 +121,7 @@ public class AMLPathingRed extends LinearOpMode {
         outtake.leftVex.setPower(.5);
 
         //drive back
-        drive.encoderDrive(this, .7, 10, 10, 5);
+        drive.encoderDrive(this, .7, 18, 18, 5);
         //sleep(1000);
 
         //strafe across bridge
