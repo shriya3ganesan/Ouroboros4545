@@ -2,7 +2,6 @@ package NewCode.LeoLibraries.LeoLibraries;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Drivetrain {
@@ -188,8 +187,8 @@ public class Drivetrain {
 
         time.reset();
 
-        while (Math.abs((sensors.getGyroYaw() - initAngle)) < angleChange && opMode.opModeIsActive() && time.seconds() < timeout) {
-            turn(power * .85, turnRight);
+        while (Math.abs((sensors.getGyroYaw() - initAngle)) < angleChange - 5 && opMode.opModeIsActive() && time.seconds() < timeout) {
+            turn(power, turnRight);
 
             opMode.telemetry.addData("Angle left", (angleChange - Math.abs((sensors.getGyroYaw() - initAngle))));
             opMode.telemetry.update();
