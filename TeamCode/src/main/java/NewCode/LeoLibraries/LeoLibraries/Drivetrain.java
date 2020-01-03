@@ -32,7 +32,7 @@ public class Drivetrain {
         bl = this.opMode.hardwareMap.dcMotor.get("bl");
         br = this.opMode.hardwareMap.dcMotor.get("br");
 
-        sensors = new Sensors(opMode, true);
+        sensors = new Sensors(opMode);
 
         fl.setDirection(DcMotor.Direction.REVERSE);
         fr.setDirection(DcMotor.Direction.FORWARD);

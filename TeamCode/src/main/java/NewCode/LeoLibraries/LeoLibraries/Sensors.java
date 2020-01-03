@@ -22,7 +22,7 @@ public class Sensors {
     double startGyro;
     // constructor for initializing Sensors class
 
-    public void initSensors(LinearOpMode opMode) {
+    public Sensors(LinearOpMode opMode) {
         this.opMode = opMode;
 
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
