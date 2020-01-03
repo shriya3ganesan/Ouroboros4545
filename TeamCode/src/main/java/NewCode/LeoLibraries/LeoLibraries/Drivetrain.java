@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.security.spec.EllipticCurve;
+
 public class Drivetrain {
 
     private LinearOpMode opMode;
@@ -70,7 +72,39 @@ public class Drivetrain {
         return (fl.getCurrentPosition() + fr.getCurrentPosition()
                 + br.getCurrentPosition() + bl.getCurrentPosition()) / count;
     }
+    private double getStrafeEncoderAverage(double direction) {
 
+        double count = 4.0;
+        double average = 0;
+
+        if(fr.getCurrentPosition() == 0)
+        {
+            count--;
+        }
+        if(fl.getCurrentPosition() == 0)
+        {
+            count--;
+        }
+        if(br.getCurrentPosition() == 0)
+        {
+            count--;
+        }
+        if(bl.getCurrentPosition() == 0)
+        {
+            count--;
+        }
+        if(direction > 0)
+        {
+            average = (-1*fl.getCurrentPosition() + fr.getCurrentPosition()
+                    + -1*br.getCurrentPosition() + bl.getCurrentPosition()) / count;
+        }
+        else if(direction < 0)
+        {
+            average = (fl.getCurrentPosition() + -1*fr.getCurrentPosition()
+                    + br.getCurrentPosition() + -1*bl.getCurrentPosition()) / count;
+        }
+        return average;
+    }
 
     public void resetEncoders() {
 
@@ -106,6 +140,14 @@ public class Drivetrain {
         fr.setPower(power);
         br.setPower(power);
         bl.setPower(power);
+    }
+
+    public void setStrafePower(double power)
+    {
+        fr.setPower(-power);
+        br.setPower(power);
+        fl.setPower(power);
+        bl.setPower(-power);
     }
 
     public void snowWhite () {
@@ -162,6 +204,33 @@ public class Drivetrain {
 
     }
 
+    public void strafeMove(double target, double timeout, double power)
+    {
+
+        ElapsedTime runtime = new ElapsedTime();
+        resetEncoders();
+
+        double averageStrafe = 0.0;
+        double speed = power * .6;
+
+
+        while(Math.abs(averageStrafe) < target * inchCounts && runtime.seconds() < timeout && opMode.opModeIsActive())
+        {
+
+            setStrafePower(speed);
+            averageStrafe = getStrafeEncoderAverage(power);
+
+
+            if (Math.abs(speed) < Math.abs(power)){
+                speed = speed * 1.05;
+            }
+
+        }
+
+        gyroTurnStraight(1000);
+        snowWhite();
+    }
+
     public void turn(double power, boolean isRight)
     {
         if(isRight)
@@ -178,6 +247,38 @@ public class Drivetrain {
             fl.setPower(-power);
             bl.setPower(-power);
         }
+    }
+
+    public void gyroTurnStraight(double timeOutMS) {
+
+
+        ElapsedTime runtime = new ElapsedTime();
+        double goal = 0;
+        boolean isRight;
+
+        do  {
+
+            if (sensors.getGyroYaw() > 0 && sensors.getGyroYaw() < 180) {
+                goal = 0;
+            }
+            else {
+                goal = 360;
+            }
+
+            opMode.telemetry.addData("Goal", goal);
+            opMode.telemetry.addData("Current Heading", sensors.getGyroYaw());
+            opMode.telemetry.update();
+            if (sensors.getGyroYaw() < goal) {
+                turn(.2, false);
+            }
+            else {
+                turn(.2, true);
+            }
+
+
+        } while (opMode.opModeIsActive() && Math.abs(goal - sensors.getGyroYaw()) > 2 && runtime.milliseconds() < timeOutMS);
+
+        snowWhite();
     }
 
     public void turnGyro(double power, double angleChange, boolean turnRight, double timeout) {
