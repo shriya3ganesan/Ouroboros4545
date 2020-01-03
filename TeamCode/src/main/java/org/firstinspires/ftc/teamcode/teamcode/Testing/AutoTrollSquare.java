@@ -56,7 +56,7 @@ public class AutoTrollSquare extends LinearOpMode {
         telemetry.addLine("way before method");
         telemetry.update();
 
-        drive.turnGyro(0);
+        //drive.turnGyro(0);
 
         telemetry.addLine("Moving on");
         telemetry.update();

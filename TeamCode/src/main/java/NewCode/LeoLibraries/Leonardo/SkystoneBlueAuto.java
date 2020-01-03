@@ -20,14 +20,14 @@ public class SkystoneBlueAuto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        drive = new Drivetrain(this);
+        //drive = new Drivetrain(this);
         output = new Output(this);
         intake = new Intake(this);
 
         waitForStart();
 
-        drive.encoderMove(.5, 24, 5);
-        drive.turnGyro(1, 90, true, 5);
+        //drive.encoderMove(.5, 24, 5);
+        //drive.turnGyro(1, 90, true, 5);
 
 
 

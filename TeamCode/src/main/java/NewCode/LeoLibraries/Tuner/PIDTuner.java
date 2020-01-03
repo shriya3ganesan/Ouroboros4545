@@ -62,11 +62,12 @@ public class PIDTuner extends OpMode {
                 @Override
                 public void runOpMode() throws InterruptedException {
                     telemetry.addLine("PID Running");
-                    Drivetrain drive = new Drivetrain(this);
-                    Sensors sensors = new Sensors(this, true);
+                    //Drivetrain drive = new Drivetrain(this);
+                    Sensors sensors = new Sensors();
+                    sensors.initSensors(this);
                     telemetry.addData("Angle : ",  sensors.getGyroYaw());
 
-                    drive.turnPID(90, true, kP, kI, kD, 2);
+                    //drive.turnPID(90, true, kP, kI, kD, 2);
                 }
             };
 

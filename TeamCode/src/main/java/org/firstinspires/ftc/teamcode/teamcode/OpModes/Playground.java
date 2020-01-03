@@ -1,7 +1,7 @@
-/*
 package org.firstinspires.ftc.teamcode.teamcode.OpModes;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,39 +12,26 @@ import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Sensors;
+import org.firstinspires.ftc.robotcontroller.external.samples.ZeroMapTheta;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.ZeroMap;
 
-@Autonomous(name ="Playground", group="Auto Basic")
+@Autonomous(name ="Playground v.3.6.11", group="Auto Basic")
 public class Playground extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
     private double driveSpeed = 0.6;
 
     DriveTrain drive = new DriveTrain();
-    Sensors sensors = new Sensors();
     Intake intake = new Intake();
-    Outtake outtake = new Outtake();
-    ZeroMap zero = new ZeroMap();
+    //Outtake outtake = new Outtake();
+    ZeroMapTheta zero = new ZeroMapTheta();
 
-    double storedRuntime;
-    double encoderInches;
-    double encoderTikChange;
-    double encoderVelocity;
-    double encoderRevolutionTix = 1800;
-    double vectorPositionX = 0;
-    double vectorPositionY = 0;
-    double wheelDiam = 4;
-    double newEncoderTix;
-    double currentEncoderTix;
-    double firstBlank;
-    double accumX;
-    double accumY;
+    Sensors sensors = new Sensors();
 
     @Override
     public void runOpMode() {
 
-        */
-/*drive.fl = hardwareMap.dcMotor.get("fl");
+        drive.fl = hardwareMap.dcMotor.get("fl");
         drive.fr = hardwareMap.dcMotor.get("fr");
         drive.bl = hardwareMap.dcMotor.get("bl");
         drive.br = hardwareMap.dcMotor.get("br");
@@ -57,92 +44,89 @@ public class Playground extends LinearOpMode {
         drive.fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         drive.fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         drive.bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        drive.br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*//*
+        drive.br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
-        telemetry.addLine("Drive motors initialized");
-
+        //outtake.initOuttake(this);
         sensors.initSensors(this);
-        drive.initDriveTrain(this);
-        //zero.zeroInit(this);
+        runtime.reset();
 
-        telemetry.addLine("Gyro Initialized");
-        telemetry.update();
-
-        intake.initIntakeAuto(this);
-        outtake.initOuttakeAuto(this);
 
         waitForStart();
+        //drive.thread(this, outtake, 30);
+        drive.turn(0.6, true);
+        sleep(3000);
+        drive.encoderDrive(this, 1, -30,
+                -30, 3);
+        telemetry.addData("Completed: ", "Drive backward 30 Inches");
+        telemetry.update();
+        drive.turn(1, true);
 
-        while (vectorPositionX != 0+-1 && vectorPositionY != 20+-1) {
+        sleep(3000);
+        drive.snowWhite();
+        /*
+        sleep(2000);
+        drive.thread(this, outtake, 30);
+        telemetry.addData("Completed:", "Threaded");
+        telemetry.update();
 
-            runtime.reset();
+        outtake.lowerLiftAuto(this);
+        telemetry.addData("Completed:", "Lift Lowered");
+        telemetry.update();
 
-            currentEncoderTix = (drive.br.getCurrentPosition() +
-                    drive.bl.getCurrentPosition() +
-                    drive.fl.getCurrentPosition() +
-                    drive.fr.getCurrentPosition());
+        outtake.closeBasketAuto();
+        telemetry.addData("Completed:", "Basket Closed");
+        telemetry.update();
 
-            firstBlank = Math.atan((0 - vectorPositionX) /
-                    (20 - vectorPositionY));
-            drive.turnPID(firstBlank, true, 0.6/90, 0.1/90,
-                    0.03/90, 3);
-            firstBlank = Math.sqrt(((20 - vectorPositionY) * (20 - vectorPositionY)) +
-                    ((0 - vectorPositionX) * (0 - vectorPositionX)));
-            drive.encoderDrive(this, 1, firstBlank, firstBlank, 5);
+        drive.reverse();
+        drive.vectorDrive(this, 1, -12, sensors);
+        telemetry.addData("Completed:", "Moved Backward");
+        telemetry.update();
 
-            newEncoderTix = (drive.br.getCurrentPosition() +
-                    drive.bl.getCurrentPosition() +
-                    drive.fl.getCurrentPosition() +
-                    drive.fr.getCurrentPosition());
-            encoderTikChange = -(newEncoderTix - currentEncoderTix);
-            storedRuntime = runtime.seconds();
+        drive.vectorTurn(this, sensors, 90);
+        telemetry.addData("Completed:", "Turned");
+        telemetry.update();
+        sleep(2000);
+         */
 
-            encoderVelocity = ((encoderTikChange / encoderRevolutionTix)
-                    * (wheelDiam * Math.PI)) / storedRuntime;
+        //drive.vectorDrive(this, 1, 24, sensors);
+        //drive.vectorStrafe(this, sensors, 24, 1);
+        //drive.vectorDrive(this, 1, -24, sensors);
+        //drive.vectorStrafe(this, sensors, -24, -1);
+        //drive.vectorStrafe(this, sensors, 24,1);
 
-            encoderInches = encoderVelocity * storedRuntime;
+        //Xenon Autonomous
 
-            vectorPositionX += Math.sin(sensors.getGyroYaw())
-                    * (encoderInches);
-
-            vectorPositionY += Math.cos(sensors.getGyroYaw())
-                    * (encoderInches);
-
-            accumX += vectorPositionX;
-            accumY += vectorPositionY;
-
-            telemetry.addData("Vector Position", "(" + accumX + ", " +
-                    accumY + ")");
-            telemetry.update();
-        }
-
-        drive.turnPID( 45, true, .6 / 45, .1/45,
-        0.03 / 90, 5);
-
-        sleep(500);
-
-        drive.turnPID(90, true, .6 / 45, .1/45,
-                0.03 / 45, 5);
-
-        //drive.RDXVector(45, 24, 3000);
-        //zero.zeroBrowse(this);
+        /*
 
 
-        //drive.shaftChange(35, 5000, 48,
-                //0.6);
 
-        //!
-        //drive.strafeMove(this, 24, 5, 0.6);
+         */
 
-        //!!!
-        //drive.turnPID(this, 90, true, 0.6/90, 0.4, 0.03, 3000);
-        //drive.zeroRun(this);
-        //drive.postChange(this, true);
+        //Placed facing neutral bridge red side
 
+
+
+        /*
+        drive.vectorStrafe(this, sensors, -80, -1);
+        outtake.raiseLiftAuto(this);
+        drive.gyroTurn(this, sensors, 180, true, 3000);
+        drive.encoderDrive(this, 1, -12, -12, 3);
+        drive.setHookDown(outtake);
+        outtake.openBasketAuto();
+        outtake.refractLiftAuto(this);
+        drive.encoderDrive(this, 1, 48, 48, 5);
+        drive.gyroTurn(this, sensors, 90, true, 3000);
+        drive.encoderDrive(this, 1, -12, -12, 3);
+        drive.setHookUp(outtake);
+        drive.encoderDrive(this, 1, 20, 20, 2);
+        outtake.raiseLiftAuto(this);
+        drive.encoderDrive(this, 1, 40, 40, 4);
+        /*
+         */
+
+        drive.snowWhite();
 
     }
 
 }
-*/
 

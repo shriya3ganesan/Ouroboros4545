@@ -10,8 +10,8 @@ public class TeleOp extends TeleLib {
     public void loop(){
         arcadedrive();
         halfspeed();
-        output();
-        intake();
+        //output();
+        //intake();
 
     }
 

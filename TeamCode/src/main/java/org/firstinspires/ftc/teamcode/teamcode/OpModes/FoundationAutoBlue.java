@@ -47,11 +47,11 @@ public class FoundationAutoBlue extends LinearOpMode{
         out.hookLeft.setPosition(0);
         out.hookRight.setPosition(0);
         sleep(500);
-        drive.gyroTurnStraight(this, 1000);
+        //drive.gyroTurnStraight(this, 1000);
         drive.strafeMove(this, 70/1.8, 5, .7);
         out.lowerLiftAuto(this);
         drive.encoderDrive(this, -.4, -10, -10, 3);
-        drive.gyroTurnStraight(this, 1000);
+        //drive.gyroTurnStraight(this, 1000);
         drive.strafeMove(this, 10, 3, -.7);
         drive.encoderDrive(this, .4, 10, 10, 3);
         drive.strafeMove(this, 60/1.8 , 5, .7);

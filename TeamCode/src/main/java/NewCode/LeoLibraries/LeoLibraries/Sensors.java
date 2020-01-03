@@ -21,31 +21,25 @@ public class Sensors {
     double gyroOffset;
     double startGyro;
     // constructor for initializing Sensors class
-    public Sensors(LinearOpMode opMode, boolean IMUenabled) throws InterruptedException {
+
+    public void initSensors(LinearOpMode opMode) {
         this.opMode = opMode;
 
-        // gyro init
-        if (IMUenabled){
-            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-            parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-            parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-            parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-            parameters.loggingEnabled = true;
-            parameters.loggingTag = "IMU";
-            parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
-            gyro = this.opMode.hardwareMap.get(BNO055IMU.class, "imu");
-            gyro.initialize(parameters);
+        gyro = this.opMode.hardwareMap.get(BNO055IMU.class, "imu");
 
-            opMode.telemetry.addLine("gyro calibrated");
-            opMode.telemetry.update();
+        gyro.initialize(parameters);
+        angles = gyro.getAngularOrientation();
+        opMode.telemetry.addLine("gyro calibrated");
+        opMode.telemetry.update();
 
-            startGyro = getGyroYaw();
-            while (startGyro >= 360) startGyro -= 360;
-            gyroOffset = 0 - startGyro;
-
-        }
-
+        //uSonic = opMode.hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "Ultrasonic");
     }
 
     // Note: Due to positioning of REV Hub, yaw is the 1st Angle, roll 3rd Angle, and pitch 2nd Angle.
@@ -56,8 +50,36 @@ public class Sensors {
     }
 
     public void updateGyroR() {
-        angles = gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+        angles = gyro.getAngularOrientation().
+                toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
 
+    }
+
+    public double yaw() {
+        angles = gyro.getAngularOrientation();
+        return angles.firstAngle;
+    }
+
+    public double getTrueYaw () {
+        angles = gyro.getAngularOrientation();
+        double playTool = angles.firstAngle;
+        if (playTool == 0) {
+            playTool = -180;
+        }
+        return (playTool + 180);
+    }
+
+    public double getBestYaw() {
+        angles = gyro.getAngularOrientation();
+        double playTool = angles.firstAngle;
+        if (playTool < 0) {
+            playTool = -playTool;
+        }
+        else if (playTool > 0) {
+            playTool = -playTool;
+            playTool += 360;
+        }
+        return playTool;
     }
 
     public double MRConvert (double angle) {

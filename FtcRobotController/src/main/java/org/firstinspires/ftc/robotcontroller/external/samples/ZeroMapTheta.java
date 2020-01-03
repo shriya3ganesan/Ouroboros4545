@@ -37,7 +37,6 @@ public class ZeroMapTheta {
                     "RzwA5a6EltfxAMmtO0G8BB9SSkApxkcSzpyI0k2LxWof2YZG6x4H";
 
     private static final float mmPerInch        = 25.4f;
-    private static final float mmTargetHeight   = (6) * mmPerInch;
     private static final float stoneZ = 2.00f * mmPerInch;
 
     private OpenGLMatrix lastLocation = null;
@@ -94,7 +93,6 @@ public class ZeroMapTheta {
             phoneYRotate = 90;
         }
 
-        // Rotate the phone vertical about the X axis if it's in portrait mode
         if (PHONE_IS_PORTRAIT) {
             phoneXRotate = 90 ;
         }
@@ -115,10 +113,10 @@ public class ZeroMapTheta {
                     setPhoneInformation(robotFromCamera, parameters.cameraDirection);
         }
 
-        //opMode.waitForStart();
+        opMode.waitForStart();
 
         targetsSkyStone.activate();
-        if (!targetVisible) {
+        while (!targetVisible) {
 
             targetVisible = false;
             for (VuforiaTrackable trackable : allTrackables) {
@@ -126,8 +124,6 @@ public class ZeroMapTheta {
                     opMode.telemetry.addData("Visible Target", trackable.getName());
                     targetVisible = true;
 
-                    // getUpdatedRobotLocation() will return null if no new information is available since
-                    // the last time that call was made, or if the trackable is not currently visible.
                     OpenGLMatrix robotLocationTransform =
                             ((VuforiaTrackableDefaultListener)
                                     trackable.getListener()).getUpdatedRobotLocation();
