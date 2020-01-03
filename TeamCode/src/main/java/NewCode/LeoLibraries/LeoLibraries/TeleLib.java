@@ -205,6 +205,7 @@ public abstract class TeleLib extends OpMode {
             toggled = true;
 
 
+            time.reset();
             while(time.milliseconds() < 300)
             {
 

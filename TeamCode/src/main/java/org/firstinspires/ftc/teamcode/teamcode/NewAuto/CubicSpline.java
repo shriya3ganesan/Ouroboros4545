@@ -13,7 +13,7 @@ public class CubicSpline {
 
          */
         ArrayList<Point> points = new ArrayList<>();
-        points.add(new Point(0, 10,10));
+        points.add(new Point(0, 100,10));
         points.add(new Point(.5, 70,50));
         points.add(new Point(1, 150,20));
 
@@ -28,22 +28,23 @@ public class CubicSpline {
        FunctionY[] bestSplineY = makeSpline(points, 0,0 );
 
 
-       double delta = .1;
+       double delta = .25;
        double b = 0;
 
-       for(double i = -90; i < 90; i += delta)
+       for(double i = 0; i < 180; i += delta)
        {
 
-           for(double k = -90 ; k < 90; k += delta)
+           for(double k = 0 ; k < 180; k += delta)
            {
                splinesY.add(makeSpline(points, i, k));
-               System.out.println(b / (1800 * 1800));
+               System.out.println(b / ((180 / delta) * (180) / delta));
                b++;
            }
 
        }
 
        double arc = 0;
+       double bestl = 0;
        for(int l = 0; l < splinesY.size(); l++)
        {
            FunctionY[] spline = splinesY.get(l);
@@ -51,11 +52,13 @@ public class CubicSpline {
            if(arc < bestSplineY[0].getArclength() + bestSplineY[1].getArclength())
            {
                bestSplineY = spline;
+               bestl = l;
            }
        }
         double bestArc = bestSplineY[0].getArclength() + bestSplineY[1].getArclength();
         System.out.println(bestSplineY[0] + "  \n " + bestSplineY[1]);
         System.out.println("Arc Length : " + bestArc);
+        System.out.println("Best Angle : " + bestl/360);
        return bestSplineY;
 
     }
@@ -170,6 +173,8 @@ public class CubicSpline {
     {
 
 
+        endingHeadingY = Math.tan(endingHeadingY);
+        endingHeadingX = Math.tan(endingHeadingX);
 
         double[][] constraints = new double[16][16];
         double[] solutions = new double[16];
@@ -200,8 +205,8 @@ public class CubicSpline {
         solutions[11] = 0;
         solutions[12] = 0;
         solutions[13] = 0;
-        solutions[14] = 0;
-        solutions[15] = 0;
+        solutions[14] = endingHeadingX;
+        solutions[15] = endingHeadingY;
 
 
         //2.)   Set Constraints
@@ -330,17 +335,21 @@ public class CubicSpline {
         constraints[13][14]  = 2.0 * (t3 - t2) - 4 * (t2 - t2);
         constraints[13][15]  = 3.0 * Math.pow((t3 - t2), 2) - 6 * Math.pow(t2 - t2, 2);
 
-      /*  constraints[12][0]  =  0;
-        constraints[12][1]  = 1;
-        constraints[12][2] = 2 * (t1 - t1);
-        constraints[12][3] = 3 * Math.pow(t1 - t1, 2);
 
-        constraints[13][12] = 0;
-        constraints[13][13] = 1;
-        constraints[13][14] = 2 * (t1 - t1);
-        constraints[13][15] = 3 * Math.pow(t1 - t1, 2);*/
+        //Begining
+        constraints[14][0]  =  0;
+        constraints[14][1]  = 1;
+        constraints[14][2] = 2 * (t1 - t1);
+        constraints[14][3] = 3 * Math.pow(t1 - t1, 2);
+
+        constraints[15][8] = 0;
+        constraints[15][9] = 1;
+        constraints[15][10] = 2 * (t1 - t1);
+        constraints[15][11] = 3 * Math.pow(t1 - t1, 2);
 
 
+
+        /*//Ending
         constraints[14][4]  =  0;
         constraints[14][5]  = 1;
         constraints[14][6] = 2 * (t2 - t1);
@@ -349,7 +358,7 @@ public class CubicSpline {
         constraints[15][12] = 0;
         constraints[15][13] = 1;
         constraints[15][14] = 2 * (t3 - t2);
-        constraints[15][15] = 3 * Math.pow(t3 - t2, 2);
+        constraints[15][15] = 3 * Math.pow(t3 - t2, 2);*/
 
 
 

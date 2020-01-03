@@ -82,6 +82,7 @@ public class Output {
             }
 
             resetLiftEncoders();
+            hookUp();
         }
 
 
@@ -115,12 +116,6 @@ public class Output {
             liftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
 
-        // once coordinates placed into method robot auto aligns the whole output system to
-        // drop the block off on at the right spot
-
-        // Process : Robot Aligns, Lift Extends Up, CRServos move forward while hook connected to servo
-        // is in contact with block, when block needs to be released hook from servo extended out
-
         public void hookDown() {
             hookRight.setPosition(HOOKDOWN);
             hookLeft.setPosition(HOOKDOWN);
@@ -143,7 +138,7 @@ public class Output {
         }
 
 
-        public void raiseLiftAuto(LinearOpMode opMode) {
+        public void raiseLiftAuto() {
             liftRight.setPower(LIFTPOWER);
             liftLeft.setPower(LIFTPOWER);
 
