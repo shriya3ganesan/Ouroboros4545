@@ -248,9 +248,7 @@ public class Drivetrain {
             bl.setPower(-power);
         }
     }
-
     public void gyroTurnStraight(double timeOutMS) {
-
 
         ElapsedTime runtime = new ElapsedTime();
         double goal = 0;
