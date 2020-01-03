@@ -9,8 +9,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
-@TeleOp(name = "Tensor CAPTCHA Zero Map", group = "SorrowFiles")
-public class TCOM extends LinearOpMode {
+@TeleOp(name = "V0MCOT 3.0", group = "SorrowFiles")
+public class VOMCOT extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
@@ -37,6 +37,13 @@ public class TCOM extends LinearOpMode {
 
     private TFObjectDetector tfod;
 
+    /*
+    int bottomMargin = 448;
+    int topMargin = 0;
+    int leftMargin = 0;
+    int rightMargin = 800;
+     */
+
     @Override
     public void runOpMode() {
 
@@ -54,11 +61,38 @@ public class TCOM extends LinearOpMode {
 
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
+
         waitForStart();
 
         if (opModeIsActive()) {
             while (opModeIsActive()) {
                 if (tfod != null) {
+
+                    /*
+                    if (gamepad1.dpad_left) {
+                        rightMargin -= 1;
+                        setMargins(tfod);
+                    }
+
+                    else if (gamepad1.dpad_up) {
+                        bottomMargin -= 1;
+                        setMargins(tfod);
+                    }
+
+                    else if (gamepad1.dpad_down) {
+                        topMargin += 1;
+                        setMargins(tfod);
+                    }
+
+                    else if (gamepad1.dpad_right) {
+                        leftMargin += 1;
+                        setMargins(tfod);
+                    }
+
+                    else if (gamepad1.x) {
+                        resetMargins(tfod);
+                    }
+                    */
 
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
@@ -88,14 +122,14 @@ public class TCOM extends LinearOpMode {
                           telemetry.addData(String.format("Sky Bound (%d)", i), sky);
                           telemetry.addData(String.format("Left Bound (%d)", i), intLeft);
                           telemetry.addData(String.format("Box Point (%d)", i),
-                                "%.03f , %.03f", average(intLeft, intRight),
-                                average (sky, intDown));
+                                  "%.03f , %.03f", average(intLeft, intRight),
+                                  average (sky, intDown));
                           telemetry.addData(String.format("Box Bound (%d)", i),
                                   "%.03f , %.03f", Math.abs(Math.abs(intLeft)
                                           - Math.abs(intRight)), Math.abs(Math.abs(sky) -
-                                        Math.abs(intDown)));
+                                          Math.abs(intDown)));
                           telemetry.addData(String.format("Image Bound (%d)", i),
-                                "%.03f , %.03f", width, height);
+                                  "%.03f , %.03f", width, height);
                           telemetry.addData(String.format("Box Ratio (%d)", i),
                                   "%.03f , %.03f",
                                   Math.abs(Math.abs(intLeft) - Math.abs(intRight)) / width,
@@ -115,9 +149,7 @@ public class TCOM extends LinearOpMode {
             }
         }
 
-        if (tfod != null) {
-            tfod.shutdown();
-        }
+        check();
     }
 
     public double average(double first, double second) {
@@ -138,8 +170,27 @@ public class TCOM extends LinearOpMode {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
             "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-       tfodParameters.minimumConfidence = 0.7;
+       tfodParameters.minimumConfidence = 0.6;
        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+       tfod.setClippingMargins(300, 224, 300, 224);
+    }
+
+    public void resetMargins (TFObjectDetector tf) {
+        tf.setClippingMargins(0, 0,
+                800, 448);
+    }
+
+    /*
+    public void setMargins (TFObjectDetector tf) {
+        tf.setClippingMargins(leftMargin, topMargin,
+                rightMargin, bottomMargin);
+    }
+    */
+
+    public void check () {
+        if (tfod != null) {
+            tfod.shutdown();
+        }
     }
 }

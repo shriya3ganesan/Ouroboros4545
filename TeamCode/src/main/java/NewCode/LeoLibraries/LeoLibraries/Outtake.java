@@ -1,6 +1,4 @@
-package org.firstinspires.ftc.teamcode.teamcode.Hardware;
-
-import android.graphics.Path;
+package NewCode.LeoLibraries.LeoLibraries;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -12,9 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Outtake {
 
-    private static final double MAXLEVEL = 14;
     public static final double MAXHEIGHT = 34; // Inches
-    private static final double DISTANCE_TO_BUILD_ZONE = 1; // what ever distance is from foundation to build zone
     public Servo pushBlock;
     public Servo hookRight;
     public Servo hookLeft;
@@ -23,20 +19,11 @@ public class Outtake {
     public DcMotor liftRight;
     public DcMotor liftLeft;
 
-    boolean resetOuttakeToggle;
-    boolean openBasketToggle;
-
-    OpMode opMode;
-    LinearOpMode opMode1;
-    DriveTrain drive = new DriveTrain();
+    Drivetrain drive = new Drivetrain();
     ElapsedTime time = new ElapsedTime();
-
-    //1.055 Inches Base, Foundation is 2.25 inches
 
     boolean top;
     boolean bottom;
-
-    boolean calibrated;
 
     static final double DISTANCE_BETWEEN_BLOCKS = 4.0; // In Inches
     static final double HORIZONTALEXTENSIONTIME = 2000 ; // Time it takes for lift to extend out = length of lift / speed of motors
@@ -59,6 +46,8 @@ public class Outtake {
     double blockHeight = 5.0; //Block Height In Inches
     double prevEncoderPos = 0;
     private boolean toggled = false;
+
+    OpMode opMode;
 
     public void initOuttake(OpMode opMode) {
 
@@ -162,8 +151,6 @@ public class Outtake {
         {
             pushBlock.setPosition(1);
         }
-
-        Output_Telemetry();
 
     }
 
@@ -420,23 +407,6 @@ public class Outtake {
     }
 
 
-
-    public void Output_Telemetry()
-    {
-        opMode.telemetry.addData("Lift Bottom : ", bottom);
-        opMode.telemetry.addData("Lift Top : ", top);
-        opMode.telemetry.addData("Lift Right : ", liftRight.getCurrentPosition());
-        opMode.telemetry.addData("Lift Left : ", liftLeft.getCurrentPosition());
-        opMode.telemetry.addData("Prev Encoder Pos : ", prevEncoderPos);
-        opMode.telemetry.addData("Average : ", averageLiftPosition());
-        opMode.telemetry.addData("Block Count", blockCount);
-        opMode.telemetry.addData("Level", level);
-        opMode.telemetry.addData("Vex Power Right", rightVex.getPower());
-        opMode.telemetry.addData("Vex Power Left", leftVex.getPower());
-        opMode.telemetry.addData("Left Hook", hookLeft.getPosition());
-        opMode.telemetry.addData("Right Hook", hookRight.getPosition());
-        opMode.telemetry.addData("push block", pushBlock.getPosition());
-    }
 
     public void openBasketAuto()
     {
