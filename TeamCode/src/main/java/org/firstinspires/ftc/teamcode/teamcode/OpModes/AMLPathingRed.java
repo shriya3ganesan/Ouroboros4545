@@ -12,8 +12,7 @@ import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Sensors;
-import org.firstinspires.ftc.teamcode.teamcode.Hardware.VisionWebcam;
-import org.firstinspires.ftc.teamcode.teamcode.Hardware.ZeroMap;
+import NewCode.LeoLibraries.LeoLibraries.VisionWebcam;
 
 @Disabled
 @Autonomous(name ="AML Red Green Path", group="Auto Basic")
@@ -26,7 +25,7 @@ public class AMLPathingRed extends LinearOpMode {
     Sensors sensors = new Sensors();
     Intake intake = new Intake();
     Outtake outtake = new Outtake();
-    VisionWebcam vuf = new VisionWebcam();
+    VisionWebcam vuf = new VisionWebcam(this);
 
     public BNO055IMU gyro;
     public Orientation angles;

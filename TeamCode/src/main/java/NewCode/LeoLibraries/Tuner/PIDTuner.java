@@ -10,7 +10,7 @@ import NewCode.LeoLibraries.LeoLibraries.Sensors;
 
 
 @TeleOp(name = "PID Tuner",group = "TeleOp")
-public class PIDTuner extends OpMode {
+public class PIDTuner extends LinearOpMode {
 
 
     private DcMotor fl;
@@ -26,113 +26,78 @@ public class PIDTuner extends OpMode {
     int i = 0;
 
     @Override
-    public void init() {
+    public void runOpMode() {
 
-        fl = hardwareMap.dcMotor.get("fl");
-        fr = hardwareMap.dcMotor.get("fr");
-        bl = hardwareMap.dcMotor.get("bl");
-        br = hardwareMap.dcMotor.get("br");
+        while (opModeIsActive()) {
 
-        fl.setDirection(DcMotor.Direction.FORWARD);
-        fr.setDirection(DcMotor.Direction.REVERSE);
-        bl.setDirection(DcMotor.Direction.FORWARD);
-        br.setDirection(DcMotor.Direction.REVERSE);
-
-        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        time.reset();
-
-    }
-
-    @Override
-    public void loop() {
-
-        kP = constants[0];
-        kI = constants[1];
-        kD = constants[2];
+            constants[0] = kP;
+            constants[1] = kI;
+            constants[2] = kD;
 
 
-        if (gamepad1.a) {
-            time.reset();
-            while (time.milliseconds() < 500) {
-            }
-            LinearOpMode opMode = new LinearOpMode() {
-                @Override
-                public void runOpMode() throws InterruptedException {
-                    telemetry.addLine("PID Running");
-                    //Drivetrain drive = new Drivetrain(this);
-                    Sensors sensors = new Sensors();
-                    sensors.initSensors(this);
-                    telemetry.addData("Angle : ",  sensors.getGyroYaw());
-
-                    //drive.turnPID(90, true, kP, kI, kD, 2);
+            if (gamepad1.a) {
+                time.reset();
+                while (time.milliseconds() < 500) {
                 }
-            };
+                LinearOpMode opMode = new LinearOpMode() {
+                    @Override
+                    public void runOpMode() throws InterruptedException {
+                        telemetry.addLine("PID Running");
+                        Sensors sensors = new Sensors(this);
+                        Drivetrain drive = new Drivetrain(this);
+                        telemetry.addData("Angle : ", sensors.getGyroYaw());
 
-        }
-
-        if(gamepad1.dpad_right)
-        {
-            time.reset();
-            while(time.milliseconds() < 500)
-            {
-
-            }
-
-            i++;
-
-        }else if (gamepad1.dpad_left)
-        {
-            time.reset();
-            while(time.milliseconds() < 500)
-            {
+                        drive.turnPID(90, true, kP, kI, kD, 2);
+                    }
+                };
 
             }
 
-            i--;
-        }
-        if(gamepad1.dpad_up)
-        {
-            time.reset();
-            while(time.milliseconds() < 500)
-            {
+            if (gamepad1.dpad_right) {
+                time.reset();
+                while (time.milliseconds() < 500) {
 
+                }
+
+                i++;
+
+            } else if (gamepad1.dpad_left) {
+                time.reset();
+                while (time.milliseconds() < 500) {
+
+                }
+
+                i--;
             }
-            constants[i] += .001/90;
-        }
-        else if(gamepad1.dpad_down)
-        {
-            time.reset();
-            while(time.milliseconds() < 500)
-            {
+            if (gamepad1.dpad_up) {
+                time.reset();
+                while (time.milliseconds() < 500) {
 
+                }
+                constants[i] += .001 / 90;
+            } else if (gamepad1.dpad_down) {
+                time.reset();
+                while (time.milliseconds() < 500) {
+
+                }
+                constants[i] -= .001 / 90;
             }
-            constants[i] -= .001/90;
-        }
 
 
-        if(i == 0)
-        {
-            telemetry.addLine("kP");
+            if (i == 0) {
+                telemetry.addLine("kP");
+            } else if (i == 1) {
+                telemetry.addLine("kI");
+            } else if (i == 2) {
+                telemetry.addLine("kD");
+            } else if (i > 2) {
+                i = i % 3;
+            }
+            telemetry.addData("Proportional Constant", constants[0]);
+            telemetry.addData("Integral Constant", constants[1]);
+            telemetry.addData("Derivative Constant", constants[2]);
+            telemetry.update();
         }
-        else if(i == 1)
-        {
-            telemetry.addLine("kI");
-        }
-        else if(i == 2)
-        {
-            telemetry.addLine("kD");
-        }
-        else if (i > 2)
-        {
-            i = i % 3;
-        }
-        telemetry.addData("Proportional Constant", constants[0]);
-        telemetry.addData("Integral Constant", constants[1]);
-        telemetry.addData("Derivative Constant", constants[2]);
-        telemetry.update();
 
     }
 

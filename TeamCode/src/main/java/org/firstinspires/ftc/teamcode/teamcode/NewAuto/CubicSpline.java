@@ -13,9 +13,9 @@ public class CubicSpline {
 
          */
         ArrayList<Point> points = new ArrayList<>();
-        points.add(new Point(0, 100,10));
-        points.add(new Point(.5, 70,50));
-        points.add(new Point(1, 150,20));
+        points.add(new Point(0, 0,0));
+        points.add(new Point(70, 70,50));
+        points.add(new Point(150, 150,20));
 
         s.FindOptimizedSpline(points);
     }
@@ -28,37 +28,33 @@ public class CubicSpline {
        FunctionY[] bestSplineY = makeSpline(points, 0,0 );
 
 
-       double delta = .25;
+       double delta = .1;
        double b = 0;
-
-       for(double i = 0; i < 180; i += delta)
+        double arc = 0;
+        double bestI= 0;
+        double bestK = 0;
+       for(double i = 0; i < 360; i += delta)
        {
 
-           for(double k = 0 ; k < 180; k += delta)
+           for(double k = 0 ; k < 360; k += delta)
            {
-               splinesY.add(makeSpline(points, i, k));
-               System.out.println(b / ((180 / delta) * (180) / delta));
-               b++;
+               FunctionY[] spline = makeSpline(points, i, k);
+               arc = spline[0].getArclength() + spline[1].getArclength();
+               if(arc < bestSplineY[0].getArclength() + bestSplineY[1].getArclength())
+               {
+                   bestSplineY = spline;
+                   bestI = i;
+                   bestK = k;
+               }
+               System.out.println(b / ((360 / delta) * (360) / delta));
+               b += 1;
            }
 
-       }
-
-       double arc = 0;
-       double bestl = 0;
-       for(int l = 0; l < splinesY.size(); l++)
-       {
-           FunctionY[] spline = splinesY.get(l);
-           arc = spline[0].getArclength() + spline[1].getArclength();
-           if(arc < bestSplineY[0].getArclength() + bestSplineY[1].getArclength())
-           {
-               bestSplineY = spline;
-               bestl = l;
-           }
        }
         double bestArc = bestSplineY[0].getArclength() + bestSplineY[1].getArclength();
         System.out.println(bestSplineY[0] + "  \n " + bestSplineY[1]);
         System.out.println("Arc Length : " + bestArc);
-        System.out.println("Best Angle : " + bestl/360);
+        System.out.println("Best Y Angle : " + bestI + " Best X Angle : " + bestK);
        return bestSplineY;
 
     }
@@ -267,53 +263,6 @@ public class CubicSpline {
         //X and Y Optimization Constraints - Ouroboros Method
 
 
-       /*double thalf = (t3 + t1) / 2;
-
-       if(thalf >= t2)
-       {
-
-
-           constraints[12][0]  = 0;
-           constraints[12][1]  = 1;
-           constraints[12][2]  = 0;
-           constraints[12][3]  = 0;
-           constraints[12][4]  = 0;
-           constraints[12][5]  = -1;
-           constraints[12][6]  = 2.0 * (t3 - t2) - 4 * (thalf - t2);
-           constraints[12][7]  = 3.0 * Math.pow((t3 - t2), 2) - 6 * Math.pow(thalf - t2, 2);
-
-
-           constraints[13][8]   = 0;
-           constraints[13][9]   = 1;
-           constraints[13][10]  = 0;
-           constraints[13][11]  = 0;
-           constraints[13][12]  = 0;
-           constraints[13][13]  = -1;
-           constraints[13][14]  = 2.0 * (t3 - t2) - 4 * (thalf - t2);
-           constraints[13][15]  = 3.0 * Math.pow((t3 - t2), 2) - 6 * Math.pow(thalf - t2, 2);
-       }
-       else if(thalf < t2)
-       {
-
-
-           constraints[12][0]  = 0;
-           constraints[12][1]  = 1;
-           constraints[12][2]  = 0;
-           constraints[12][3]  = 0;
-           constraints[12][4]  = 0;
-           constraints[12][5]  = -1;
-           constraints[12][6]  =  2.0 * (t3 - thalf) ;
-           constraints[12][7]  = 3.0 * Math.pow((t3 - thalf), 2);
-
-           constraints[13][8]   = 0;
-           constraints[13][9]   = 1;
-           constraints[13][10]  = 0;
-           constraints[13][11]  = 0;
-           constraints[13][12]  = 0;
-           constraints[13][13]  = -1;
-           constraints[13][14]  = 2.0 * (t3 - thalf) ;
-           constraints[13][15]  = 3.0 * Math.pow((t3 - thalf), 2);
-       }*/
 
 
         constraints[12][0]  = 0;

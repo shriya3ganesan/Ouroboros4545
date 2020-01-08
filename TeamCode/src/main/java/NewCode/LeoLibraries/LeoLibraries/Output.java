@@ -11,7 +11,7 @@ public class Output {
 
 
         private static final double MAXLEVEL = 14;
-        private static final double MAXHEIGHT = 34; // Inches; set to 20 inches cap for broken wire
+        public static final double MAXHEIGHT = 34; // Inches; set to 20 inches cap for broken wire
         private static final double DISTANCE_TO_BUILD_ZONE = 1; // what ever distance is from foundation to build zone
         public Servo pushBlock;
         public Servo hookRight;
@@ -33,11 +33,11 @@ public class Output {
         boolean bottom;
 
         static final double DISTANCE_BETWEEN_BLOCKS = 4.0; // In Inches
-        static final double HORIZONTALEXTENSIONTIME = 1000 ; // Time it takes for lift to extend out = length of lift / speed of motors
-        static final double encoderLevelCount = (360 / (Math.PI * .53));
+        public static final double HORIZONTALEXTENSIONTIME = 1000 ; // Time it takes for lift to extend out = length of lift / speed of motors
+        public static final double encoderLevelCount = (360 / (Math.PI * .53));
 
-         double LIFTPOWER = 1;
-         double HOOKDOWN = .60;
+         public double LIFTPOWER = 1;
+         double HOOKDOWN = 0;
          double HOOKUP = 1.0;
 
 
@@ -174,5 +174,20 @@ public class Output {
             leftVex.setPower(0);
         }
 
+    public void closeBasketAuto()
+    {
+        blockCount++;
+
+        rightVex.setPower(-.5);
+        leftVex.setPower(.5);
+
+        time.reset();
+        while(time.milliseconds() < HORIZONTALEXTENSIONTIME)
+        {
+        }
+
+        rightVex.setPower(0);
+        leftVex.setPower(0);
+    }
 
     }

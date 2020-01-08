@@ -4,12 +4,19 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
+
 import java.security.spec.EllipticCurve;
 
 public class Drivetrain {
 
+    public double count;
+    ElapsedTime runtime =
+            new ElapsedTime();
     private LinearOpMode opMode;
-    private Sensors sensors;
+    public LinearOpMode opModeX;
+    public Output out;
+    public Sensors sensors;
 
     private DcMotor fl;
     private DcMotor fr;
@@ -22,6 +29,10 @@ public class Drivetrain {
     public static double noLoadSpeed = 31.4 ; // Max Angular Velocity in radians/second for 20 : 1 motor
     public static double stallTorque = 2.1; // Max Torque in Newton Meters for 20 : 1 motor
     private static double inchCounts = (motorCounts / gearUp) / (wheelDiam * Math.PI);
+    private double RDx;
+    private double RDy;
+    private double baseRatio;
+    public double hTarget;
 
 
     public Drivetrain(LinearOpMode opMode) throws InterruptedException {
@@ -43,6 +54,36 @@ public class Drivetrain {
         fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
+    }
+
+    public void hook (LinearOpMode opMode, Output out, boolean down) {
+        if (down) out.hookUp();
+        else out.hookDown();
+        opMode.sleep(300);
+    }
+
+    public void vex (Output out, boolean on) {
+        if (on) {
+            out.rightVex.setPower(.5);
+            out.leftVex.setPower(-.5);
+        }
+        else {
+            out.rightVex.setPower(-.5);
+            out.leftVex.setPower(.5);
+        }
+    }
+
+    public void kill (LinearOpMode opmode, Output out) {
+        out.rightVex.setPower(.5);
+        out.leftVex.setPower(.5);
+
+        opmode.sleep(750);
+
+        out.rightVex.setPower(0);
+        out.leftVex.setPower(0);
+
 
 
     }
@@ -286,7 +327,7 @@ public class Drivetrain {
 
         time.reset();
 
-        while (Math.abs((sensors.getGyroYaw() - initAngle)) < angleChange - 5 && opMode.opModeIsActive() && time.seconds() < timeout) {
+        while (Math.abs((sensors.getGyroYaw() - initAngle)) < angleChange - 2 && opMode.opModeIsActive() && time.seconds() < timeout) {
             turn(power, turnRight);
 
             opMode.telemetry.addData("Angle left", (angleChange - Math.abs((sensors.getGyroYaw() - initAngle))));
@@ -294,6 +335,20 @@ public class Drivetrain {
 
         }
         snowWhite();
+    }
+
+    public void pid (double angle, boolean right) {
+        turnPID(angle, right, 0.6/angle,
+                0.1/angle, 0.03/angle, 5);
+    }
+
+    public void xml (double speed, double target, double angle) {
+        dulce(speed, speed - 0.1, target, angle);
+    }
+
+    public void set (LinearOpMode opMode2, Output out2) {
+        opMode = opMode2;
+
     }
 
     public void turnPID(double angleChange, boolean turnRight, double kP, double kI, double kD, double timeout) {
@@ -349,6 +404,569 @@ public class Drivetrain {
         snowWhite();
 
     }
+
+    public void refract (Output out, boolean away) {
+        lift(out, away);
+        basket(out, away);
+    }
+
+    public void reflect (Output out, boolean away) {
+
+        basket(out, away);
+        lift(out, away);
+    }
+
+    public void lift (Output out, boolean raise) {
+        if (raise) out.raiseLiftAuto();
+        else out.lowerLiftAuto();
+    }
+
+    public void basket (Output out, boolean open) {
+        if (open) out.openBasketAuto();
+        else out.closeBasketAuto();
+    }
+
+    public void mufasa(Output out) {
+        out.liftLeft.setPower(0);
+        out.liftRight.setPower(0);
+    }
+
+    public double getTargetPercentile(double reading) {
+        return Math.abs(getEncoderAverage() / reading);
+    }
+
+    public void doubleSkyStoneAuto(LinearOpMode opMode, Output out, double pos, double offset)
+    {
+        goToLocation(offset, pos);
+        thread(opMode, out,  -25);
+        refract(out, false);
+        spline(0.8, 6, 90 * pos);
+        spline(0.8, -50 + offset, -90 * pos);
+        move(.8, -5);
+        letGo(opMode, out);
+        move(.8, 8);
+        reflect(out, false);
+        spline(.7, 0, -90 * pos);
+        move(.8, -(82 - offset));
+        spline(.7, 0, 90 * pos);
+        gyroTurnStraight(2000);
+        thread(opMode, out, -18);
+        refract(out, false);
+        move(.8, 10);
+        gyroTurnStraight(1000);
+        spline(.9, 2, 90  * pos);
+        move(.7, -(65 - offset));
+        move(.5, 15);
+
+    }
+
+    private void goToLocation(double offset, double pos) {
+
+        if(offset == 0)
+        {
+            move(.8, -10);
+            return;
+        }
+        dulce(0.8, 0.4, -10, pos * 90);
+        dulce(0.8, 0.4, -offset, pos * -90);
+
+    }
+
+    public void foundationAuto(LinearOpMode opMode, Output out, double pos)
+    {
+        hook(opMode, out, false);
+        move(1, -10);
+        spline(1, 0, 90 * pos);
+        spline(1, -5, -90 * pos);
+        lift(out, true);
+        move(.6, -28);
+        hook(opMode, out, true);
+        opMode.sleep(1000);
+        xml(.9, 40, 90 * pos);
+        hook(opMode, out, false);
+        move(1, 5);
+        spline(.8, 0, -90 * pos);
+        spline(.8,5 ,90 * pos);
+        reflect(out, false);
+        move(1, 24);
+
+
+    }
+
+    private void letGo(LinearOpMode opMode, Output out) {
+        ElapsedTime time = new ElapsedTime();
+
+        out.leftVex.setPower(.5);
+        out.rightVex.setPower(.5);
+
+        out.liftLeft.setPower(1);
+        out.liftRight.setPower(1);
+
+        while(time.milliseconds() < 1000 && opMode.opModeIsActive())
+        {
+
+        }
+
+        out.leftVex.setPower(0);
+        out.rightVex.setPower(0);
+
+        out.liftLeft.setPower(0);
+        out.liftRight.setPower(0);
+
+
+    }
+
+    public void doubleSkyStoneStackAuto(LinearOpMode opMode, Output out, double pos)
+    {
+        thread(opMode, out,-30);
+        refract(out, false);
+        spline(0.8, 3, 90 * pos);
+        spline(0.8, -70, -90 * pos);
+        hook(opMode, out, false);
+        gyroTurnStraight(1000);
+        vex(out, false);
+        pass(opMode, out, -28);
+        kill(opMode, out);
+        move(.5, -2);
+        hook(opMode, out, true);
+        xml(.9, 40, 90 * pos);
+        hook(opMode, out, false);
+        move(.7, 10);
+        reflect(out, false);
+        strafeMove(-12 * pos, 5, 1);
+        move(1, 87);
+        spline(.8, 0, -90 * pos);
+        gyroTurnStraight(1000);
+        thread(opMode, out,-3);
+        refract(out, false);
+        spline(.8, 10, 90 * pos);
+        move(1, -60);
+
+    }
+    public void singleSkyStoneStackAuto (LinearOpMode opMode, Output out, double pos) {
+
+        thread(opMode, out,-30);
+        refract(out, false);
+        spline(1, 3, 90 * pos);
+        spline(1, -70, -90 * pos);
+        hook(opMode, out, false);
+        gyroTurnStraight(1000);
+        vex(out, false);
+        pass(opMode, out, -25);
+        kill(opMode, out);
+        move(.5, -2);
+        hook(opMode, out, true);
+
+        out.liftRight.setPower(.25);
+        out.liftLeft.setPower(.25);
+
+        opMode.sleep(1000);
+
+        mufasa(out);
+
+
+        xml(.9, 40, 90 * pos);
+        hook(opMode, out, false);
+        move(1, 10);
+        reflect(out, false);
+        move(1, 25);
+    }
+
+    public void pass (LinearOpMode opMode, Output out, double reverseInches) {
+        boolean liftCheck = false;
+        boolean moveCheck = false;
+        double passSpeed = 0.3;
+
+        double inches = -reverseInches;
+
+        resetEncoders();
+        count = 0;
+
+        int newLeftTarget = fl.getCurrentPosition() + (int) (inches * inchCounts);
+        int newRightTarget = fr.getCurrentPosition() + (int) (inches * inchCounts);
+        int newLeftBlarget = bl.getCurrentPosition() + (int) (inches * inchCounts);
+        int newRightBlarget = br.getCurrentPosition() + (int) (inches * inchCounts);
+
+        out.blockCount++;
+        if (out.pushBlock.getPosition() != 1)
+            out.pushBlock.setPosition(1);
+
+        out.liftRight.setPower(out.LIFTPOWER);
+        out.liftLeft.setPower(out.LIFTPOWER);
+
+        fl.setTargetPosition(-newLeftTarget);
+        fr.setTargetPosition(-newRightTarget);
+        bl.setTargetPosition(-newLeftBlarget);
+        br.setTargetPosition(-newRightBlarget);
+
+        fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        fl.setPower(-passSpeed);
+        fr.setPower(-passSpeed);
+        bl.setPower(-passSpeed);
+        br.setPower(-passSpeed);
+
+        while (opMode.opModeIsActive() && (!liftCheck || !moveCheck)) {
+
+            if (Math.abs((Math.abs(newLeftTarget) - Math.abs(getEncoderAverage()))) <= 5) {
+                moveCheck = true;
+                snowWhite();
+            }
+
+            else if (getTargetPercentile(newLeftTarget) >= 80) {
+                fl.setPower(0.2);
+                fr.setPower(0.2);
+                bl.setPower(0.2);
+                br.setPower(0.2);
+            }
+
+            else if (getTargetPercentile(newLeftTarget) >= 70) {
+                fl.setPower(0.3);
+                fr.setPower(0.3);
+                bl.setPower(0.3);
+                br.setPower(0.3);
+            }
+
+            else if (getTargetPercentile(newLeftTarget) >= 60) {
+                fl.setPower(0.4);
+                fr.setPower(0.4);
+                bl.setPower(0.4);
+                br.setPower(0.4);
+            }
+
+            else if (getTargetPercentile(newLeftTarget) >= 50) {
+                fl.setPower(0.5);
+                fr.setPower(0.5);
+                bl.setPower(0.5);
+                br.setPower(0.5);
+            }
+
+            if (out.encoderLevelCount * out.blockHeight * 1.5 <=
+                    out.averageLiftPosition()) {
+                liftCheck = true;
+                mufasa(out);
+                out.top = true;
+            }
+
+            else {
+                if (out.top && out.averageLiftPosition() >
+                        out.MAXHEIGHT * out.encoderLevelCount) {
+                    liftCheck = true;
+                    mufasa(out);
+                }
+            }
+        }
+    }
+
+    public void thread (LinearOpMode opMode, Output out, double reverseInches) {
+
+        ElapsedTime time = new ElapsedTime();
+        boolean liftCheck = false;
+        boolean basketCheck = false;
+        boolean moveCheck = false;
+
+        double inches = -reverseInches;
+
+        resetEncoders();
+        count = 0;
+
+        int newLeftTarget = fl.getCurrentPosition() + (int) (inches * inchCounts);
+        int newRightTarget = fr.getCurrentPosition() + (int) (inches * inchCounts);
+        int newLeftBlarget = bl.getCurrentPosition() + (int) (inches * inchCounts);
+        int newRightBlarget = br.getCurrentPosition() + (int) (inches * inchCounts);
+
+        out.blockCount++;
+        if (out.pushBlock.getPosition() != 1)
+            out.pushBlock.setPosition(1);
+
+        out.rightVex.setPower(.5);
+        out.leftVex.setPower(-.5);
+        runtime.reset();
+
+        out.liftRight.setPower(out.LIFTPOWER);
+        out.liftLeft.setPower(out.LIFTPOWER);
+
+        fl.setTargetPosition(-newLeftTarget);
+        fr.setTargetPosition(-newRightTarget);
+        bl.setTargetPosition(-newLeftBlarget);
+        br.setTargetPosition(-newRightBlarget);
+
+        fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        fl.setPower(-0.6);
+        fr.setPower(-0.6);
+        bl.setPower(-0.6);
+        br.setPower(-0.6);
+
+        while (opMode.opModeIsActive() && (!basketCheck || !liftCheck || !moveCheck) && time.seconds() < 5) {
+
+            if (runtime.milliseconds() >=
+                    out.HORIZONTALEXTENSIONTIME) {
+                basketCheck = true;
+                out.rightVex.setPower(0);
+                out.leftVex.setPower(0);
+            }
+
+            if (Math.abs((Math.abs(newLeftTarget) - Math.abs(getEncoderAverage()))) <= 5) {
+                moveCheck = true;
+                snowWhite();
+            }
+
+            else if (getTargetPercentile(newLeftTarget) >= 80) {
+                fl.setPower(0.2);
+                fr.setPower(0.2);
+                bl.setPower(0.2);
+                br.setPower(0.2);
+            }
+
+            else if (getTargetPercentile(newLeftTarget) >= 70) {
+                fl.setPower(0.3);
+                fr.setPower(0.3);
+                bl.setPower(0.3);
+                br.setPower(0.3);
+            }
+
+            else if (getTargetPercentile(newLeftTarget) >= 60) {
+                fl.setPower(0.4);
+                fr.setPower(0.4);
+                bl.setPower(0.4);
+                br.setPower(0.4);
+            }
+
+            else if (getTargetPercentile(newLeftTarget) >= 50) {
+                fl.setPower(0.5);
+                fr.setPower(0.5);
+                bl.setPower(0.5);
+                br.setPower(0.5);
+            }
+
+            if (out.encoderLevelCount * out.blockHeight * 1.5 <=
+                    out.averageLiftPosition()) {
+                liftCheck = true;
+                mufasa(out);
+                out.top = true;
+            }
+
+            else {
+                if (out.top && out.averageLiftPosition() >
+                        out.MAXHEIGHT * out.encoderLevelCount) {
+                    liftCheck = true;
+                    mufasa(out);
+                }
+            }
+        }
+        out.liftRight.setPower(0);
+        out.liftLeft.setPower(0);
+    }
+
+    public void spline (double originalSpeed,
+                     double target, double angle) {
+        move(originalSpeed, target);
+        rotate(originalSpeed *
+                0.5, angle);
+    }
+
+    public void dulce (double originalSpeed, double newSpeed,
+                      double target, double angle) {
+        move(originalSpeed, target);
+        rotate(newSpeed, angle);
+    }
+
+    public void candy (double speed, double target, double angle) {
+        move(speed, target);
+        best(angle);
+    }
+
+    public void best (double angle) {
+        boolean neg;
+        if (isNeg(angle)) neg = false;
+        else neg = true;
+        pid(angle, neg);
+    }
+
+    public double getError (Sensors sensors, double targetHeading) {
+        double test = sensors.getBestYaw();
+        double newTest = test - targetHeading;
+        newTest = Math.abs(newTest);
+        return newTest;
+    }
+
+    public double errorPercentile (Sensors sensors,
+                                   double targetHeading, double initial) {
+        double completed = initial - getError(sensors, targetHeading);
+        return completed / initial;
+    }
+
+    public void foundation (LinearOpMode opMode, Output out, boolean rotation,
+                             Sensors sensors, double heading) {
+        boolean liftCheck = false;
+        boolean basketCheck = false;
+        boolean moveCheck = false;
+
+        boolean liftCheck2 = false;
+        boolean liftCheck3 = false;
+
+        resetEncoders();
+        count = 0;
+
+        double initial = getError(sensors, heading);
+
+        out.blockCount++;
+        if (out.pushBlock.getPosition() != 1)
+            out.pushBlock.setPosition(1);
+
+        out.rightVex.setPower(.5);
+        out.leftVex.setPower(-.5);
+        runtime.reset();
+
+        out.liftRight.setPower(out.LIFTPOWER);
+        out.liftLeft.setPower(out.LIFTPOWER);
+
+        turn(0.4, rotation);
+
+        while (opMode.opModeIsActive() && (!basketCheck || !liftCheck || !moveCheck)) {
+
+            if (runtime.milliseconds() >=
+                    out.HORIZONTALEXTENSIONTIME) {
+                basketCheck = true;
+                out.rightVex.setPower(0);
+                out.leftVex.setPower(0);
+            }
+
+            if (getError(sensors, heading) <= 5) {
+                moveCheck = true;
+                snowWhite();
+            }
+
+            else if (errorPercentile(sensors, heading, initial) >= 95) {
+                turn(0.1, rotation);
+            }
+
+            else if (errorPercentile(sensors, heading, initial) >= 80) {
+                turn(0.2, rotation);
+            }
+
+            else if (errorPercentile(sensors, heading, initial) >= 70) {
+                turn(0.3, rotation);
+            }
+
+            if (out.encoderLevelCount * out.blockHeight * 1.5 <=
+                    out.averageLiftPosition()) {
+                liftCheck = true;
+                mufasa(out);
+                out.top = true;
+            }
+
+            else if (out.top && out.averageLiftPosition() >
+                    out.MAXHEIGHT * out.encoderLevelCount) {
+                liftCheck = true;
+                mufasa(out);
+            }
+
+        /*else if (liftCheck3 &&
+                !liftCheck2 && !liftCheck) {
+
+            if(out.averageLiftPosition() >= 0 && out.time.milliseconds()
+                    < 1000 && opMode.opModeIsActive()) liftCheck2 = false;
+
+            else {
+                liftCheck2 = true;
+                mufasa(out);
+
+                out.liftRight.setPower(1);
+                out.liftLeft.setPower(1);
+            }
+
+        }
+
+        else if (liftCheck3 && liftCheck2
+                && !liftCheck) {
+
+            if (out.encoderLevelCount * out.blockHeight * 1.5 <=
+                    out.averageLiftPosition()) {
+                liftCheck = true;
+                mufasa(out);
+                out.top = true;
+            }
+        }
+
+         */
+
+        }
+    }
+
+    public void move (double speed, double target) {
+        double neg;
+        if (isNeg(target)) neg = -1;
+        else neg = 1;
+        encoderMove(speed * neg,
+                Math.abs(target), 5);
+    }
+
+    public boolean isNeg (double neg) {
+        if (Math.abs(neg) != neg)
+            return true;
+        else return false;
+    }
+
+    public void rotate (double speed, double angle) {
+        boolean neg;
+        if (isNeg(angle))
+            neg = false;
+        else neg = true;
+        if (opMode.opModeIsActive()) {
+            turnGyro(speed,
+                    Math.abs(angle),
+                    neg, 5);
+        }
+    }
+
+    public void tread (Output out, boolean raise,
+                       double speed, double target) {
+        lift(out, raise);
+        rotate(speed, target);
+    }
+
+    public double[] lifeblood (double[] RDXlifeblood, double radiax) {
+        RDXlifeblood[0] = Math.sin(radiax);
+        RDXlifeblood[1] = Math.cos(radiax);
+
+        return RDXlifeblood;
+    }
+
+    double baseLineEncoder;
+
+    public void RDXVector (double radiax, double target, double timeOutMS) {
+
+        runtime.reset();
+        while (radiax >= 360) {
+            radiax -= 360;
+        }
+
+        RDx = Math.sin(radiax);
+        RDy = Math.cos(radiax);
+        baseRatio = RDx/RDy;
+        hTarget = (radiax * radiax) /
+                ((baseRatio * baseRatio) + 1);
+        hTarget = Math.sqrt(hTarget);
+        baseLineEncoder = getEncoderAverage();
+
+        while(Math.abs(getEncoderAverage()) < target * inchCounts
+                && runtime.milliseconds() < timeOutMS) {
+            fl.setPower(RDy - RDx);
+            fr.setPower(RDy + RDx);
+            bl.setPower(RDy + RDx);
+            br.setPower(RDy - RDx);
+        }
+        snowWhite();
+    }
+
 }
 
 

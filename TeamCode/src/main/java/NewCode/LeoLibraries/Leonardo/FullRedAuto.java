@@ -1,36 +1,28 @@
 package NewCode.LeoLibraries.Leonardo;
 
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
 
 import NewCode.LeoLibraries.LeoLibraries.Drivetrain;
 import NewCode.LeoLibraries.LeoLibraries.Intake;
 import NewCode.LeoLibraries.LeoLibraries.Output;
 
-
-@Autonomous(name = "BLUE Skystone Auto",group = "Autonomous")
-public class SkystoneBlueAuto extends LinearOpMode {
+@Autonomous(name = "RED Full Auto",group = "Autonomous")
+public class FullRedAuto extends LinearOpMode {
 
     Drivetrain drive;
-    Output output;
-    Intake intake;
+    Output out;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
-        //drive = new Drivetrain(this);
-        output = new Output(this);
-        intake = new Intake(this);
+        drive = new Drivetrain(this);
+        out = new Output(this);
 
         waitForStart();
-
-        //drive.encoderMove(.5, 24, 5);
-        //drive.turnGyro(1, 90, true, 5);
-
-
-
+        drive.singleSkyStoneStackAuto(this, out, 1);
+        //drive.doubleSkyStoneAuto(this, out, 1);
+        drive.snowWhite();
 
     }
 }

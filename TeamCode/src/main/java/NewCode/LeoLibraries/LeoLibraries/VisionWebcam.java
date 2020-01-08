@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teamcode.Hardware;
+package NewCode.LeoLibraries.LeoLibraries;
 
 import android.graphics.Bitmap;
 
@@ -32,6 +32,32 @@ public class VisionWebcam {
                     "RzwA5a6EltfxAMmtO0G8BB9SSkApxkcSzpyI0k2LxWof2YZG6x4H";
 
     public void initVision(LinearOpMode opMode) {
+        this.opMode = opMode;
+
+        // variable allows image to show up on robot controller phone
+        int cameraMonitorViewId = opMode.hardwareMap.appContext.getResources()
+                .getIdentifier("cameraMonitorViewId", "id",
+                        opMode.hardwareMap.appContext.getPackageName());
+
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+
+        // original vuforia license key
+        parameters.vuforiaLicenseKey = vuKey;
+        // hardware mapping of webcam device
+        parameters.cameraName = opMode.hardwareMap.get(WebcamName.class, "Webcam 1");
+
+        // start vuforia engine
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+        // set RGB format to 565
+        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
+
+        // allowing the frame to only be 3 images at a time
+        vuforia.setFrameQueueCapacity(3);
+        opMode.telemetry.addLine("Vision init");
+    }
+
+    public VisionWebcam(LinearOpMode opMode) {
         this.opMode = opMode;
 
         // variable allows image to show up on robot controller phone
@@ -98,32 +124,32 @@ public class VisionWebcam {
 
     public String senseBlue(LinearOpMode opMode) throws InterruptedException {
 
-        Bitmap bitmap = getBitmap();
-        ArrayList<Integer> StoneX = new ArrayList<Integer>();
+                    Bitmap bitmap = getBitmap();
+                    ArrayList<Integer> StoneX = new ArrayList<Integer>();
 
-        String pos = "";
-        int stonexAvg = 0;
+                    String pos = "";
+                    int stonexAvg = 0;
 
-        // top left = (0,0)
+                    // top left = (0,0)
 
-        while(opMode.opModeIsActive()) {
+                    while(opMode.opModeIsActive()) {
 
-            // scan 3 columns
-            for (int colNum = (bitmap.getWidth() / 2); colNum < bitmap.getWidth(); colNum++) {
+                        // scan 3 columns
+                        for (int colNum = (bitmap.getWidth() / 2); colNum < bitmap.getWidth(); colNum++) {
 
-                for (int rowNum = (bitmap.getHeight() / 2) + 50; rowNum < (bitmap.getHeight() / 2) + 200; rowNum++) {
-                    int pixel = bitmap.getPixel(colNum, rowNum);
+                            for (int rowNum = (bitmap.getHeight() / 2) + 50; rowNum < (bitmap.getHeight() / 2) + 200; rowNum++) {
+                                int pixel = bitmap.getPixel(colNum, rowNum);
 
-                    // receive R, G, and B values for each pixel
-                    int redPixel = red(pixel);
-                    int greenPixel = green(pixel);
-                    int bluePixel = blue(pixel);
+                                // receive R, G, and B values for each pixel
+                                int redPixel = red(pixel);
+                                int greenPixel = green(pixel);
+                                int bluePixel = blue(pixel);
 
                     /*opMode.telemetry.addData("Red", redPixel);
                     opMode.telemetry.addData("Green", greenPixel);
                     opMode.telemetry.addData("Blue", bluePixel);
                     opMode.telemetry.update();*/
-                    // only add x-coordinates of black pixels to list
+                                // only add x-coordinates of black pixels to list
 
                     if (redPixel < 30 && greenPixel < 30 && bluePixel < 30) {
                         StoneX.add(colNum);
@@ -139,7 +165,11 @@ public class VisionWebcam {
                 stonexAvg += x;
             }
 
-            stonexAvg /= StoneX.size();
+            if(StoneX.size() > 0) stonexAvg /= StoneX.size();
+            else{
+                stonexAvg = 550;
+                opMode.telemetry.addData("Failed", "Divided by Zero");
+            }
 
 
             // get average x-coordinate value of all yellow pixels

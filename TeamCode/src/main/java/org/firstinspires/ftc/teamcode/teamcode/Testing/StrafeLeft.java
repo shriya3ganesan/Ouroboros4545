@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Intake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Sensors;
-import org.firstinspires.ftc.teamcode.teamcode.Hardware.VisionWebcam;
+import NewCode.LeoLibraries.LeoLibraries.VisionWebcam;
 
 @Disabled
 @Autonomous(name ="Strafe Left", group="Auto Basic")
@@ -26,7 +26,7 @@ public class StrafeLeft extends LinearOpMode {
     Intake intake = new Intake();
     Outtake outtake = new Outtake();
     Sensors sensors = new Sensors();
-    VisionWebcam vuf = new VisionWebcam();
+    VisionWebcam vuf = new VisionWebcam(this);
 
     @Override
     public void runOpMode() throws InterruptedException {
