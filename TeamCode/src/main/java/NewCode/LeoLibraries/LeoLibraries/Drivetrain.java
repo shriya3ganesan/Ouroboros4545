@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
 
 import java.security.spec.EllipticCurve;
 
-public class Drivetrain {
+public class  Drivetrain {
 
     public double count;
     ElapsedTime runtime =
@@ -437,25 +437,64 @@ public class Drivetrain {
 
     public void doubleSkyStoneAuto(LinearOpMode opMode, Output out, double pos, double offset)
     {
+        //Goes to skystone
         goToLocation(offset, pos);
+
+        //catches block and moves back
         thread(opMode, out,  -25);
+
+        //tightens output on block
         refract(out, false);
+
+        //Moves and turns to cross skybridge
         spline(0.8, 6, 90 * pos);
+
+        //drives across skybridge and turns
         spline(0.8, -50 + offset, -90 * pos);
+
+        //moves backward 5 in
         move(.8, -5);
+
+        //releases grip on block
         letGo(opMode, out);
+
+        //moves forware 8 inches
         move(.8, 8);
+
+        //drops off block
         reflect(out, false);
+
+        //turn 90 degrees to go back to skystone
         spline(.7, 0, -90 * pos);
+
+        //move to skystone
         move(.8, -(82 - offset));
+
+        //turns toward stone
         spline(.7, 0, 90 * pos);
+
+        //straightens robot
         gyroTurnStraight(2000);
+
+        //moves to block
         thread(opMode, out, -18);
+
+        //captures block
         refract(out, false);
+
+        //moves forware 10 in
         move(.8, 10);
+
+        //straighten
         gyroTurnStraight(1000);
+
+        //turns
         spline(.9, 2, 90  * pos);
+
+        //drops off skystone
         move(.7, -(65 - offset));
+
+        //park
         move(.5, 15);
 
     }
