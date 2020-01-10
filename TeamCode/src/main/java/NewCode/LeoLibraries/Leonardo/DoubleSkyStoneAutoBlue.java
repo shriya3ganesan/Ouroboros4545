@@ -23,6 +23,10 @@ public class DoubleSkyStoneAutoBlue extends LinearOpMode {
         drive = new Drivetrain(this);
         out = new Output(this);
 
+
+
+        waitForStart();
+
         String ob = vision.senseBlue(this);
 
         double offset = 0;
@@ -30,12 +34,12 @@ public class DoubleSkyStoneAutoBlue extends LinearOpMode {
 
         if (ob.equals("left"))
         {
-            offset = 8;
+            offset = 4;
             telemetry.addLine("left");
         }
         else if(ob.equals("right"))
         {
-            offset = -8;
+            offset = -4;
             telemetry.addLine("right");
         }
         else {
@@ -43,8 +47,6 @@ public class DoubleSkyStoneAutoBlue extends LinearOpMode {
             telemetry.addLine("center");
         }
         telemetry.update();
-
-        waitForStart();
 
         drive.doubleSkyStoneAuto(this, out, pos, offset);
         drive.snowWhite();

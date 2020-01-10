@@ -1,6 +1,7 @@
 package NewCode.LeoLibraries.LeoLibraries;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -308,10 +309,10 @@ public class Drivetrain {
             opMode.telemetry.addData("Current Heading", sensors.getGyroYaw());
             opMode.telemetry.update();
             if (sensors.getGyroYaw() < goal) {
-                turn(.2, false);
+                turn(.3, false);
             }
             else {
-                turn(.2, true);
+                turn(.3, true);
             }
 
 
@@ -320,6 +321,59 @@ public class Drivetrain {
         snowWhite();
     }
 
+
+    public void gyroTurnNinety(double timeOutMS) {
+
+        ElapsedTime runtime = new ElapsedTime();
+        double goal = 90;
+        //boolean isRight;
+
+        do  {
+
+
+
+            opMode.telemetry.addData("Goal", goal);
+            opMode.telemetry.addData("Current Heading", sensors.getGyroYaw());
+            opMode.telemetry.update();
+            if (sensors.getGyroYaw() < goal) {
+                turn(.4, true);
+            }
+            else {
+                turn(.4, false);
+            }
+
+
+        } while (opMode.opModeIsActive() && Math.abs(goal - sensors.getGyroYaw()) > 2 && runtime.milliseconds() < timeOutMS);
+
+        snowWhite();
+    }
+
+    public void gyroTurnMinusNinety(double timeOutMS) {
+
+        ElapsedTime runtime = new ElapsedTime();
+        double goal = -90;
+        //boolean isRight;
+
+        do  {
+
+
+            opMode.telemetry.addData("Goal", goal);
+            opMode.telemetry.addData("Current Heading", sensors.getGyroYaw());
+            opMode.telemetry.update();
+            if (sensors.getGyroYaw() < goal) {
+                turn(.4, false);
+            }
+            else {
+                turn(.4, true);
+            }
+
+
+        } while (opMode.opModeIsActive() && Math.abs(goal - sensors.getGyroYaw()) > 2 && runtime.milliseconds() < timeOutMS);
+
+        snowWhite();
+    }
+
+
     public void turnGyro(double power, double angleChange, boolean turnRight, double timeout) {
         ElapsedTime time = new ElapsedTime();
 
@@ -327,7 +381,7 @@ public class Drivetrain {
 
         time.reset();
 
-        while (Math.abs((sensors.getGyroYaw() - initAngle)) < angleChange - 2 && opMode.opModeIsActive() && time.seconds() < timeout) {
+        while (Math.abs((sensors.getGyroYaw() - initAngle)) < angleChange - 5 && opMode.opModeIsActive() && time.seconds() < timeout) {
             turn(power, turnRight);
 
             opMode.telemetry.addData("Angle left", (angleChange - Math.abs((sensors.getGyroYaw() - initAngle))));
@@ -437,38 +491,53 @@ public class Drivetrain {
 
     public void doubleSkyStoneAuto(LinearOpMode opMode, Output out, double pos, double offset)
     {
+
         goToLocation(offset, pos);
+        gyroTurnStraight(1000);
         thread(opMode, out,  -25);
         refract(out, false);
-        spline(0.8, 6, 90 * pos);
-        spline(0.8, -50 + offset, -90 * pos);
-        move(.8, -5);
+        out.rightVex.setPower(-.5);
+        out.leftVex.setPower(.5);
+        spline(0.8, 5, 90 * pos);
+        //gyroTurnMinusNinety(1000);
+        move(.9, -50 + offset);
         letGo(opMode, out);
-        move(.8, 8);
+        move(.9, 5);
         reflect(out, false);
-        spline(.7, 0, -90 * pos);
-        move(.8, -(82 - offset));
-        spline(.7, 0, 90 * pos);
-        gyroTurnStraight(2000);
-        thread(opMode, out, -18);
-        refract(out, false);
-        move(.8, 10);
+        if(offset*pos == -5)
+        {
+            offset = 4;
+        }
+        move(1, (65 - offset));
+        move(.7, 11);
+        spline(.7 , 0, -90 * pos);
         gyroTurnStraight(1000);
-        spline(.9, 2, 90  * pos);
-        move(.7, -(65 - offset));
-        move(.5, 15);
-
+        thread(opMode, out, -16);
+        refract(out, false);
+        out.rightVex.setPower(-.5);
+        out.leftVex.setPower(.5);
+        move(.9, 10);
+        gyroTurnStraight(1000);
+        spline(.7, 0, 90  * pos);
+        move(1, -(58 - (offset)));
+        thread(opMode, out, -15);
+        reflect(out, false);
+        move(.7, 12);
+        snowWhite();
     }
 
     private void goToLocation(double offset, double pos) {
 
         if(offset == 0)
         {
-            move(.8, -10);
+            move(.6, -5);
             return;
         }
-        dulce(0.8, 0.4, -10, pos * 90);
-        dulce(0.8, 0.4, -offset, pos * -90);
+
+        double secondPos = offset / Math.abs(offset);
+        spline(.8, -8, 90 * pos * secondPos);
+        spline(.8, -Math.abs(offset), -90 * pos * secondPos);
+
 
     }
 
@@ -476,19 +545,20 @@ public class Drivetrain {
     {
         hook(opMode, out, false);
         move(1, -10);
-        spline(1, 0, 90 * pos);
-        spline(1, -5, -90 * pos);
+        spline(.7, 0, 90 * pos);
+        spline(.7, -5, -90 * pos);
+        gyroTurnStraight(1000);
         lift(out, true);
-        move(.6, -28);
+        move(.6, -20);
         hook(opMode, out, true);
         opMode.sleep(1000);
-        xml(.9, 40, 90 * pos);
+        xml(.7, 40, 90 * pos);
         hook(opMode, out, false);
         move(1, 5);
         spline(.8, 0, -90 * pos);
         spline(.8,5 ,90 * pos);
         reflect(out, false);
-        move(1, 24);
+        move(.7, 26);
 
 
     }
@@ -496,8 +566,8 @@ public class Drivetrain {
     private void letGo(LinearOpMode opMode, Output out) {
         ElapsedTime time = new ElapsedTime();
 
-        out.leftVex.setPower(.5);
         out.rightVex.setPower(.5);
+        out.leftVex.setPower(-.5);
 
         out.liftLeft.setPower(1);
         out.liftRight.setPower(1);
@@ -704,7 +774,7 @@ public class Drivetrain {
         bl.setPower(-0.6);
         br.setPower(-0.6);
 
-        while (opMode.opModeIsActive() && (!basketCheck || !liftCheck || !moveCheck) && time.seconds() < 5) {
+        while (opMode.opModeIsActive() && (!basketCheck || !liftCheck || !moveCheck) && time.seconds() < 3) {
 
             if (runtime.milliseconds() >=
                     out.HORIZONTALEXTENSIONTIME) {
@@ -763,6 +833,7 @@ public class Drivetrain {
         }
         out.liftRight.setPower(0);
         out.liftLeft.setPower(0);
+        snowWhite();
     }
 
     public void spline (double originalSpeed,

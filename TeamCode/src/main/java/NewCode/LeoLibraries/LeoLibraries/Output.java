@@ -88,11 +88,12 @@ public class Output {
 
         public void lowerLiftAuto()
         {
+            ElapsedTime time = new ElapsedTime();
             liftRight.setPower(-1);
             liftLeft.setPower(-1);
 
             time.reset();
-            while(averageLiftPosition() >= 0 && time.milliseconds() < 1000 && opMode.opModeIsActive())
+            while(averageLiftPosition() >= 0 && time.milliseconds() < 2000 && opMode.opModeIsActive())
             {
 
             }

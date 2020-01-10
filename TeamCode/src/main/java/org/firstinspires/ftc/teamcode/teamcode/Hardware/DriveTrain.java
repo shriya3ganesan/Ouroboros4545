@@ -4,10 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.teamcode.NewAuto.CubicSpline;
-import org.firstinspires.ftc.teamcode.teamcode.NewAuto.FunctionY;
-import org.firstinspires.ftc.teamcode.teamcode.NewAuto.Motor_Power_Spline;
-import org.firstinspires.ftc.teamcode.teamcode.NewAuto.Point;
+import NewCode.LeoLibraries.Judging.CubicSpline;
+import NewCode.LeoLibraries.Judging.FunctionY;
+import NewCode.LeoLibraries.Judging.Motor_Power_Spline;
+import NewCode.LeoLibraries.Judging.Point;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

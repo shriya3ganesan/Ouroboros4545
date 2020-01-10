@@ -18,7 +18,8 @@ import static android.graphics.Color.blue;
 import static android.graphics.Color.green;
 import static android.graphics.Color.red;
 
-public class VisionWebcam {
+public class
+VisionWebcam {
 
     LinearOpMode opMode;
     private VuforiaLocalizer vuforia;

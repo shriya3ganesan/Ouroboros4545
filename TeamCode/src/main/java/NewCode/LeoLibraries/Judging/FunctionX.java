@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teamcode.NewAuto;
+package NewCode.LeoLibraries.Judging;
 
 public class FunctionX { double arclengthY = 0;
     double arclengthX = 0;

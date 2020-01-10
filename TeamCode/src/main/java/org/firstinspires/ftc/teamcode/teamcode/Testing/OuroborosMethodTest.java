@@ -6,9 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
-import org.firstinspires.ftc.teamcode.teamcode.NewAuto.CubicSpline;
-import org.firstinspires.ftc.teamcode.teamcode.NewAuto.Motor_Power_Spline;
-import org.firstinspires.ftc.teamcode.teamcode.NewAuto.Point;
+import NewCode.LeoLibraries.Judging.CubicSpline;
+import NewCode.LeoLibraries.Judging.Point;
 
 import java.util.ArrayList;
 

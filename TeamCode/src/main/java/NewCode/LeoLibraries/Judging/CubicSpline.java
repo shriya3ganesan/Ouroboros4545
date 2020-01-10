@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teamcode.NewAuto;
+package NewCode.LeoLibraries.Judging;
 
 import java.util.ArrayList;
 
@@ -14,8 +14,8 @@ public class CubicSpline {
          */
         ArrayList<Point> points = new ArrayList<>();
         points.add(new Point(0, 0,0));
-        points.add(new Point(70, 70,50));
-        points.add(new Point(150, 150,20));
+        points.add(new Point(10, 10,50));
+        points.add(new Point(15, 300,60));
 
         s.FindOptimizedSpline(points);
     }
@@ -28,7 +28,7 @@ public class CubicSpline {
        FunctionY[] bestSplineY = makeSpline(points, 0,0 );
 
 
-       double delta = .1;
+       double delta = 1;
        double b = 0;
         double arc = 0;
         double bestI= 0;
@@ -54,6 +54,10 @@ public class CubicSpline {
         double bestArc = bestSplineY[0].getArclength() + bestSplineY[1].getArclength();
         System.out.println(bestSplineY[0] + "  \n " + bestSplineY[1]);
         System.out.println("Arc Length : " + bestArc);
+        double arcx=  bestSplineY[0].getArclengthX() + bestSplineY[1].getArclengthX();
+                System.out.println("Arc Length X: " + arcx);
+        double arcy=  bestSplineY[0].getArclengthY() + bestSplineY[1].getArclengthY();
+        System.out.println("Arc Length Y: " + arcy);
         System.out.println("Best Y Angle : " + bestI + " Best X Angle : " + bestK);
        return bestSplineY;
 

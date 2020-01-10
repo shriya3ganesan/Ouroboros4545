@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teamcode.NewAuto;
+package NewCode.LeoLibraries.Judging;
 
 public class Motor_Power_Spline {
     double leftPower;
