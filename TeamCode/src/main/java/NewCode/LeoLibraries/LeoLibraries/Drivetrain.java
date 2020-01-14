@@ -1,14 +1,13 @@
 package NewCode.LeoLibraries.LeoLibraries;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
 
-import java.security.spec.EllipticCurve;
 
-public class  Drivetrain {
+public class Drivetrain {
 
     public double count;
     ElapsedTime runtime =
@@ -308,10 +307,10 @@ public class  Drivetrain {
             opMode.telemetry.addData("Current Heading", sensors.getGyroYaw());
             opMode.telemetry.update();
             if (sensors.getGyroYaw() < goal) {
-                turn(.2, false);
+                turn(.3, false);
             }
             else {
-                turn(.2, true);
+                turn(.3, true);
             }
 
 
@@ -320,6 +319,59 @@ public class  Drivetrain {
         snowWhite();
     }
 
+
+    public void gyroTurnNinety(double timeOutMS) {
+
+        ElapsedTime runtime = new ElapsedTime();
+        double goal = 90;
+        //boolean isRight;
+
+        do  {
+
+
+
+            opMode.telemetry.addData("Goal", goal);
+            opMode.telemetry.addData("Current Heading", sensors.getGyroYaw());
+            opMode.telemetry.update();
+            if (sensors.getGyroYaw() < goal) {
+                turn(.4, true);
+            }
+            else {
+                turn(.4, false);
+            }
+
+
+        } while (opMode.opModeIsActive() && Math.abs(goal - sensors.getGyroYaw()) > 2 && runtime.milliseconds() < timeOutMS);
+
+        snowWhite();
+    }
+
+    public void gyroTurnMinusNinety(double timeOutMS) {
+
+        ElapsedTime runtime = new ElapsedTime();
+        double goal = -90;
+        //boolean isRight;
+
+        do  {
+
+
+            opMode.telemetry.addData("Goal", goal);
+            opMode.telemetry.addData("Current Heading", sensors.getGyroYaw());
+            opMode.telemetry.update();
+            if (sensors.getGyroYaw() < goal) {
+                turn(.4, false);
+            }
+            else {
+                turn(.4, true);
+            }
+
+
+        } while (opMode.opModeIsActive() && Math.abs(goal - sensors.getGyroYaw()) > 2 && runtime.milliseconds() < timeOutMS);
+
+        snowWhite();
+    }
+
+
     public void turnGyro(double power, double angleChange, boolean turnRight, double timeout) {
         ElapsedTime time = new ElapsedTime();
 
@@ -327,7 +379,7 @@ public class  Drivetrain {
 
         time.reset();
 
-        while (Math.abs((sensors.getGyroYaw() - initAngle)) < angleChange - 2 && opMode.opModeIsActive() && time.seconds() < timeout) {
+        while (Math.abs((sensors.getGyroYaw() - initAngle)) < angleChange - 5 && opMode.opModeIsActive() && time.seconds() < timeout) {
             turn(power, turnRight);
 
             opMode.telemetry.addData("Angle left", (angleChange - Math.abs((sensors.getGyroYaw() - initAngle))));
@@ -422,8 +474,8 @@ public class  Drivetrain {
     }
 
     public void basket (Output out, boolean open) {
-        if (open) out.openBasketAuto();
-        else out.closeBasketAuto();
+        if (open) out.openBasketAuto(1000);
+        else out.closeBasketAuto(1000);
     }
 
     public void mufasa(Output out) {
@@ -435,79 +487,129 @@ public class  Drivetrain {
         return Math.abs(getEncoderAverage() / reading);
     }
 
-    public void doubleSkyStoneAuto(LinearOpMode opMode, Output out, double pos, double offset)
+    public void doubleSkyStoneAutoCenter(LinearOpMode opMode, Output out, double pos, double offset)
     {
-        //Goes to skystone
+
         goToLocation(offset, pos);
-
-        //catches block and moves back
+        gyroTurnStraight(1000);
         thread(opMode, out,  -25);
-
-        //tightens output on block
         refract(out, false);
-
-        //Moves and turns to cross skybridge
-        spline(0.8, 6, 90 * pos);
-
-        //drives across skybridge and turns
-        spline(0.8, -50 + offset, -90 * pos);
-
-        //moves backward 5 in
-        move(.8, -5);
-
-        //releases grip on block
+        out.rightVex.setPower(-.5);
+        out.leftVex.setPower(.5);
+        spline(0.8, 10, 90 * pos);
+        //gyroTurnMinusNinety(1000);
+        move(.9, -50 + offset);
         letGo(opMode, out);
+        move(.5, 5);
+        reflect(out, false);
+        if(offset*pos == -5)
+        {
+            offset = 4;
+        }
+        move(1, (50 - offset));
+        move(.6, 19);
+        spline(.7 , 0, -90 * pos);
+        gyroTurnStraight(1000);
+        thread(opMode, out, -16);
+        refract(out, false);
+        out.rightVex.setPower(-.5);
+        out.leftVex.setPower(.5);
+        move(.9, 12);
+        gyroTurnStraight(1000);
+        spline(1, 0, 90  * pos);
+        move(1, -(71 - (offset)));
+        letGo(opMode, out);
+        move(.5, 5);
+        reflect(out, false);
+        move(.7, 12);
+        snowWhite();
+    }
 
-        //moves forware 8 inches
-        move(.8, 8);
+    public void doubleSkyStoneAutoWall(LinearOpMode opMode, Output out, double pos, double offset)
+    {
 
-        //drops off block
+        goToLocation(offset, pos);
+        gyroTurnStraight(1000);
+        thread(opMode, out,  -25);
+        refract(out, false);
+        out.rightVex.setPower(-.5);
+        out.leftVex.setPower(.5);
+        spline(0.8, 8, 90 * pos);
+        //gyroTurnMinusNinety(1000);
+        move(.9, -54);
+        letGo(opMode, out);
+        move(.5, 5);
         reflect(out, false);
 
-        //turn 90 degrees to go back to skystone
-        spline(.7, 0, -90 * pos);
-
-        //move to skystone
-        move(.8, -(82 - offset));
-
-        //turns toward stone
-        spline(.7, 0, 90 * pos);
-
-        //straightens robot
-        gyroTurnStraight(2000);
-
-        //moves to block
-        thread(opMode, out, -18);
-
-        //captures block
-        refract(out, false);
-
-        //moves forware 10 in
-        move(.8, 10);
-
-        //straighten
+        move(1, 54);
+        move(.6, 21);
+        spline(.7 , 0, -90 * pos);
         gyroTurnStraight(1000);
-
-        //turns
-        spline(.9, 2, 90  * pos);
-
-        //drops off skystone
-        move(.7, -(65 - offset));
-
-        //park
-        move(.5, 15);
-
+        thread(opMode, out, -16);
+        refract(out, false);
+        out.rightVex.setPower(-.5);
+        out.leftVex.setPower(.5);
+        move(.9, 10);
+        gyroTurnStraight(1000);
+        spline(1, 0, 90  * pos);
+        move(1, -(77));
+        letGo(opMode, out);
+        move(.5, 5);
+        reflect(out, false);
+        move(.7, 12);
+        snowWhite();
     }
+    public void doubleSkyStoneAutoBridge(LinearOpMode opMode, Output out, double pos, double offset)
+    {
+
+        goToLocation(offset, pos);
+        gyroTurnStraight(1000);
+        thread(opMode, out,  -25);
+        refract(out, false);
+        out.rightVex.setPower(-.5);
+        out.leftVex.setPower(.5);
+        spline(0.8, 9, 90 * pos);
+        //gyroTurnMinusNinety(1000);
+        move(.9, -46);
+        letGo(opMode, out);
+        move(.5, 5);
+        reflect(out, false);
+        if(offset*pos == -5)
+        {
+            offset = 4;
+        }
+        move(1, 55);
+        move(.7, 21);
+        spline(.7 , 0, -90 * pos);
+        gyroTurnStraight(1000);
+        thread(opMode, out, -16);
+        refract(out, false);
+        out.rightVex.setPower(-.5);
+        out.leftVex.setPower(.5);
+        move(.9, 10);
+        gyroTurnStraight(1000);
+        spline(.7, 0, 90  * pos);
+        move(1, -(69));
+        letGo(opMode, out);
+        move(.5, 5);
+        reflect(out, false);
+        move(.7, 12);
+        snowWhite();
+    }
+
 
     private void goToLocation(double offset, double pos) {
 
         if(offset == 0)
         {
-            move(.8, -10);
+            move(.6, -5);
             return;
         }
-        dulce(0.8, 0.4, -10, pos * 90);
-        dulce(0.8, 0.4, -offset, pos * -90);
+
+        double secondPos = offset / Math.abs(offset);
+        spline(.8, -4, 90 * pos * secondPos);
+        spline(.8, -Math.abs(offset), -90 * pos * secondPos);
+
 
     }
 
@@ -515,19 +617,20 @@ public class  Drivetrain {
     {
         hook(opMode, out, false);
         move(1, -10);
-        spline(1, 0, 90 * pos);
-        spline(1, -5, -90 * pos);
+        spline(.7, 0, 90 * pos);
+        spline(.7, -5, -90 * pos);
+        gyroTurnStraight(1000);
         lift(out, true);
-        move(.6, -28);
+        move(.6, -20);
         hook(opMode, out, true);
         opMode.sleep(1000);
-        xml(.9, 40, 90 * pos);
+        xml(.7, 40, 90 * pos);
         hook(opMode, out, false);
         move(1, 5);
         spline(.8, 0, -90 * pos);
         spline(.8,5 ,90 * pos);
         reflect(out, false);
-        move(1, 24);
+        move(.7, 26);
 
 
     }
@@ -535,14 +638,14 @@ public class  Drivetrain {
     private void letGo(LinearOpMode opMode, Output out) {
         ElapsedTime time = new ElapsedTime();
 
-        out.leftVex.setPower(.5);
         out.rightVex.setPower(.5);
+        out.leftVex.setPower(-.5);
 
-        out.liftLeft.setPower(1);
-        out.liftRight.setPower(1);
 
         while(time.milliseconds() < 1000 && opMode.opModeIsActive())
         {
+            out.liftLeft.setPower(1);
+            out.liftRight.setPower(1);
 
         }
 
@@ -743,7 +846,7 @@ public class  Drivetrain {
         bl.setPower(-0.6);
         br.setPower(-0.6);
 
-        while (opMode.opModeIsActive() && (!basketCheck || !liftCheck || !moveCheck) && time.seconds() < 5) {
+        while (opMode.opModeIsActive() && (!basketCheck || !liftCheck || !moveCheck) && time.seconds() < 3) {
 
             if (runtime.milliseconds() >=
                     out.HORIZONTALEXTENSIONTIME) {
@@ -802,17 +905,18 @@ public class  Drivetrain {
         }
         out.liftRight.setPower(0);
         out.liftLeft.setPower(0);
+        snowWhite();
     }
 
     public void spline (double originalSpeed,
-                     double target, double angle) {
+                        double target, double angle) {
         move(originalSpeed, target);
         rotate(originalSpeed *
                 0.5, angle);
     }
 
     public void dulce (double originalSpeed, double newSpeed,
-                      double target, double angle) {
+                       double target, double angle) {
         move(originalSpeed, target);
         rotate(newSpeed, angle);
     }
@@ -843,7 +947,7 @@ public class  Drivetrain {
     }
 
     public void foundation (LinearOpMode opMode, Output out, boolean rotation,
-                             Sensors sensors, double heading) {
+                            Sensors sensors, double heading) {
         boolean liftCheck = false;
         boolean basketCheck = false;
         boolean moveCheck = false;
@@ -1007,7 +1111,4 @@ public class  Drivetrain {
     }
 
 }
-
-
-
 

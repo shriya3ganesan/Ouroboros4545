@@ -20,6 +20,8 @@ public class Playground extends LinearOpMode {
 
         waitForStart();
 
+        drive.gyroTurnNinety(1000);
+
         //drive.thread( this, out,-30);
         //drive.lift(out,false);
         //drive.basket(out,false);

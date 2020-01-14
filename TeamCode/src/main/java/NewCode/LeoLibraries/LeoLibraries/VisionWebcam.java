@@ -240,7 +240,7 @@ public class VisionWebcam {
 
             if(StoneX.size() > 0) stonexAvg /= StoneX.size();
             else{
-                stonexAvg = 550;
+                stonexAvg = 600;
                 opMode.telemetry.addData("Failed", "Divided by Zero");
             }
 
@@ -252,7 +252,7 @@ public class VisionWebcam {
 
 
 
-            if (stonexAvg < 520) {
+            if (stonexAvg < 540) {
                 pos = "left";
             } else if (stonexAvg > 700) {
                 pos = "right";
