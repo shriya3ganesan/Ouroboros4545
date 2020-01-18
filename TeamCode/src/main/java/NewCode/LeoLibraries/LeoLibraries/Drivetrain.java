@@ -60,8 +60,8 @@ public class Drivetrain {
     }
 
     public void hook (LinearOpMode opMode, Output out, boolean down) {
-        if (down) out.hookUp();
-        else out.hookDown();
+        if (down) out.hookDown();
+        else out.hookUp();
         opMode.sleep(300);
     }
 
@@ -476,8 +476,8 @@ public class Drivetrain {
     }
 
     public void basket (Output out, boolean open) {
-        if (open) out.openBasketAuto();
-        else out.closeBasketAuto();
+        if (open) out.openBasketAuto(1);
+        else out.closeBasketAuto(1);
     }
 
     public void mufasa(Output out) {

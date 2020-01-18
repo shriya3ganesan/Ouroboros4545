@@ -12,6 +12,7 @@ public class TeleOp extends TeleLib {
         halfspeed();
         output();
         intake();
+        cfmSpeed();
 
     }
 

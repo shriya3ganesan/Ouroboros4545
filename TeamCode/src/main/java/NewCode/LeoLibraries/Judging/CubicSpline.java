@@ -14,10 +14,26 @@ public class CubicSpline {
          */
         ArrayList<Point> points = new ArrayList<>();
         points.add(new Point(0, 0,0));
-        points.add(new Point(10, 10,50));
-        points.add(new Point(15, 300,60));
+        points.add(new Point(.5, 300,100));
+        points.add(new Point(1, 500,100));
 
-        s.FindOptimizedSpline(points);
+
+        FunctionY[] temp = s.makeSpline(points, 0, 0);
+
+        System.out.println(temp[0] + "\n" + temp[1]);
+        double arc = temp[0].getArcLength() + temp[1].getArcLength();
+        double arcx = temp[0].getArcLengthX() + temp[1].getArcLengthX();
+        double arcy = temp[0].getArcLengthY() + temp[1].getArcLengthY();
+        System.out.println("Arc Length : " + arc);
+        System.out.println("Arc Length Y : " + arcy);
+        System.out.println("Arc Length X: " + arcx);
+        double der = temp[1].getDerY(1);
+        double der2 = temp[0].getDerY(.5);
+        double der3 = temp[0].getDerY(0);
+        System.out.println(der);
+        System.out.println(der2);
+        System.out.println(der3);
+
     }
 
 
@@ -205,8 +221,8 @@ public class CubicSpline {
         solutions[11] = 0;
         solutions[12] = 0;
         solutions[13] = 0;
-        solutions[14] = endingHeadingX;
-        solutions[15] = endingHeadingY;
+        solutions[14] = 0;
+        solutions[15] = 0;
 
 
         //2.)   Set Constraints
@@ -270,26 +286,48 @@ public class CubicSpline {
 
 
         constraints[12][0]  = 0;
-        constraints[12][1]  = 1;
-        constraints[12][2]  = 0;
-        constraints[12][3]  = 0;
+        constraints[12][1]  = -1;
+        constraints[12][2]  = -4*(t2 - t1);
+        constraints[12][3]  = -6 * Math.pow(t2 - t1, 2);
         constraints[12][4]  = 0;
-        constraints[12][5]  = -1;
-        constraints[12][6]  = 2.0 * (t3 - t2) - 4 * (t2 - t2);
-        constraints[12][7]  = 3.0 * Math.pow((t3 - t2), 2) - 6 * Math.pow(t2 - t2, 2);
+        constraints[12][5]  = 1;
+        constraints[12][6]  = 2.0 * (t3 - t2);
+        constraints[12][7]  = 3.0 * Math.pow((t3 - t2), 2);
 
 
         constraints[13][8]   = 0;
-        constraints[13][9]   = 1;
-        constraints[13][10]  = 0;
-        constraints[13][11]  = 0;
+        constraints[13][9]   = -1;
+        constraints[13][10]  = -4 *(t2 - t1);
+        constraints[13][11]  = -6 * Math.pow(t2 - t1, 2);
         constraints[13][12]  = 0;
-        constraints[13][13]  = -1;
-        constraints[13][14]  = 2.0 * (t3 - t2) - 4 * (t2 - t2);
-        constraints[13][15]  = 3.0 * Math.pow((t3 - t2), 2) - 6 * Math.pow(t2 - t2, 2);
+        constraints[13][13]  = 1;
+        constraints[13][14]  = 2.0 * (t3 - t2);
+        constraints[13][15]  = 3.0 * Math.pow((t3 - t2), 2);
 
 
-        //Begining
+
+        constraints[14][0] = 0;
+        constraints[14][1] = 0;
+        constraints[14][2] = 0;
+        constraints[14][3] = -6*(t2 - t1);
+        constraints[14][4] = 0;
+        constraints[14][5] = 0;
+        constraints[14][6] = 2;
+        constraints[14][7] = 6*(t3 - t2);
+
+        constraints[15][8]  = 0;
+        constraints[15][9]  = 0;
+        constraints[15][10] = 0;
+        constraints[15][11] = -6*(t2 - t1);
+        constraints[15][12] = 0;
+        constraints[15][13] = 0;
+        constraints[15][14] = 2;
+        constraints[15][15] = 6*(t3 - t2);
+
+
+
+
+     /*   //Begining
         constraints[14][0]  =  0;
         constraints[14][1]  = 1;
         constraints[14][2] = 2 * (t1 - t1);
@@ -298,7 +336,7 @@ public class CubicSpline {
         constraints[15][8] = 0;
         constraints[15][9] = 1;
         constraints[15][10] = 2 * (t1 - t1);
-        constraints[15][11] = 3 * Math.pow(t1 - t1, 2);
+        constraints[15][11] = 3 * Math.pow(t1 - t1, 2);*/
 
 
 

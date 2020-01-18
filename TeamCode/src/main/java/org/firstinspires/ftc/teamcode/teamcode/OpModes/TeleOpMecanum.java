@@ -22,6 +22,22 @@ public class TeleOpMecanum extends OpMode {
     double left_stick_x;
     double left_stick_y;
 
+    // CFM variables
+
+    private static final double  massFoundation = 1.905; // Mass in kg
+    private static final double massStone = .1882;
+    static final double muBlocks = .78;
+    static final double muMat = .535;
+    double fix = 1.0;
+    double tolerance = .05;
+    double mass = 0.0;
+    double foundationFriction = 0.0;
+    double maxCFM_Velocity = 0.0;
+    double CFM_AngularVelocity = 0.0;
+    double cfm_power = 0.0;
+
+    int numberStackedBlocks = 0;
+
     @Override
     public void init() {
 
@@ -67,6 +83,9 @@ public class TeleOpMecanum extends OpMode {
         }
 
         telemetry.addData("Speed", speedProp);
+
+
+
 
         if(gamepad1.dpad_left)
         {

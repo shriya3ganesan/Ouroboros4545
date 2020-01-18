@@ -165,10 +165,30 @@ public class FunctionY {
     @Override
     public String toString() {
 
+        int c = 0;
+
+        switch(c){
+            case 0:
+                return
 
 
-        return "( " + aX + " + " + bX + "(t -" + startT + ") + " + cX + "(t -" + startT + ")^2 + " +
-                dX + "(t -" + startT + ")^3 , " + aY + " + " + bY + "(t -" + startT + ") + " + cY + "(t -" + startT + ")^2 + " +
-                dY + "(t -" + startT + ")^3 ) ";
+                                "( " + aX + " + " + bX + "(t -" + startT + ") + " + cX + "(t -" + startT + ")^2 + " +
+                                dX + "(t -" + startT + ")^3 , " + aY + " + " + bY + "(t -" + startT + ") + " + cY + "(t -" + startT + ")^2 + " +
+                                dY + "(t -" + startT + ")^3 ) ";
+
+            case 1:
+                return
+
+                        " x = " + aX + " + " + bX + "(t -" + startT + ") + " + cX + "(t -" + startT + ")^2 + " +
+                        dX + "(t -" + startT + ")^3 {" + startT +" < t <" + endT + "}";
+            case 2:
+                return
+
+                        " y = " + aY + " + " + bY + "(t -" + startT + ") + " + cY + "(t -" + startT + ")^2 + " +
+                                dY + "(t -" + startT + ")^3 {" + startT +" < t <" + endT + "}";
+        }
+
+
+        return null;
     }
 }

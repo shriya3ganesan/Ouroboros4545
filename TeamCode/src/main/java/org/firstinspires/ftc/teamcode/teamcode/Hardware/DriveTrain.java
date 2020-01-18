@@ -1144,7 +1144,7 @@ public class DriveTrain {
 
         CubicSpline c = new CubicSpline();
         //FunctionY[] functions = c.makeSpline(points, endHeading);
-        FunctionY[] functions = c.FindOptimizedSpline(points);
+        FunctionY[] functions = c.makeSpline(points, 0 ,0);
         ArrayList<Point> splinePoints = c.SplineToPoints(functions);
         ArrayList<Motor_Power_Spline> motorPoints = c.splinePointsToMotorPoints(splinePoints);
 

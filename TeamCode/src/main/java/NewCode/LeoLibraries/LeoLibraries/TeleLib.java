@@ -2,13 +2,13 @@ package NewCode.LeoLibraries.LeoLibraries;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 
 
 public abstract class TeleLib extends OpMode {
@@ -26,6 +26,13 @@ public abstract class TeleLib extends OpMode {
     static double LIFTPOWER = 1;
     static double HOOKDOWN = .60;
     static double HOOKUP = 1.0;
+
+    private static double motorCounts = 518.4;
+    private static double gearUp = 1;
+    public static double wheelDiam = 4;
+    public static double noLoadSpeed = 31.4 ; // Max Angular Velocity in radians/second for 20 : 1 motor
+    public static double stallTorque = 2.1; // Max Torque in Newton Meters for 20 : 1 motor
+    private static double inchCounts = (motorCounts / gearUp) / (wheelDiam * Math.PI);
 
     // ===========Utility============
     ElapsedTime time;
@@ -50,6 +57,20 @@ public abstract class TeleLib extends OpMode {
     private DcMotor fr;
     private DcMotor bl;
     private DcMotor br;
+
+
+    // CFM variables
+    private static final double  massFoundation = 1.905; // Mass in kg
+    private static final double massStone = .1882;
+    static final double muBlocks = .78;
+    static final double muMat = .535;
+    double fix = 11.0;
+    double tolerance = .05;
+    double mass = 0.0;
+    double maxCFM_Velocity = 0.0;
+    double numberStackedBlocks = 0;
+    boolean cfmToggled = false;
+
     //========Output==========
 
     double right_stick_y_output;
@@ -62,7 +83,6 @@ public abstract class TeleLib extends OpMode {
     public CRServo leftVex;
     public DcMotor liftRight;
     public DcMotor liftLeft;
-
 
 
 
@@ -108,6 +128,7 @@ public abstract class TeleLib extends OpMode {
         liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         resetLiftEncoders();
+        numberStackedBlocks = 0;
 
         //Intake
 
@@ -133,6 +154,61 @@ public abstract class TeleLib extends OpMode {
 
 
     //===============Drive Base Methods=================
+
+
+    public void cfmSpeed()
+    {
+        //Foundation Moving Toggle
+        //Toggle sets speed such that the robot can move the fastest
+        //while moving the foundation and not dropping any blocks
+        //Takes into account the mass of the foundation and block stack
+        //and the friction of the floor
+
+        if(gamepad1.dpad_up)
+        {
+            ElapsedTime time = new ElapsedTime();
+            while(time.milliseconds() < 300)
+            {
+
+            }
+            numberStackedBlocks++;
+        }
+        else if(gamepad1.dpad_down)
+        {
+            ElapsedTime time = new ElapsedTime();
+            while(time.milliseconds() < 300)
+            {
+
+            }
+            numberStackedBlocks--;
+        }
+
+        //  Mass of Whole Object
+        mass = massFoundation + numberStackedBlocks * massStone;
+
+        //  Max CFM velocity, calculated
+        maxCFM_Velocity = fix * Math.sqrt((9.81 * (tolerance / numberStackedBlocks) * massStone * (numberStackedBlocks + 1) * muBlocks) / mass);
+
+        //  CFM velocity to Angular Velocity
+
+        if(gamepad1.y)
+        {
+            ElapsedTime time = new ElapsedTime();
+            while(time.milliseconds() < 300)
+            {}
+            if(!cfmToggled)
+            {
+                speedProp = Math.abs(maxCFM_Velocity);
+                cfmToggled = true;
+            }
+            else {
+                speedProp = 1;
+            }
+        }
+
+
+
+    }
 
     public void arcadedrive()
     {
@@ -301,15 +377,10 @@ public abstract class TeleLib extends OpMode {
         telemetry.addData("Lift Top : ", top);
         telemetry.addData("Lift Right : ", liftRight.getCurrentPosition());
         telemetry.addData("Lift Left : ", liftLeft.getCurrentPosition());
-        telemetry.addData("Prev Encoder Pos : ", prevEncoderPos);
-        telemetry.addData("Average : ", averageLiftPosition());
-        telemetry.addData("Block Count", blockCount);
-        telemetry.addData("Level", level);
-        telemetry.addData("Vex Power Right", rightVex.getPower());
-        telemetry.addData("Vex Power Left", leftVex.getPower());
+        telemetry.addData("Block Count", numberStackedBlocks);
         telemetry.addData("Left Hook", hookLeft.getPosition());
         telemetry.addData("Right Hook", hookRight.getPosition());
-        telemetry.addData("push block", pushBlock.getPosition());
+        telemetry.addData("Push Block", pushBlock.getPosition());
     }
     public void output()
     {
