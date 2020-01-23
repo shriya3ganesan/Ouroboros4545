@@ -109,13 +109,13 @@ public class DriveTrainGood {
         }
         if(direction > 0)
         {
-            average = ((-1*fl.getCurrentPosition() + fr.getCurrentPosition()
-                    + -1*br.getCurrentPosition() + bl.getCurrentPosition()))/ count;
+            average = (((-1*fl.getCurrentPosition() + fr.getCurrentPosition()
+                    + -1*br.getCurrentPosition() + bl.getCurrentPosition())) )* Math.sqrt(2) / count;
         }
         else if(direction < 0)
         {
-            average = ((fl.getCurrentPosition() + -1*fr.getCurrentPosition()
-                    + br.getCurrentPosition() + -1*bl.getCurrentPosition())) / count;
+            average = (((fl.getCurrentPosition() + -1*fr.getCurrentPosition()
+                    + br.getCurrentPosition() + -1*bl.getCurrentPosition()))) * Math.sqrt(2) / count;
         }
         return average;
     }
@@ -179,7 +179,27 @@ public class DriveTrainGood {
 
     //------------------------------------------------MOVING----------------------------------------------------------------
 
+    public void partyMode()
+    {
+        runtime.reset();
 
+        while(runtime.seconds() < 3)
+        {
+            fr.setPower(1);
+            br.setPower(1);
+            fl.setPower(-1);
+            bl.setPower(-1);
+        }
+        runtime.reset();
+        while(runtime.seconds() < 3)
+        {
+
+            fr.setPower(-1);
+            br.setPower(-1);
+            fl.setPower(1);
+            bl.setPower(1);
+        }
+    }
 
     public void encoderMove(double power, double distance, double runtime)
     {
@@ -436,13 +456,13 @@ public class DriveTrainGood {
                 {
                     pfr = -power;
                     pfl = power;
-                    pbr = power * .9;
-                    pbl = -power * 9;
+                    pbr = power * .94;
+                    pbl = -power * 94;
                 }
                 else if(!left)
                 {
-                    pfr = power * .9;
-                    pfl = -power * .9;
+                    pfr = power * .94;
+                    pfl = -power * .94;
                     pbr = -power;
                     pbl = power;
                 }
@@ -451,8 +471,8 @@ public class DriveTrainGood {
             {
                 if(left)
                 {
-                    pfr = -power * .9;
-                    pfl = power * .9;
+                    pfr = -power * .94;
+                    pfl = power * .94;
                     pbr = power;
                     pbl = -power;
                 }
@@ -460,8 +480,8 @@ public class DriveTrainGood {
                 {
                     pfr = power;
                     pfl = -power;
-                    pbr = -power * .9;
-                    pbl = power * .9;
+                    pbr = -power * .94;
+                    pbl = power * .94;
                 }
             }
             else {

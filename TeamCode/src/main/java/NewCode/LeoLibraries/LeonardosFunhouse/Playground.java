@@ -22,7 +22,14 @@ public class Playground extends LinearOpMode {
 
         waitForStart();
 
+        drive.encoderMove(1, 24, 5);
         drive.gyroStrafe(1, 24, true, 5, 0);
+        drive.encoderMove(-1, 24, 5);
+        drive.gyroStrafe(1, 24, false, 5, 0);
+
+        drive.partyMode();
+
+        drive.snowWhite();
 
     }
 }
