@@ -109,13 +109,13 @@ public class DriveTrainGood {
         }
         if(direction > 0)
         {
-            average = (-1*fl.getCurrentPosition() + fr.getCurrentPosition()
-                    + -1*br.getCurrentPosition() + bl.getCurrentPosition()) / count;
+            average = ((-1*fl.getCurrentPosition() + fr.getCurrentPosition()
+                    + -1*br.getCurrentPosition() + bl.getCurrentPosition()))/ count;
         }
         else if(direction < 0)
         {
-            average = (fl.getCurrentPosition() + -1*fr.getCurrentPosition()
-                    + br.getCurrentPosition() + -1*bl.getCurrentPosition()) / count;
+            average = ((fl.getCurrentPosition() + -1*fr.getCurrentPosition()
+                    + br.getCurrentPosition() + -1*bl.getCurrentPosition())) / count;
         }
         return average;
     }
@@ -337,7 +337,7 @@ public class DriveTrainGood {
 
 
 
-    //----------------------------------------------------TURNING--------------------------------------------------------------
+    //----------------------------------------------------Movements--------------------------------------------------------------
 
 
 
@@ -406,10 +406,83 @@ public class DriveTrainGood {
         snowWhite();
     }
 
-    public void gyroForward(double power, double distance, double timeout)
+    public void gyroStrafe(double power, double distance, boolean left, double timeout, double intAngle)
     {
 
+        ElapsedTime time = new ElapsedTime();
+        resetEncoders();
+        double pos = 1;
+        if(!left)
+        {
+            pos = -1;
+        }
 
+
+        double pfr = -power * pos;
+        double pfl = power * pos;
+        double pbl = -power * pos;
+        double pbr = power * pos;
+
+
+        gyroTurnStraight(1);
+        double angle = sensors.getGyroYaw();
+        while(opMode.opModeIsActive() && Math.abs(getStrafeEncoderAverage(pos)) < Math.abs(distance) * motorCounts/Math.sqrt(2) && time.seconds() < timeout)
+        {
+
+
+            if(angle > intAngle + 2)
+            {
+                if(left)
+                {
+                    pfr = -power;
+                    pfl = power;
+                    pbr = power * .9;
+                    pbl = -power * 9;
+                }
+                else if(!left)
+                {
+                    pfr = power * .9;
+                    pfl = -power * .9;
+                    pbr = -power;
+                    pbl = power;
+                }
+            }
+            else if(angle < intAngle + -2)
+            {
+                if(left)
+                {
+                    pfr = -power * .9;
+                    pfl = power * .9;
+                    pbr = power;
+                    pbl = -power;
+                }
+                else if(!left)
+                {
+                    pfr = power;
+                    pfl = -power;
+                    pbr = -power * .9;
+                    pbl = power * .9;
+                }
+            }
+            else {
+
+                pfr = -power * pos;
+                pfl = power * pos;
+                pbl = -power * pos;
+                pbr = power * pos;
+            }
+
+
+            fr.setPower(pfr);
+            fl.setPower(pfl);
+            bl.setPower(pbl);
+            br.setPower(pbr);
+            angle = sensors.getGyroYaw();
+            opMode.telemetry.addData("Angle", angle);
+            opMode.telemetry.update();
+        }
+
+        snowWhite();
     }
 
     public void turnPID(double angleChange, boolean turnRight, double kP, double kI, double kD, double timeout) {
