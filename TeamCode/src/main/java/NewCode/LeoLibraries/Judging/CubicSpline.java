@@ -14,7 +14,7 @@ public class CubicSpline {
          */
         ArrayList<Point> points = new ArrayList<>();
         points.add(new Point(0, 0,0));
-        points.add(new Point(.5, 300,100));
+        points.add(new Point(.5, 100,100));
         points.add(new Point(1, 500,100));
 
 

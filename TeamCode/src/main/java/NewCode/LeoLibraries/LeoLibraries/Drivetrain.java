@@ -484,7 +484,6 @@ public class Drivetrain {
         out.liftLeft.setPower(0);
         out.liftRight.setPower(0);
     }
-    //29381
 
     public double getTargetPercentile(double reading) {
         return Math.abs(getEncoderAverage() / reading);

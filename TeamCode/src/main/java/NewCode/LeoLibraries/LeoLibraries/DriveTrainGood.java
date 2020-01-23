@@ -7,10 +7,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class DriveTrainGood {
 
     public double count;
-    ElapsedTime runtime =
-            new ElapsedTime();
+    ElapsedTime runtime = new ElapsedTime();
     private LinearOpMode opMode;
-    public LinearOpMode opModeX;
     public Output out;
     public Sensors sensors;
 
@@ -406,6 +404,12 @@ public class DriveTrainGood {
 
         }
         snowWhite();
+    }
+
+    public void gyroForward(double power, double distance, double timeout)
+    {
+
+
     }
 
     public void turnPID(double angleChange, boolean turnRight, double kP, double kI, double kD, double timeout) {

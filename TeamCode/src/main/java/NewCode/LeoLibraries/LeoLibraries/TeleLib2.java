@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 
 
-public abstract class TeleLib extends OpMode {
+public abstract class TeleLib2 extends OpMode {
 
     // ===========Static Variables================
     private static final double PICKUP = 1.0;
@@ -64,7 +64,7 @@ public abstract class TeleLib extends OpMode {
     private static final double massStone = .1882;
     static final double muBlocks = .78;
     static final double muMat = .535;
-    double fix = 11.0;
+    double fix = 3.0;
     double tolerance = .05;
     double mass = 0.0;
     double maxCFM_Velocity = 0.0;
@@ -164,7 +164,7 @@ public abstract class TeleLib extends OpMode {
         //Takes into account the mass of the foundation and block stack
         //and the friction of the floor
 
-        if(gamepad1.dpad_up)
+        if(gamepad2.dpad_up)
         {
             ElapsedTime time = new ElapsedTime();
             while(time.milliseconds() < 300)
@@ -173,7 +173,7 @@ public abstract class TeleLib extends OpMode {
             }
             numberStackedBlocks++;
         }
-        else if(gamepad1.dpad_down)
+        else if(gamepad2.dpad_down)
         {
             ElapsedTime time = new ElapsedTime();
             while(time.milliseconds() < 300)
@@ -183,14 +183,6 @@ public abstract class TeleLib extends OpMode {
             numberStackedBlocks--;
         }
 
-        //  Mass of Whole Object
-        mass = massFoundation + numberStackedBlocks * massStone;
-
-        //  Max CFM velocity, calculated
-        maxCFM_Velocity = fix * Math.sqrt((9.81 * (tolerance / numberStackedBlocks) * massStone * (numberStackedBlocks + 1) * muBlocks) / mass);
-
-        //  CFM velocity to Angular Velocity
-
         if(gamepad1.y)
         {
             ElapsedTime time = new ElapsedTime();
@@ -198,14 +190,19 @@ public abstract class TeleLib extends OpMode {
             {}
             if(!cfmToggled)
             {
+                mass = massFoundation + numberStackedBlocks * massStone;
+                maxCFM_Velocity = fix * Math.sqrt((9.81 * (tolerance / numberStackedBlocks) * massStone * (numberStackedBlocks + 1) * muBlocks) / mass);
+
                 speedProp = Math.abs(maxCFM_Velocity);
                 cfmToggled = true;
             }
             else {
                 speedProp = 1;
+                cfmToggled = false;
             }
         }
 
+        telemetry.addData("CFM Toggle : ", cfmToggled);
 
 
     }
@@ -381,6 +378,7 @@ public abstract class TeleLib extends OpMode {
         telemetry.addData("Left Hook", hookLeft.getPosition());
         telemetry.addData("Right Hook", hookRight.getPosition());
         telemetry.addData("Push Block", pushBlock.getPosition());
+        telemetry.addData("CFM Power", maxCFM_Velocity);
     }
     public void output()
     {
