@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 
 
-public abstract class TeleLib2 extends OpMode {
+public abstract class TeleLib extends OpMode {
 
     // ===========Static Variables================
     private static final double PICKUP = 1.0;

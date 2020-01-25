@@ -60,7 +60,6 @@ public class DriveTrainGood {
     //------------------------------------------MISCELLANEOUS METHODS-------------------------------------------
 
 
-
     public double getEncoderAverage() {
         double count = 4.0;
         if(fr.getCurrentPosition() == 0)
@@ -110,12 +109,12 @@ public class DriveTrainGood {
         if(direction > 0)
         {
             average = (((-1*fl.getCurrentPosition() + fr.getCurrentPosition()
-                    + -1*br.getCurrentPosition() + bl.getCurrentPosition())) )* Math.sqrt(2) / count;
+                    + -1*br.getCurrentPosition() + bl.getCurrentPosition())) ) / count;
         }
         else if(direction < 0)
         {
             average = (((fl.getCurrentPosition() + -1*fr.getCurrentPosition()
-                    + br.getCurrentPosition() + -1*bl.getCurrentPosition()))) * Math.sqrt(2) / count;
+                    + br.getCurrentPosition() + -1*bl.getCurrentPosition())))  / count;
         }
         return average;
     }
@@ -338,7 +337,7 @@ public class DriveTrainGood {
             if (out.encoderLevelCount * out.blockHeight * 1.5 <=
                     out.averageLiftPosition()) {
                 liftCheck = true;
-                out.stopVex();
+                mufasa(out);
                 out.top = true;
             }
 
@@ -346,7 +345,7 @@ public class DriveTrainGood {
                 if (out.top && out.averageLiftPosition() >
                         out.MAXHEIGHT * out.encoderLevelCount) {
                     liftCheck = true;
-                    out.stopVex();
+                    mufasa(out);
                 }
             }
         }
@@ -355,6 +354,10 @@ public class DriveTrainGood {
         snowWhite();
     }
 
+    public void mufasa(Output out) {
+        out.liftLeft.setPower(0);
+        out.liftRight.setPower(0);
+    }
 
 
     //----------------------------------------------------Movements--------------------------------------------------------------
@@ -397,10 +400,10 @@ public class DriveTrainGood {
             opMode.telemetry.addData("Current Heading", sensors.getGyroYaw());
             opMode.telemetry.update();
             if (sensors.getGyroYaw() < goal) {
-                turn(.3, false);
+                turn(.24, false);
             }
             else {
-                turn(.3, true);
+                turn(.24, true);
             }
 
 
@@ -426,11 +429,12 @@ public class DriveTrainGood {
         snowWhite();
     }
 
-    public void gyroStrafe(double power, double distance, boolean left, double timeout, double intAngle)
+    public void gyroStrafe(double power, double distance, boolean left, double timeout)
     {
 
         ElapsedTime time = new ElapsedTime();
         resetEncoders();
+        gyroTurnStraight(500);
         double pos = 1;
         if(!left)
         {
@@ -444,35 +448,37 @@ public class DriveTrainGood {
         double pbr = power * pos;
 
 
-        gyroTurnStraight(1);
+
         double angle = sensors.getGyroYaw();
-        while(opMode.opModeIsActive() && Math.abs(getStrafeEncoderAverage(pos)) < Math.abs(distance) * motorCounts/Math.sqrt(2) && time.seconds() < timeout)
+        double average = 0;
+        while(opMode.opModeIsActive() && Math.abs(average) < Math.abs(distance) * inchCounts && time.seconds() < timeout)
         {
 
+            average = getStrafeEncoderAverage(pos);
 
-            if(angle > intAngle + 2)
+            if(angle > 2)
             {
                 if(left)
                 {
                     pfr = -power;
                     pfl = power;
-                    pbr = power * .94;
-                    pbl = -power * 94;
+                    pbr = power * .91;
+                    pbl = -power * 91;
                 }
                 else if(!left)
                 {
-                    pfr = power * .94;
-                    pfl = -power * .94;
+                    pfr = power * .9;
+                    pfl = -power * .9;
                     pbr = -power;
                     pbl = power;
                 }
             }
-            else if(angle < intAngle + -2)
+            else if(angle < -2)
             {
                 if(left)
                 {
-                    pfr = -power * .94;
-                    pfl = power * .94;
+                    pfr = -power * .91;
+                    pfl = power * .91;
                     pbr = power;
                     pbl = -power;
                 }
@@ -480,8 +486,8 @@ public class DriveTrainGood {
                 {
                     pfr = power;
                     pfl = -power;
-                    pbr = -power * .94;
-                    pbl = power * .94;
+                    pbr = -power * .9;
+                    pbl = power * .9;
                 }
             }
             else {
@@ -501,7 +507,7 @@ public class DriveTrainGood {
             opMode.telemetry.addData("Angle", angle);
             opMode.telemetry.update();
         }
-
+        gyroTurnStraight(1000);
         snowWhite();
     }
 
