@@ -25,7 +25,6 @@ public class Playground extends LinearOpMode {
         drive.encoderMove(.5, 5, 2);
         drive.gyroStrafe(1, 100, true, 5);
         drive.encoderMove(-.5, 5, 2);
-
         drive.gyroStrafe(1, 100, false, 5);
 
        // drive.partyMode();
