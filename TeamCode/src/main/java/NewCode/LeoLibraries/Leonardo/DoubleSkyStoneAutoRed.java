@@ -74,7 +74,7 @@ public class DoubleSkyStoneAutoRed extends LinearOpMode {
                 out.closeBasketAuto(500);
                 drive.encoderMove(-.7, 8, 2);
 
-
+                break;
             case ("right"):
 
                 drive.encoderMove(-.7, 5, 2);
@@ -115,6 +115,8 @@ public class DoubleSkyStoneAutoRed extends LinearOpMode {
                 drive.gyroStrafe(1, 15, true, 5);
                 out.closeBasketAuto(500);
                 drive.encoderMove(-.7, 8, 2);
+
+                break;
             case("center"):
 
                 //Gets stone
