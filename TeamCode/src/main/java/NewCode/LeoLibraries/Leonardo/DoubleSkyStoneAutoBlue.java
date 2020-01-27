@@ -16,7 +16,7 @@ public class DoubleSkyStoneAutoBlue extends LinearOpMode {
         DriveTrainGood drive;
         Output out;
         //ZeroMapBit zero = new ZeroMapBit();
-        //VisionWebcam vision = new VisionWebcam(this);
+        VisionWebcam vision = new VisionWebcam(this);
 
         double pos = -1;
 
@@ -27,7 +27,7 @@ public class DoubleSkyStoneAutoBlue extends LinearOpMode {
 
         waitForStart();
 
-        switch ("right") {
+        switch (vision.senseBlue(this)) {
 
             case ("right"):
                 //Go to stone

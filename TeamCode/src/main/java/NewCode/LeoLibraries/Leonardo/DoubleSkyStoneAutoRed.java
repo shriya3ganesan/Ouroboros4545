@@ -15,7 +15,7 @@ public class DoubleSkyStoneAutoRed extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         DriveTrainGood drive;
         Output out;
-        //VisionWebcam vision = new VisionWebcam(this);
+        VisionWebcam vision = new VisionWebcam(this);
         //ZeroMapBit zero = new ZeroMapBit();
 
         double pos = 1;
@@ -30,7 +30,7 @@ public class DoubleSkyStoneAutoRed extends LinearOpMode {
         waitForStart();
 
 
-        switch ("left") {
+        switch (vision.senseRed(this)) {
 
             case ("left"):
 
