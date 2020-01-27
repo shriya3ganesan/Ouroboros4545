@@ -400,10 +400,10 @@ public class DriveTrainGood {
             opMode.telemetry.addData("Current Heading", sensors.getGyroYaw());
             opMode.telemetry.update();
             if (sensors.getGyroYaw() < goal) {
-                turn(.24, false);
+                turn(.23, false);
             }
             else {
-                turn(.24, true);
+                turn(.23, true);
             }
 
 
