@@ -18,7 +18,7 @@ public class Park extends LinearOpMode {
         waitForStart();
 
 
-        drive.encoderMove(.5, 24, 5);
+        drive.encoderMove(.5, 12, 5);
         drive.snowWhite();
 
     }

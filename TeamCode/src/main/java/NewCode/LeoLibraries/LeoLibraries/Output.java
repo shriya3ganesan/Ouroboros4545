@@ -98,13 +98,13 @@ public class Output {
 
 
     public void hookDown() {
-        hookRight.setPosition(HOOKUP);
-        hookLeft.setPosition(HOOKUP);
+        hookRight.setPosition(1);
+        hookLeft.setPosition(.7);
     }
 
     public void hookUp() {
-        hookRight.setPosition(HOOKDOWN);
-        hookLeft.setPosition(HOOKDOWN);
+        hookRight.setPosition(0);
+        hookLeft.setPosition(0);
     }
 
 

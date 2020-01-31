@@ -11,7 +11,7 @@ import NewCode.LeoLibraries.Judging.Point;
 
 import java.util.ArrayList;
 
-@Disabled
+
 @Autonomous(name="Ouroboros Method", group = "Testing")
 public class OuroborosMethodTest extends LinearOpMode {
 
@@ -32,9 +32,10 @@ public class OuroborosMethodTest extends LinearOpMode {
         waitForStart();
 
 
+
         drive.snowWhite();
 
-        //drive.splineMove(this, points, 5, 1);
+        drive.splineMove(this, points, 5, 1);
 
 
     }

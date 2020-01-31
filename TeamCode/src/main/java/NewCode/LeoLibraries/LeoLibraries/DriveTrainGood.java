@@ -4,6 +4,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.util.ArrayList;
+
+import NewCode.LeoLibraries.Judging.CubicSpline;
+import NewCode.LeoLibraries.Judging.FunctionY;
+import NewCode.LeoLibraries.Judging.Motor_Power_Spline;
+import NewCode.LeoLibraries.Judging.Point;
+
 public class DriveTrainGood {
 
     public double count;
@@ -563,5 +570,48 @@ public class DriveTrainGood {
         }
         snowWhite();
 
+    }
+
+    public void splineMove(LinearOpMode linearOpMode, ArrayList<Point> points, double runtime, double kT)
+    {
+
+        ElapsedTime t = new ElapsedTime();
+        t.reset();
+
+        CubicSpline c = new CubicSpline();
+        //FunctionY[] functions = c.makeSpline(points, endHeading);
+        FunctionY[] functions = c.makeSpline(points, 0 ,0);
+        ArrayList<Point> splinePoints = c.SplineToPoints(functions);
+        ArrayList<Motor_Power_Spline> motorPoints = c.splinePointsToMotorPoints(splinePoints);
+
+        double rightp = 0;
+        double leftp = 0;
+        for(Motor_Power_Spline m : motorPoints)
+        {
+
+            if(t.seconds() > runtime)
+            {
+                return;
+            }
+            leftp = m.getLeftPower();
+            rightp = m.getRightPower();
+
+            leftTank(leftp);
+            rightTank(rightp);
+
+            linearOpMode.sleep((long)(m.getDeltaT() * kT));
+        }
+
+    }
+    public void leftTank(double power)
+    {
+        fl.setPower(power);
+        bl.setPower(power);
+    }
+
+    public void rightTank(double power)
+    {
+        fr.setPower(power);
+        br.setPower(power);
     }
 }

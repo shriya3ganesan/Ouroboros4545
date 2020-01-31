@@ -39,14 +39,14 @@ public class DoubleSkyStoneAutoRed extends LinearOpMode {
                 drive.gyroStrafe(.7, 9, true, 3);
 
                 //Gets stone
-                drive.thread(this, out, -25);
+                drive.thread(this, out, -27);
                 out.lowerLiftAuto();
                 out.closeBasketAuto(1000);
                 //out.tighten();
                 out.hookDown();
 
                 //drops off stone
-                drive.encoderMove(.7, 6, 5);
+                drive.encoderMove(.7, 9, 5);
                 drive.gyroStrafe(1, 68, false, 5);
                 out.hookUp();
                 out.openBasketAuto(200);
@@ -71,7 +71,7 @@ public class DoubleSkyStoneAutoRed extends LinearOpMode {
 
                 drive.gyroStrafe(1, 15, true, 5);
                 out.closeBasketAuto(500);
-                drive.encoderMove(-.7, 8, 2);
+                drive.encoderMove(-.7, 12, 2);
                 drive.snowWhite();
 
                 break;
@@ -81,14 +81,14 @@ public class DoubleSkyStoneAutoRed extends LinearOpMode {
                 drive.gyroStrafe(.7, 8, false, 5);
 
                 //Gets stone
-                drive.thread(this, out, -25);
+                drive.thread(this, out, -27);
                 out.lowerLiftAuto();
                 out.closeBasketAuto(1000);
                 //out.tighten();
                 out.hookDown();
 
                 //drops off stone
-                drive.encoderMove(.7, 6, 5);
+                drive.encoderMove(.7, 9, 5);
                 drive.gyroStrafe(1, 52, false, 5);
                 out.hookUp();
                 out.openBasketAuto(200);
@@ -105,7 +105,7 @@ public class DoubleSkyStoneAutoRed extends LinearOpMode {
                 out.hookDown();
 
                 //drops stone + parks
-                drive.encoderMove(.7, 5, 3);
+                drive.encoderMove(.7, 8, 3);
                 drive.gyroStrafe(1, 87, false, 5);
                 out.hookUp();
                 out.openBasketAuto(200);
@@ -113,20 +113,20 @@ public class DoubleSkyStoneAutoRed extends LinearOpMode {
 
                 drive.gyroStrafe(1, 15, true, 5);
                 out.closeBasketAuto(500);
-                drive.encoderMove(-.7, 8, 2);
+                drive.encoderMove(-.7, 12, 2);
 
                 break;
             case("center"):
 
                 //Gets stone
-                drive.thread(this, out, -30);
+                drive.thread(this, out, -32);
                 out.lowerLiftAuto();
                 out.closeBasketAuto(500);
                 //out.tighten();
                 out.hookDown();
 
                 //drops off stone
-                drive.encoderMove(.7, 6, 5);
+                drive.encoderMove(.7, 9, 5);
                 out.closeBasketAuto(500);
                 drive.gyroStrafe(1, 60, false, 5);
                 out.hookUp();
@@ -144,7 +144,7 @@ public class DoubleSkyStoneAutoRed extends LinearOpMode {
                 out.hookDown();
 
                 //drops stone + parks
-                drive.encoderMove(.7, 5, 3);
+                drive.encoderMove(.7, 8, 3);
                 drive.gyroStrafe(1, 95, false, 5);
                 out.hookUp();
                 out.openBasketAuto(200);
@@ -152,7 +152,7 @@ public class DoubleSkyStoneAutoRed extends LinearOpMode {
 
                 drive.gyroStrafe(1, 15, true, 5);
                 out.closeBasketAuto(500);
-                drive.encoderMove(-.7, 8, 2);
+                drive.encoderMove(-.7, 12, 2);
 
 
                 break;

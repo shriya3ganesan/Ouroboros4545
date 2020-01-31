@@ -17,7 +17,7 @@ public abstract class TeleLib extends OpMode {
     private static final double PICKUP = 1.0;
     private static final double IDLE = 0;
     private static double speedProp = 1;
-    private static final double MAXHEIGHT = 34; // Precautions : Set to 20 inches if cabled wire broken
+    private static final double MAXHEIGHT = 38; // Precautions : Set to 20 inches if cabled wire broken
     static final double DISTANCE_BETWEEN_BLOCKS = 4.0; // In Inches
     static final double HORIZONTALEXTENSIONTIME = 1000;
     static final double encoderLevelCount = (360 / (Math.PI * .53));
@@ -220,7 +220,7 @@ public abstract class TeleLib extends OpMode {
             fl.setPower(speedProp * ((left_stick_y - left_stick_x) - right_stick_x));
             fr.setPower(speedProp * ((left_stick_y + left_stick_x) + right_stick_x));
             bl.setPower(speedProp * (left_stick_y + left_stick_x) - right_stick_x);
-            br.setPower(speedProp * (left_stick_y - left_stick_x) + right_stick_x);
+              br.setPower(speedProp * (left_stick_y - left_stick_x) + right_stick_x);
         }
         else {
             fl.setPower(0);
@@ -297,7 +297,7 @@ public abstract class TeleLib extends OpMode {
             {
 
             }
-            hookLeft.setPosition(0);
+            hookLeft.setPosition(.3);
             hookRight.setPosition(1);
         }
     }
