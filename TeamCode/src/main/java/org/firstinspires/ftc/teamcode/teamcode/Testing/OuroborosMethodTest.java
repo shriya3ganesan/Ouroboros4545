@@ -11,7 +11,7 @@ import NewCode.LeoLibraries.Judging.Point;
 
 import java.util.ArrayList;
 
-
+@Disabled
 @Autonomous(name="Ouroboros Method", group = "Testing")
 public class OuroborosMethodTest extends LinearOpMode {
 

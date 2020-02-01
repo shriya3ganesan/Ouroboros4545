@@ -136,7 +136,7 @@ public class DoubleSkyStoneAutoRed extends LinearOpMode {
                 //gets stone
                 drive.gyroStrafe(1, 10, true,5);
                 out.closeBasketAuto(1000);
-                drive.gyroStrafe(1, 82, true,5);
+                drive.gyroStrafe(1, 78, true,5);
                 drive.thread(this, out, -20);
                 out.lowerLiftAuto();
                 out.closeBasketAuto(1000);
@@ -145,7 +145,7 @@ public class DoubleSkyStoneAutoRed extends LinearOpMode {
 
                 //drops stone + parks
                 drive.encoderMove(.7, 8, 3);
-                drive.gyroStrafe(1, 95, false, 5);
+                drive.gyroStrafe(1, 91, false, 5);
                 out.hookUp();
                 out.openBasketAuto(200);
                 drive.encoderMove(.7, 2, 2);
