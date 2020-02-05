@@ -45,7 +45,7 @@ public class Point {
         this.y = y;
         this.t = t;
     }
-    public Point(double t, double y, double derivative, double secondDerivative, double deltaT, double s)
+    public Point(double t, double x, double y, double derivative, double secondDerivative, double deltaT, double s)
     {
         this.x = x;
         this.y = y;
@@ -90,6 +90,18 @@ public class Point {
 
     @Override
     public String toString() {
-        return "(" + x + ", "  + y +")";
+        return "Point{" +
+                "deltaT=" + deltaT +
+                ", x=" + x +
+                ", y=" + y +
+                ", t=" + t +
+                ", derivative=" + derivative +
+                ", secondDerivative=" + secondDerivative +
+                ", dX=" + dX +
+                ", dY=" + dY +
+                ", sdX=" + sdX +
+                ", sdY=" + sdY +
+                ", arcS=" + arcS +
+                '}';
     }
 }

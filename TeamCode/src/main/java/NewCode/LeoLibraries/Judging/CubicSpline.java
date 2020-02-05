@@ -2,6 +2,8 @@ package NewCode.LeoLibraries.Judging;
 
 import java.util.ArrayList;
 
+
+
 public class CubicSpline {
 
 
@@ -15,7 +17,7 @@ public class CubicSpline {
         ArrayList<Point> points = new ArrayList<>();
         points.add(new Point(0, 0,0));
         points.add(new Point(.5, 100,100));
-        points.add(new Point(1, 300,200));
+        points.add(new Point(1, 200,0));
 
 
         FunctionY[] temp = s.makeSpline(points, 0, 0);
@@ -34,48 +36,57 @@ public class CubicSpline {
         System.out.println(der2);
         System.out.println(der3);
 
+        ArrayList<Point> splinePoints = s.SplineToPoints(temp);
+        ArrayList<Motor_Power_Spline> m = s.splinePointsToMotorPoints(splinePoints);
+
+
+        for(Motor_Power_Spline a : m)
+        {
+            System.out.println(a);
+        }
+
     }
 
 
     public FunctionY[] FindOptimizedSpline(ArrayList<Point> points){
 
-       ArrayList<FunctionY[]> splinesY = new ArrayList<>();
+        ArrayList<FunctionY[]> splinesY = new ArrayList<>();
 
-       FunctionY[] bestSplineY = makeSpline(points, 0,0 );
+        FunctionY[] bestSplineY = makeSpline(points, 0,0 );
 
 
-       double delta = 1;
-       double b = 0;
+        double delta = 1;
+        double b = 0;
         double arc = 0;
         double bestI= 0;
         double bestK = 0;
-       for(double i = 0; i < 360; i += delta)
-       {
+        for(double i = 0; i < 360; i += delta)
+        {
 
-           for(double k = 0 ; k < 360; k += delta)
-           {
-               FunctionY[] spline = makeSpline(points, i, k);
-               arc = spline[0].getArclength() + spline[1].getArclength();
-               if(arc < bestSplineY[0].getArclength() + bestSplineY[1].getArclength())
-               {
-                   bestSplineY = spline;
-                   bestI = i;
-                   bestK = k;
-               }
-               System.out.println(b / ((360 / delta) * (360) / delta));
-               b += 1;
-           }
+            for(double k = 0 ; k < 360; k += delta)
+            {
+                FunctionY[] spline = makeSpline(points, i, k);
+                arc = spline[0].getArclength() + spline[1].getArclength();
+                if(arc < bestSplineY[0].getArclength() + bestSplineY[1].getArclength())
+                {
+                    bestSplineY = spline;
+                    bestI = i;
+                    bestK = k;
+                }
+                System.out.println(b / ((360 / delta) * (360) / delta));
+                b += 1;
+            }
 
-       }
+        }
         double bestArc = bestSplineY[0].getArclength() + bestSplineY[1].getArclength();
         System.out.println(bestSplineY[0] + "  \n " + bestSplineY[1]);
         System.out.println("Arc Length : " + bestArc);
         double arcx=  bestSplineY[0].getArclengthX() + bestSplineY[1].getArclengthX();
-                System.out.println("Arc Length X: " + arcx);
+        System.out.println("Arc Length X: " + arcx);
         double arcy=  bestSplineY[0].getArclengthY() + bestSplineY[1].getArclengthY();
         System.out.println("Arc Length Y: " + arcy);
         System.out.println("Best Y Angle : " + bestI + " Best X Angle : " + bestK);
-       return bestSplineY;
+        return bestSplineY;
 
     }
 
@@ -162,12 +173,13 @@ public class CubicSpline {
         double arclength = spline1.getArcLength() + spline2.getArcLength();
 
         System.out.println(arclength);
-        double delta_arclength = arclength / 100.0;
+        double delta_arclength = arclength / 1000.0;
 
         double t = 0;
-        double delta_t = delta_arclength / Math.sqrt(1 + Math.pow(spline1.getFuncY(functions[0].getStartT()) ,2));
+        double delta_t = delta_arclength / 48;
 
         int i = 0;
+
         for(double s = 0 + delta_arclength; s < arclength;  s += delta_arclength)
         {
             FunctionY f = functions[i];
@@ -177,8 +189,9 @@ public class CubicSpline {
             }
 
             t += delta_t;
-            delta_t = delta_arclength / Math.sqrt(1 + Math.pow(spline1.getDerY(t) ,2));
-            splinePoints.add(new Point(t, f.getFuncY(t), f.getDerY(t), f.getSecondDerY(t), delta_t, delta_arclength));
+
+            delta_t = delta_arclength / 48;
+            splinePoints.add(new Point(t, f.getFuncX(t), f.getFuncY(t), (f.getDerY(t) / f.getDerX(t)), f.getSecondDer(t), delta_t, delta_arclength));
         }
 
         return splinePoints;

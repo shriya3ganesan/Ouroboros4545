@@ -150,6 +150,18 @@ public class FunctionY {
         t = t - startT;
         return 2 * cY + 6 * dY * t;
     }
+
+    public double getSecondDer(double t)
+    {
+
+        //
+        t = t - startT;
+
+        return (12 * dY * cX * Math.pow(t, 2) - 12 * cY * dX * Math.pow(t, 2) + 12 * dY * bX * Math.pow(t, 1) - 12 * dX * bY * Math.pow(t, 1) + 2 * cY * bX - 2 * cX * bY) /
+                (Math.pow((bX + 2 * cX * t + 6 * dX * Math.pow(t, 2)), 3));
+
+    }
+
     public double getFuncY(double t)
     {
         t = t - startT;
@@ -172,7 +184,7 @@ public class FunctionY {
                 return
 
 
-                                "( " + aX + " + " + bX + "(t -" + startT + ") + " + cX + "(t -" + startT + ")^2 + " +
+                        "( " + aX + " + " + bX + "(t -" + startT + ") + " + cX + "(t -" + startT + ")^2 + " +
                                 dX + "(t -" + startT + ")^3 , " + aY + " + " + bY + "(t -" + startT + ") + " + cY + "(t -" + startT + ")^2 + " +
                                 dY + "(t -" + startT + ")^3 ) ";
 
@@ -180,7 +192,7 @@ public class FunctionY {
                 return
 
                         " x = " + aX + " + " + bX + "(t -" + startT + ") + " + cX + "(t -" + startT + ")^2 + " +
-                        dX + "(t -" + startT + ")^3 {" + startT +" < t <" + endT + "}";
+                                dX + "(t -" + startT + ")^3 {" + startT +" < t <" + endT + "}";
             case 2:
                 return
 

@@ -10,13 +10,16 @@ public class Motor_Power_Spline {
     double deltaS;
     static int i = 0;
     static double arc;
+    static double t = 0.0;
 
 
     @Override
     public String toString() {
         i++;
+        t+= deltaT;
         arc += deltaS;
-        return i + "  Left Motor : " + leftPower + "    Right Power : " + rightPower + "    Arc Length :     " + arc + "     T :     " + deltaT;
+        return i + "  Left Motor : " + leftPower + "    Right Power : " + rightPower + "    Arc Length :     " + arc + "     T :     " + deltaT
+                + " Time : " + t;
     }
 
     public double getDeltaT() {
@@ -31,23 +34,23 @@ public class Motor_Power_Spline {
         return rightPower;
     }
 
-    public static double aungular_velocity(double dY, double sY)
+    public static double aungular_velocity(double d, double s)
     {
-        return (1/(1 + dY * dY)) * sY;
+        return (1/(1 + d * d)) * s;
     }
 
-    public static double LeftPower(double dY, double sY) {
+    public static double LeftPower(double d, double s) {
 
-        double aungularVelocity = aungular_velocity(dY, sY);
+        double aungularVelocity = aungular_velocity(d, s);
         double leftVelocity = 1 - (robotlength * aungularVelocity / 2);
         return (-1) * (stallTorque / noLoadSpeed) * leftVelocity
                 + stallTorque * leftVelocity;
         //return leftVelocity;
     }
 
-    public static double RightPower(double dY, double sY) {
+    public static double RightPower(double d, double s) {
 
-        double aungularVelocity = aungular_velocity(dY, sY);
+        double aungularVelocity = aungular_velocity(d, s);
         double rightVelocity = 1 + (robotlength * aungularVelocity / 2);
         return (-1) * (stallTorque / noLoadSpeed) * rightVelocity
                 + stallTorque * rightVelocity;

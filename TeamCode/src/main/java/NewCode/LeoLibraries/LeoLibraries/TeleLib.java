@@ -244,6 +244,7 @@ public abstract class TeleLib extends OpMode {
                 speedProp = 1;
             }
         }
+        telemetry.addData("Half Speed Toggle : ", speedProp == .5);
     }
 
 
