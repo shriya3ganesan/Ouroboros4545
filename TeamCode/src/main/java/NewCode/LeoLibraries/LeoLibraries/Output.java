@@ -112,7 +112,18 @@ public class Output {
     //--------------------------------------------------LIFT STUFF---------------------------------------------------------
 
 
-
+    public void toggleBrake(boolean brake)
+    {
+        if(brake)
+        {
+            liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }else if(!brake)
+        {
+            liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        }
+    }
 
     private void resetLiftEncoders() {
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

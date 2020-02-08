@@ -83,7 +83,7 @@ public abstract class TeleLib extends OpMode {
     public CRServo leftVex;
     public DcMotor liftRight;
     public DcMotor liftLeft;
-
+    boolean brake = true;
 
 
     @Override
@@ -352,6 +352,14 @@ public abstract class TeleLib extends OpMode {
         }else if (Math.abs(left_stick_y_output) > .05) {
             liftRight.setPower(-left_stick_y_output);
             liftLeft.setPower(-left_stick_y_output);
+        }else if(gamepad2.b)
+        {
+            ElapsedTime time = new ElapsedTime();
+            while(time.milliseconds() < 300)
+            {
+
+            }
+            toggleBrake();
         }
         else {
             liftRight.setPower(0);
@@ -405,6 +413,21 @@ public abstract class TeleLib extends OpMode {
         }
 
         Output_Telemetry();
+    }
+
+    public void toggleBrake()
+    {
+        if(!brake)
+        {
+            liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            brake = true;
+        }else if(brake)
+        {
+            liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            brake = false;
+        }
     }
 
     //===========Intake Methods=============

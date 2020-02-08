@@ -91,17 +91,17 @@ public class Point {
     @Override
     public String toString() {
         return "Point{" +
-                "deltaT=" + deltaT +
-                ", x=" + x +
-                ", y=" + y +
-                ", t=" + t +
-                ", derivative=" + derivative +
-                ", secondDerivative=" + secondDerivative +
-                ", dX=" + dX +
-                ", dY=" + dY +
-                ", sdX=" + sdX +
-                ", sdY=" + sdY +
-                ", arcS=" + arcS +
+                "deltaT =" + deltaT +
+                ", x =" + x +
+                ", y =" + y +
+                ", t =" + t +
+                ", derivative =" + derivative +
+                ", secondDerivative =" + secondDerivative +
+                ", dX =" + dX +
+                ", dY =" + dY +
+                ", sdX =" + sdX +
+                ", sdY =" + sdY +
+                ", arcS =" + arcS +
                 '}';
     }
 }
