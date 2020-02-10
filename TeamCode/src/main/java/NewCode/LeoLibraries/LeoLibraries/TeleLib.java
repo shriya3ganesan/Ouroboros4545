@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
+import java.security.spec.EllipticCurve;
 
 
 public abstract class TeleLib extends OpMode {
@@ -76,14 +76,17 @@ public abstract class TeleLib extends OpMode {
     double right_stick_y_output;
     double left_stick_y_output;
 
+    boolean brake = true;
+
     public Servo pushBlock;
     public Servo hookRight;
     public Servo hookLeft;
+    public Servo cap;
     public CRServo rightVex;
     public CRServo leftVex;
     public DcMotor liftRight;
     public DcMotor liftLeft;
-    boolean brake = true;
+
 
 
     @Override
@@ -109,18 +112,21 @@ public abstract class TeleLib extends OpMode {
 
         //Output
 
+        cap = hardwareMap.servo.get("Cap");
+        hookLeft = hardwareMap.servo.get("LHook");
+        hookRight = hardwareMap.servo.get("RHook");
         pushBlock = hardwareMap.servo.get("PB");
         rightVex = hardwareMap.crservo.get("ROut");
         leftVex = hardwareMap.crservo.get("LOut");
         liftLeft = hardwareMap.dcMotor.get("LLift");
         liftRight = hardwareMap.dcMotor.get("RLift");
 
-        hookLeft = hardwareMap.servo.get("LHook");
-        hookRight = hardwareMap.servo.get("RHook");
+
 
 
         hookLeft.setDirection(Servo.Direction.FORWARD);
         hookRight.setDirection(Servo.Direction.FORWARD);
+        cap.setDirection(Servo.Direction.FORWARD);
 
         liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -135,8 +141,8 @@ public abstract class TeleLib extends OpMode {
         rightSide = hardwareMap.dcMotor.get("RIn");
         leftSide = hardwareMap.dcMotor.get("LIn");
 
-        rightSide.setDirection(DcMotor.Direction.FORWARD);
-        leftSide.setDirection(DcMotor.Direction.REVERSE);
+        rightSide.setDirection(DcMotor.Direction.REVERSE);
+        leftSide.setDirection(DcMotor.Direction.FORWARD);
 
         rightSide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         leftSide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -220,7 +226,7 @@ public abstract class TeleLib extends OpMode {
             fl.setPower(speedProp * ((left_stick_y - left_stick_x) - right_stick_x));
             fr.setPower(speedProp * ((left_stick_y + left_stick_x) + right_stick_x));
             bl.setPower(speedProp * (left_stick_y + left_stick_x) - right_stick_x);
-              br.setPower(speedProp * (left_stick_y - left_stick_x) + right_stick_x);
+            br.setPower(speedProp * (left_stick_y - left_stick_x) + right_stick_x);
         }
         else {
             fl.setPower(0);
@@ -244,7 +250,7 @@ public abstract class TeleLib extends OpMode {
                 speedProp = 1;
             }
         }
-        telemetry.addData("Half Speed Toggle : ", speedProp == .5);
+        telemetry.addData("Half Speed Toggled : ", speedProp == .5);
     }
 
 
@@ -319,7 +325,7 @@ public abstract class TeleLib extends OpMode {
 
 
         left_stick_y_output = gamepad2.left_stick_y;
-
+        toggleBrake();
 
         if (averageLiftPosition() <= 0) {
             bottom = true;
@@ -352,9 +358,11 @@ public abstract class TeleLib extends OpMode {
         }else if (Math.abs(left_stick_y_output) > .05) {
             liftRight.setPower(-left_stick_y_output);
             liftLeft.setPower(-left_stick_y_output);
-        }else if(gamepad2.b)
+        }
+        else if(gamepad2.b)
         {
             ElapsedTime time = new ElapsedTime();
+
             while(time.milliseconds() < 300)
             {
 
@@ -366,6 +374,21 @@ public abstract class TeleLib extends OpMode {
             liftLeft.setPower(0);
         }
 
+    }
+
+    public void toggleBrake()
+    {
+        if(!brake)
+        {
+            liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            brake = true;
+        }else if(brake)
+        {
+            liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            brake = false;
+        }
     }
 
     private void encoderCalibrate()
@@ -388,6 +411,7 @@ public abstract class TeleLib extends OpMode {
         telemetry.addData("Right Hook", hookRight.getPosition());
         telemetry.addData("Push Block", pushBlock.getPosition());
         telemetry.addData("CFM Power", maxCFM_Velocity);
+        telemetry.addData("Brake ", brake);
     }
     public void output()
     {
@@ -410,24 +434,25 @@ public abstract class TeleLib extends OpMode {
         else if(Math.abs(gamepad2.right_trigger) > .5)
         {
             pushBlock.setPosition(1);
+        }else if(gamepad2.dpad_up)
+        {
+            ElapsedTime time = new ElapsedTime();
+
+            while(time.milliseconds() < 300)
+            {
+            }
+
+            if(cap.getPosition() == 0)
+            {
+                cap.setPosition(1);
+            }else if(cap.getPosition() == 1)
+            {
+                cap.setPosition(0);
+            }
+
         }
 
         Output_Telemetry();
-    }
-
-    public void toggleBrake()
-    {
-        if(!brake)
-        {
-            liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            brake = true;
-        }else if(brake)
-        {
-            liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            brake = false;
-        }
     }
 
     //===========Intake Methods=============
