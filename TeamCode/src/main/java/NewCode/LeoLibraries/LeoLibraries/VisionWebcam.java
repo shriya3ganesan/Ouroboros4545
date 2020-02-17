@@ -136,8 +136,10 @@ VisionWebcam {
                     while(opMode.opModeIsActive()) {
 
                         // scan 3 columns
+                        //TODO: NIR THIS IS WHAT YOU CHANGE FOR SCANNING
                         for (int colNum = bitmap.getWidth(); colNum < bitmap.getWidth(); colNum++) {
 
+                            //Shouldnt need to change this
                             for (int rowNum = (bitmap.getHeight() / 2) + 50; rowNum < (bitmap.getHeight() / 2) + 200; rowNum++) {
                                 int pixel = bitmap.getPixel(colNum, rowNum);
 
@@ -179,7 +181,7 @@ VisionWebcam {
             opMode.telemetry.update();
 
 
-
+            //TODO: change the range for all of these to match the AVG X values
             if (stonexAvg < 500) {
                 pos = "left";
             } else if (stonexAvg > 670) {
@@ -188,6 +190,7 @@ VisionWebcam {
                 pos = "center";
             }
 
+            //TODO: After you are done, uncomment the line below and see if it gets the right position
             //opMode.telemetry.addData("Position", pos);
             opMode.telemetry.update();
             break;
@@ -211,6 +214,7 @@ VisionWebcam {
 
 
             // scan 3 columns
+            //TODO: NIR THIS IS WHAT YOU CHANGE FOR SCANNING
             for (int colNum = bitmap.getWidth(); colNum < bitmap.getWidth(); colNum++) {
 
                 for (int rowNum = (bitmap.getHeight() / 2) + 50; rowNum < (bitmap.getHeight() / 2) + 200; rowNum++){
@@ -252,7 +256,7 @@ VisionWebcam {
             opMode.telemetry.addData("AVG X = ", stonexAvg);
 
 
-
+            //TODO: change the range for all of these to match the AVG X values
             if (stonexAvg < 540) {
                 pos = "left";
             } else if (stonexAvg > 700) {
@@ -262,6 +266,7 @@ VisionWebcam {
             }
 
             opMode.telemetry.addData("AVG X = ", stonexAvg);
+            //TODO: After you are done, uncomment the line below and see if it gets the right position
             //opMode.telemetry.addData("Position", pos);
             opMode.telemetry.update();
             break;
