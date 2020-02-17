@@ -75,46 +75,35 @@ public class DoubleSkyStoneAutoBlue extends LinearOpMode {
                 break;
             case ("left"):
 
-                drive.encoderMove(-.7, 5, 2);
-                drive.gyroStrafe(.7, 8, true, 5);
-
-                //Gets stone
-                drive.thread(this, out, -25);
+                drive.encoderMove(-.6, 11, 5);
+                drive.gyroStrafe(.7, 7, false, 3);
+                drive.thread(this, out, -15);
                 out.lowerLiftAuto();
-                out.closeBasketAuto(500);
-                out.tighten();
-                out.hookDown();
-
-                //drops off stone
+                out.closeBasketAuto(1000);
                 drive.encoderMove(.7, 6, 5);
-                out.closeBasketAuto(500);
-                drive.gyroStrafe(1, 52, true, 5);
+                //out.tighten();
+                out.hookDown();
+                sleep(400);
+                drive.gyroStrafe(.7 , 80, true, 7);
                 out.hookUp();
                 out.openBasketAuto(200);
                 drive.encoderMove(.7, 2, 2);
-
-                //gets stone
-                drive.gyroStrafe(1, 10, false,5);
+                drive.gyroStrafe(.7, 15, false,5);
                 out.closeBasketAuto(1000);
-                drive.gyroStrafe(1, 72, false,5);
-                drive.thread(this, out, -20);
+                drive.gyroStrafe(.7, 40, false, 6);
+                drive.thread(this, out, -18);
                 out.lowerLiftAuto();
                 out.closeBasketAuto(1000);
-                out.tighten();
+                drive.encoderMove(.7, 10, 2);
+                out.closeBasketAuto(200);
                 out.hookDown();
-
-                //drops stone + parks
-                drive.encoderMove(.7, 5, 3);
-                drive.gyroStrafe(1, 40, true, 5);
-                drive.encoderMove(-.7, 4, 2);
-                drive.gyroStrafe(1, 47, true, 5);
+                sleep(400);
+                drive.gyroStrafe(1, 62, true, 5);
                 out.hookUp();
-                out.openBasketAuto(200);
-                drive.encoderMove(.7, 2, 2);
-
-                drive.gyroStrafe(1, 18, false, 5);
+                out.openBasketAuto(500);
+                drive.gyroStrafe(.7, 16, false, 5);
                 out.closeBasketAuto(500);
-                drive.encoderMove(-.7, 12, 2);
+                drive.encoderMove(-.5, 10, 3);
 
                 break;
             case("center"):

@@ -9,7 +9,7 @@ import NewCode.LeoLibraries.LeoLibraries.Intake;
 import NewCode.LeoLibraries.LeoLibraries.Output;
 import NewCode.LeoLibraries.LeoLibraries.ZeroMapBit;
 
-@Autonomous(name = "Playground Houyong",group = "Autonomous")
+@Autonomous(name = "BLUE LEFT",group = "Autonomous")
 public class Playground extends LinearOpMode {
 
     DriveTrainGood drive;
@@ -29,34 +29,34 @@ public class Playground extends LinearOpMode {
 
 
         drive.encoderMove(-.6, 11, 5);
-        drive.gyroStrafe(.7, 16, true, 3);
-        drive.thread(this, out, -16);
+        drive.gyroStrafe(.7, 7, false, 3);
+        drive.thread(this, out, -15);
         out.lowerLiftAuto();
         out.closeBasketAuto(1000);
         drive.encoderMove(.7, 6, 5);
         //out.tighten();
         out.hookDown();
         sleep(400);
-        drive.gyroStrafe(.7 , 96, false, 7);
+        drive.gyroStrafe(.7 , 80, true, 7);
         out.hookUp();
         out.openBasketAuto(200);
         drive.encoderMove(.7, 2, 2);
-        drive.gyroStrafe(.7, 15, true,5);
+        drive.gyroStrafe(.7, 15, false,5);
         out.closeBasketAuto(1000);
-        drive.gyroStrafe(.7, 45, true, 6);
-        drive.thread(this, out, -20);
+        drive.gyroStrafe(.7, 40, false, 6);
+        drive.thread(this, out, -18);
         out.lowerLiftAuto();
         out.closeBasketAuto(1000);
         drive.encoderMove(.7, 10, 2);
+        out.closeBasketAuto(200);
         out.hookDown();
         sleep(400);
-        drive.gyroStrafe(1, 60, false, 5);
+        drive.gyroStrafe(1, 62, true, 5);
         out.hookUp();
         out.openBasketAuto(500);
-        drive.gyroStrafe(.7, 16, true, 5);
+        drive.gyroStrafe(.7, 16, false, 5);
         out.closeBasketAuto(500);
-        drive.encoderMove(-.5, 15, 3);
-        drive.snowWhite();
+        drive.encoderMove(-.5, 10, 3);
 
 
     }
