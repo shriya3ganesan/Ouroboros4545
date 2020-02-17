@@ -136,7 +136,7 @@ VisionWebcam {
                     while(opMode.opModeIsActive()) {
 
                         // scan 3 columns
-                        for (int colNum = (bitmap.getWidth() / 2); colNum < bitmap.getWidth(); colNum++) {
+                        for (int colNum = bitmap.getWidth(); colNum < bitmap.getWidth(); colNum++) {
 
                             for (int rowNum = (bitmap.getHeight() / 2) + 50; rowNum < (bitmap.getHeight() / 2) + 200; rowNum++) {
                                 int pixel = bitmap.getPixel(colNum, rowNum);
@@ -211,7 +211,7 @@ VisionWebcam {
 
 
             // scan 3 columns
-            for (int colNum = (bitmap.getWidth() / 2) + 50; colNum < bitmap.getWidth(); colNum++) {
+            for (int colNum = bitmap.getWidth(); colNum < bitmap.getWidth(); colNum++) {
 
                 for (int rowNum = (bitmap.getHeight() / 2) + 50; rowNum < (bitmap.getHeight() / 2) + 200; rowNum++){
                     int pixel = bitmap.getPixel(colNum, rowNum);
