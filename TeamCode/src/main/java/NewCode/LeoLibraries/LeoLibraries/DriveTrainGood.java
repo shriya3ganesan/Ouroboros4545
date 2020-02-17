@@ -19,10 +19,10 @@ public class DriveTrainGood {
     public Output out;
     public Sensors sensors;
 
-    private DcMotor fl;
-    private DcMotor fr;
-    private DcMotor bl;
-    private DcMotor br;
+     DcMotor fl;
+     DcMotor fr;
+     DcMotor bl;
+     DcMotor br;
 
     private static double motorCounts = 518.4;
     private static double gearUp = 1;
@@ -277,8 +277,8 @@ public class DriveTrainGood {
         if (out.pushBlock.getPosition() != 1)
             out.pushBlock.setPosition(1);
 
-        out.rightVex.setPower(.5);
-        out.leftVex.setPower(-.5);
+        out.rightVex.setPower(-.5);
+        out.leftVex.setPower(.5);
         runtime.reset();
 
         out.liftRight.setPower(out.LIFTPOWER);
@@ -341,7 +341,7 @@ public class DriveTrainGood {
                 br.setPower(0.5);
             }
 
-            if (out.encoderLevelCount * out.blockHeight * 1.5 <=
+            if (out.encoderLevelCount * out.blockHeight * 1.25 <=
                     out.averageLiftPosition()) {
                 liftCheck = true;
                 mufasa(out);
@@ -469,8 +469,8 @@ public class DriveTrainGood {
                 {
                     pfr = -power;
                     pfl = power;
-                    pbr = power * .91;
-                    pbl = -power * 91;
+                    pbr = power * .86;
+                    pbl = -power * .89;
                 }
                 else if(!left)
                 {
@@ -484,8 +484,8 @@ public class DriveTrainGood {
             {
                 if(left)
                 {
-                    pfr = -power * .91;
-                    pfl = power * .91;
+                    pfr = -power * .86;
+                    pfl = power * .89;
                     pbr = power;
                     pbl = -power;
                 }
@@ -590,7 +590,7 @@ public class DriveTrainGood {
 
             if(t.seconds() > runtime)
             {
-                return;
+                break;
             }
             leftp = m.getLeftPower();
             rightp = m.getRightPower();
@@ -612,5 +612,13 @@ public class DriveTrainGood {
     {
         fr.setPower(power);
         br.setPower(power);
+    }
+
+    public void spin(double power)
+    {
+        fr.setPower(power);
+        br.setPower(power);
+        bl.setPower(-power);
+        br.setPower(-power);
     }
 }

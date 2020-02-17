@@ -39,11 +39,12 @@ public class CubicSpline {
         ArrayList<Point> splinePoints = s.SplineToPoints(temp);
         ArrayList<Motor_Power_Spline> m = s.splinePointsToMotorPoints(splinePoints);
 
-
         for(Motor_Power_Spline a : m)
         {
             System.out.println(a);
         }
+
+
 
     }
 
@@ -121,8 +122,8 @@ public class CubicSpline {
     public ArrayList<Motor_Power_Spline> splinePointsToMotorPoints(ArrayList<Point> splinePoints)
     {
         ArrayList<Motor_Power_Spline> s = new ArrayList<>();
-        double rightp;
-        double leftp;
+        double rightp = 0.0;
+        double leftp = 0.0;
         for(Point p : splinePoints)
         {
 

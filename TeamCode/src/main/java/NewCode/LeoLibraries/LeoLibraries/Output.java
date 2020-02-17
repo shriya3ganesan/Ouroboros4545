@@ -44,7 +44,7 @@ public class Output {
     double k = 1.0;
     double level = 0;
     double blockCount = 1.0;
-    double blockHeight = 5.0; //Block Height In Inches
+    double blockHeight = 4.0; //Block Height In Inches
     double prevEncoderPos = 0;
 
 
@@ -70,7 +70,9 @@ public class Output {
         hookRight = opMode.hardwareMap.servo.get("RHook");
 
 
-        hookLeft.setDirection(Servo.Direction.REVERSE);
+        hookLeft.setDirection(Servo.Direction.FORWARD);
+        hookRight.setDirection(Servo.Direction.FORWARD);
+
         liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -99,12 +101,12 @@ public class Output {
 
     public void hookDown() {
         hookRight.setPosition(1);
-        hookLeft.setPosition(.7);
+        hookLeft.setPosition(0);
     }
 
     public void hookUp() {
         hookRight.setPosition(0);
-        hookLeft.setPosition(0);
+        hookLeft.setPosition(1);
     }
 
 
@@ -163,6 +165,28 @@ public class Output {
         top = true;
     }
 
+    public void raiseLiftAuto(double time) {
+
+        ElapsedTime runtime = new ElapsedTime();
+        liftRight.setPower(LIFTPOWER);
+        liftLeft.setPower(LIFTPOWER);
+
+        while (runtime.seconds() < time  && opMode.opModeIsActive()) {
+
+            if(top && averageLiftPosition() > MAXHEIGHT * encoderLevelCount)
+            {
+                liftLeft.setPower(0);
+                liftRight.setPower(0);
+                return;
+            }
+        }
+
+        liftLeft.setPower(0);
+        liftRight.setPower(0);
+        top = true;
+    }
+
+
     public void lowerLiftAuto()
     {
 
@@ -190,8 +214,8 @@ public class Output {
     {
         blockCount++;
 
-        rightVex.setPower(.5);
-        leftVex.setPower(-.5);
+        rightVex.setPower(-.5);
+        leftVex.setPower(.5);
 
         time.reset();
         while(opMode.opModeIsActive() && time.milliseconds() < runtime)
@@ -206,8 +230,8 @@ public class Output {
     {
         blockCount++;
 
-        rightVex.setPower(-.5);
-        leftVex.setPower(.5);
+        rightVex.setPower(.5);
+        leftVex.setPower(-.5);
 
         time.reset();
         while(time.milliseconds() < runtime && opMode.opModeIsActive())
@@ -224,8 +248,17 @@ public class Output {
     }
 
     public void tighten() {
-        rightVex.setPower(-.5);
-        leftVex.setPower(.5);
+        rightVex.setPower(.5);
+        leftVex.setPower(-.5);
+    }
+
+    public void clamp()
+    {
+        pushBlock.setPosition(.5);
+    }
+    public void unclamp()
+    {
+        pushBlock.setPosition(0);
     }
 
 }

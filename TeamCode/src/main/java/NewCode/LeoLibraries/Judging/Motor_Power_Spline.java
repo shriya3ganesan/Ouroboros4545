@@ -5,7 +5,7 @@ public class Motor_Power_Spline {
     double rightPower;
     public static double noLoadSpeed = 31.4 ; // Max Angular Velocity in radians/second for 20 : 1 motor
     public static double stallTorque = 2.1; // Max Torque in Newton Meters for 20 : 1 motor
-    public static double robotlength = 16;
+    public static double robotlength = 8;
     double deltaT;
     double deltaS;
     static int i = 0;

@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.teamcode.Hardware.Outtake;
 
+import NewCode.LeoLibraries.LeoLibraries.DriveTrainGood;
 import NewCode.LeoLibraries.LeoLibraries.Intake;
 import NewCode.LeoLibraries.LeoLibraries.Sensors;
 import NewCode.LeoLibraries.LeoLibraries.Drivetrain;
@@ -19,7 +20,7 @@ import NewCode.LeoLibraries.LeoLibraries.Output;
 public class FoundationBlueAuto extends LinearOpMode {
 
 
-    Drivetrain drive;
+    DriveTrainGood drive;
     Sensors sensors;
     Intake intake;
     Output out;
@@ -28,13 +29,23 @@ public class FoundationBlueAuto extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         sensors = new Sensors(this);
-        drive = new Drivetrain(this);
+        drive = new DriveTrainGood(this);
         intake = new Intake(this);
         out = new Output(this);
 
         waitForStart();
 
-        drive.foundationAuto(this, out, -1);
+        drive.encoderMove(-.5, 10, 3);
+        drive.gyroStrafe(.7, 10, true, 3);
+        drive.encoderMove(-.5, 25, 3);
+        out.hookDown();
+        sleep(2000);
+        drive.encoderMove(.5, 50, 3);
+        drive.turnGyro(.6, 90, false, 5);
+        out.hookUp();
+        drive.encoderMove(-.5, 5, 3);
+        drive.encoderMove(.5, 40, 3);
+        drive.gyroStrafe(.5, 10, true, 5);
 
         drive.snowWhite();
     }

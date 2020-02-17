@@ -188,7 +188,7 @@ VisionWebcam {
                 pos = "center";
             }
 
-            opMode.telemetry.addData("Position", pos);
+            //opMode.telemetry.addData("Position", pos);
             opMode.telemetry.update();
             break;
         }
@@ -261,7 +261,8 @@ VisionWebcam {
                 pos = "center";
             }
 
-            opMode.telemetry.addData("Position", pos);
+            opMode.telemetry.addData("AVG X = ", stonexAvg);
+            //opMode.telemetry.addData("Position", pos);
             opMode.telemetry.update();
             break;
         }

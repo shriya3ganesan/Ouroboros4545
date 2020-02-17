@@ -752,8 +752,8 @@ public class Drivetrain {
         if (out.pushBlock.getPosition() != 1)
             out.pushBlock.setPosition(1);
 
-        out.rightVex.setPower(.5);
-        out.leftVex.setPower(-.5);
+        out.rightVex.setPower(-.5);
+        out.leftVex.setPower(.5);
         runtime.reset();
 
         out.liftRight.setPower(out.LIFTPOWER);

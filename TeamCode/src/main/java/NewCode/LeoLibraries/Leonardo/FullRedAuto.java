@@ -1,11 +1,14 @@
 package NewCode.LeoLibraries.Leonardo;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import NewCode.LeoLibraries.LeoLibraries.Drivetrain;
 import NewCode.LeoLibraries.LeoLibraries.Intake;
 import NewCode.LeoLibraries.LeoLibraries.Output;
+
+@Disabled
 
 @Autonomous(name = "RED Full Auto",group = "Autonomous")
 public class FullRedAuto extends LinearOpMode {

@@ -3,7 +3,10 @@ package NewCode.LeoLibraries.LeoLibraries;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import java.nio.channels.Pipe;
 
 public class Intake {
 
@@ -26,8 +29,8 @@ public class Intake {
             rightSide = opMode.hardwareMap.dcMotor.get("RIn");
             leftSide = opMode.hardwareMap.dcMotor.get("LIn");
 
-            rightSide.setDirection(DcMotor.Direction.FORWARD);
-            leftSide.setDirection(DcMotor.Direction.REVERSE);
+            rightSide.setDirection(DcMotor.Direction.REVERSE);
+            leftSide.setDirection(DcMotor.Direction.FORWARD);
 
             rightSide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             leftSide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -65,6 +68,11 @@ public class Intake {
         {
             rightSide.setPower(IDLE);
             leftSide.setPower(IDLE);
+        }
+        public void intake_reverse()
+        {
+            rightSide.setPower(-PICKUP);
+            leftSide.setPower(-PICKUP);
         }
     }
 

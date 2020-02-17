@@ -19,8 +19,8 @@ public class OuroborosMethodAutoExample extends LinearOpMode {
 
         ArrayList<Point> points = new ArrayList<>();
         points.add(new Point(0, 0, 0));
-        points.add(new Point(0, 10, 10));
-        points.add(new Point(0, 20, 0));
+        points.add(new Point(.5, 10, 10));
+        points.add(new Point(1, 20, 0));
 
 
         waitForStart();
