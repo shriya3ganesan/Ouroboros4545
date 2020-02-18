@@ -137,7 +137,7 @@ VisionWebcam {
 
                         // scan 3 columns
                         //TODO: NIR THIS IS WHAT YOU CHANGE FOR SCANNING
-                        for (int colNum = bitmap.getWidth(); colNum < bitmap.getWidth(); colNum++) {
+                        for (int colNum = bitmap.getWidth() / 2; colNum < bitmap.getWidth(); colNum++) {
 
                             //Shouldnt need to change this
                             for (int rowNum = (bitmap.getHeight() / 2) + 50; rowNum < (bitmap.getHeight() / 2) + 200; rowNum++) {
@@ -170,7 +170,7 @@ VisionWebcam {
 
             if(StoneX.size() > 0) stonexAvg /= StoneX.size();
             else{
-                stonexAvg = 550;
+                stonexAvg = 180;
                 opMode.telemetry.addData("Failed", "Divided by Zero");
             }
 
@@ -182,9 +182,9 @@ VisionWebcam {
 
 
             //TODO: change the range for all of these to match the AVG X values
-            if (stonexAvg < 500) {
+            if (stonexAvg < 100) {
                 pos = "left";
-            } else if (stonexAvg > 670) {
+            } else if (stonexAvg > 260) {
                 pos = "right";
             } else {
                 pos = "center";
@@ -215,7 +215,7 @@ VisionWebcam {
 
             // scan 3 columns
             //TODO: NIR THIS IS WHAT YOU CHANGE FOR SCANNING
-            for (int colNum = bitmap.getWidth(); colNum < bitmap.getWidth(); colNum++) {
+            for (int colNum = bitmap.getWidth() / 2; colNum < bitmap.getWidth(); colNum++) {
 
                 for (int rowNum = (bitmap.getHeight() / 2) + 50; rowNum < (bitmap.getHeight() / 2) + 200; rowNum++){
                     int pixel = bitmap.getPixel(colNum, rowNum);
@@ -245,7 +245,7 @@ VisionWebcam {
 
             if(StoneX.size() > 0) stonexAvg /= StoneX.size();
             else{
-                stonexAvg = 600;
+                stonexAvg = 180;
                 opMode.telemetry.addData("Failed", "Divided by Zero");
             }
 
@@ -257,9 +257,9 @@ VisionWebcam {
 
 
             //TODO: change the range for all of these to match the AVG X values
-            if (stonexAvg < 540) {
+            if (stonexAvg < 100) {
                 pos = "left";
-            } else if (stonexAvg > 700) {
+            } else if (stonexAvg > 260) {
                 pos = "right";
             } else {
                 pos = "center";

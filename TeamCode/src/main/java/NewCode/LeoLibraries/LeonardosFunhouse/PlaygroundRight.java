@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import NewCode.LeoLibraries.LeoLibraries.DriveTrainGood;
 import NewCode.LeoLibraries.LeoLibraries.Output;
 
-@Disabled
+
 @Autonomous(name = "Playground 2",group = "Autonomous")
 public class PlaygroundRight extends LinearOpMode {
 

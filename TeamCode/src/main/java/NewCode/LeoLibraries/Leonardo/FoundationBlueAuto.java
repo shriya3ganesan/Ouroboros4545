@@ -38,7 +38,8 @@ public class FoundationBlueAuto extends LinearOpMode {
         drive.encoderMove(-.5, 10, 3);
         drive.gyroStrafe(.7, 10, true, 3);
         drive.encoderMove(-.5, 25, 3);
-        out.hookDown();
+        out.hookLeft.setPosition(0);
+        out.hookLeft.setPosition(0);
         sleep(2000);
         drive.encoderMove(.5, 50, 3);
         drive.turnGyro(.6, 90, false, 5);

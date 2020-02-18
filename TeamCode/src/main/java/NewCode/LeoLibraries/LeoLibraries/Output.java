@@ -71,7 +71,7 @@ public class Output {
 
 
         hookLeft.setDirection(Servo.Direction.FORWARD);
-        hookRight.setDirection(Servo.Direction.FORWARD);
+        hookRight.setDirection(Servo.Direction.REVERSE);
 
         liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -100,12 +100,12 @@ public class Output {
 
 
     public void hookDown() {
-        hookRight.setPosition(1);
+        hookRight.setPosition(-.5);
         hookLeft.setPosition(0);
     }
 
     public void hookUp() {
-        hookRight.setPosition(0);
+        hookRight.setPosition(1);
         hookLeft.setPosition(1);
     }
 
