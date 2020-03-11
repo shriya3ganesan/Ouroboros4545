@@ -1,7 +1,6 @@
 package LeoLibraries.LeoLibraries;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -20,8 +19,6 @@ public class Output {
     public Servo leftHookArm;
 
 
-    public CRServo rightVex;
-    public CRServo leftVex;
     public DcMotor liftRight;
     public DcMotor liftLeft;
     public Servo leftElbow;
@@ -68,8 +65,6 @@ public class Output {
 
 
         pushBlock = opMode.hardwareMap.servo.get("PB");
-        rightVex = opMode.hardwareMap.crservo.get("ROut");
-        leftVex = opMode.hardwareMap.crservo.get("LOut");
         liftLeft = opMode.hardwareMap.dcMotor.get("LLift");
         liftRight = opMode.hardwareMap.dcMotor.get("RLift");
         hookLeft = opMode.hardwareMap.servo.get("LHook");
@@ -122,24 +117,44 @@ public class Output {
 
     }
 
+    public void skyStoneHooks(boolean up)
+    {
+        if(up)
+        {
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            });
+            rightElbow.setPosition(0);
+            leftElbow.setPosition(1);
+        }else
+        {
+            leftElbow.setPosition(0);
+            rightElbow.setPosition(1);
+        }
+    }
+
+
     public void armUp(boolean left)
     {
         if (left) {
-            leftHookArm.setPosition(1);
+            leftHookArm.setPosition(.4);
         }
         else{
-            rightHookArm.setPosition(0);
+            rightHookArm.setPosition(.6);
         }
     }
 
     public void armDown(boolean left)
     {
         if (left) {
-            leftHookArm.setPosition(0);
+            leftHookArm.setPosition(1);
 
         }
         else {
-            rightHookArm.setPosition(1);
+            rightHookArm.setPosition(0);
 
         }
     }
@@ -262,48 +277,6 @@ public class Output {
 
 
 
-
-    public void openBasketAuto(double runtime)
-    {
-        blockCount++;
-
-        rightVex.setPower(-.5);
-        leftVex.setPower(.5);
-
-        time.reset();
-        while(opMode.opModeIsActive() && time.milliseconds() < runtime)
-        {
-        }
-
-        rightVex.setPower(0);
-        leftVex.setPower(0);
-    }
-
-    public void closeBasketAuto(double runtime)
-    {
-        blockCount++;
-
-        rightVex.setPower(.5);
-        leftVex.setPower(-.5);
-
-        time.reset();
-        while(time.milliseconds() < runtime && opMode.opModeIsActive())
-        {
-        }
-
-        rightVex.setPower(0);
-        leftVex.setPower(0);
-    }
-
-    public void stopVex(){
-        leftVex.setPower(0);
-        rightVex.setPower(0);
-    }
-
-    public void tighten() {
-        rightVex.setPower(.5);
-        leftVex.setPower(-.5);
-    }
 
     public void clamp()
     {

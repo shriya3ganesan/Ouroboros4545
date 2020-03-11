@@ -113,6 +113,9 @@ public class DriveTrainGood {
         {
             count--;
         }
+        if (count == 0) {
+            return 0;
+        }
         if(direction > 0)
         {
             average = (((-1*fl.getCurrentPosition() + fr.getCurrentPosition()
@@ -277,8 +280,7 @@ public class DriveTrainGood {
         if (out.pushBlock.getPosition() != 1)
             out.pushBlock.setPosition(1);
 
-        out.rightVex.setPower(-.5);
-        out.leftVex.setPower(.5);
+
         runtime.reset();
 
         out.liftRight.setPower(out.LIFTPOWER);
@@ -304,8 +306,6 @@ public class DriveTrainGood {
             if (runtime.milliseconds() >=
                     out.HORIZONTALEXTENSIONTIME) {
                 basketCheck = true;
-                out.rightVex.setPower(0);
-                out.leftVex.setPower(0);
             }
 
             if (Math.abs((Math.abs(newLeftTarget) - Math.abs(getEncoderAverage()))) <= 5) {
@@ -419,6 +419,30 @@ public class DriveTrainGood {
         snowWhite();
     }
 
+    public void gyroTurnStraight(double angle, double timeOutMS) {
+
+        ElapsedTime runtime = new ElapsedTime();
+        double goal = angle;
+
+        do  {
+
+
+            opMode.telemetry.addData("Goal", goal);
+            opMode.telemetry.addData("Current Heading", sensors.getGyroYaw());
+            opMode.telemetry.update();
+            if (sensors.getGyroYaw() < goal) {
+                turn(.23, false);
+            }
+            else {
+                turn(.23, true);
+            }
+
+
+        } while (opMode.opModeIsActive() && Math.abs(goal - sensors.getGyroYaw()) > 2 && runtime.milliseconds() < timeOutMS);
+
+        snowWhite();
+    }
+
     public void turnGyro(double power, double angleChange, boolean turnRight, double timeout) {
         ElapsedTime time = new ElapsedTime();
 
@@ -436,12 +460,12 @@ public class DriveTrainGood {
         snowWhite();
     }
 
+
     public void gyroStrafe(double power, double distance, boolean left, double timeout)
     {
 
         ElapsedTime time = new ElapsedTime();
         resetEncoders();
-        gyroTurnStraight(500);
         double pos = 1;
         if(!left)
         {
@@ -514,10 +538,8 @@ public class DriveTrainGood {
             opMode.telemetry.addData("Angle", angle);
             opMode.telemetry.update();
         }
-        gyroTurnStraight(1000);
         snowWhite();
     }
-
     public void turnPID(double angleChange, boolean turnRight, double kP, double kI, double kD, double timeout) {
 
         ElapsedTime time = new ElapsedTime();
@@ -538,7 +560,7 @@ public class DriveTrainGood {
         time.reset();
         timeoutTimer.reset();
 
-        while (Math.abs(sensors.getGyroYaw() - (angleChange + initAngle)) > 1 && timeoutTimer.seconds() < timeout && opMode.opModeIsActive()) {
+        while (Math.abs(sensors.getGyroYaw() - (angleChange + initAngle)) > .5 && timeoutTimer.seconds() < timeout && opMode.opModeIsActive()) {
             prevRunTime = time.seconds();
 
             error = angleChange - Math.abs(sensors.getGyroYaw() - initAngle);
@@ -565,7 +587,6 @@ public class DriveTrainGood {
 
             lastError = error;
 
-            opMode.idle();
 
         }
         snowWhite();

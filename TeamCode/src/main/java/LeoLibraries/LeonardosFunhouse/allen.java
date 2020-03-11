@@ -7,8 +7,8 @@ import LeoLibraries.LeoLibraries.DriveTrainGood;
 import LeoLibraries.LeoLibraries.Intake;
 import LeoLibraries.LeoLibraries.Output;
 
-@Autonomous(name = "Plagyround",group = "Autonomous")
-public class Playground extends LinearOpMode {
+@Autonomous(name = "Allen",group = "Autonomous")
+public class allen extends LinearOpMode {
 
     DriveTrainGood drive;
     Output out;
@@ -25,17 +25,12 @@ public class Playground extends LinearOpMode {
         waitForStart();
         //For left side blue
 
+        drive.gyroStrafe(1, 70, true, 5);
 
-        out.armDown(false);
-        out.elbowUp(false);
-        sleep(500);
-        drive.gyroStrafe(1, 3, true, 3);
-        out.elbowDown(false);
-        sleep(500);
-        out.armUp(false);
+        drive.gyroStrafe(1, 70, false, 5);
 
-        drive.encoderMove(.6, 40, 4);
-        sleep(10000);
+
+        sleep(500);
 
     }
 }

@@ -31,7 +31,7 @@ public class DoubleSkyStoneAutoRed extends LinearOpMode {
         waitForStart();
 
 
-        switch (vision.senseRed(this)) {
+        /*switch (vision.senseRed(this)) {
 
             case ("left"):
 
@@ -135,6 +135,6 @@ public class DoubleSkyStoneAutoRed extends LinearOpMode {
 
                 break;
         }
-            drive.snowWhite();
+            drive.snowWhite();*/
     }
 }

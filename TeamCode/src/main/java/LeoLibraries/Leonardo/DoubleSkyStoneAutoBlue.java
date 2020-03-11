@@ -25,7 +25,7 @@ public class DoubleSkyStoneAutoBlue extends LinearOpMode {
 
         waitForStart();
 
-        switch (vision.senseBlue(this)) {
+        /*switch (vision.senseBlue(this)) {
 
             case ("right"):
                 //Go to stone
@@ -138,6 +138,6 @@ public class DoubleSkyStoneAutoBlue extends LinearOpMode {
 
                 break;
         }
-        drive.snowWhite();
+        drive.snowWhite();*/
     }
 }

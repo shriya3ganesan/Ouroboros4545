@@ -2,7 +2,6 @@ package LeoLibraries.LeoLibraries;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -82,8 +81,7 @@ public abstract class TeleLib extends OpMode {
     public Servo leftHookArm;
 
 
-    public CRServo rightVex;
-    public CRServo leftVex;
+    public Servo outVex;
     public DcMotor liftRight;
     public DcMotor liftLeft;
     public Servo leftElbow;
@@ -118,8 +116,7 @@ public abstract class TeleLib extends OpMode {
         hookLeft = hardwareMap.servo.get("LHook");
         hookRight = hardwareMap.servo.get("RHook");
         pushBlock = hardwareMap.servo.get("PB");
-        rightVex = hardwareMap.crservo.get("ROut");
-        leftVex = hardwareMap.crservo.get("LOut");
+        outVex = hardwareMap.servo.get("Out");
         liftLeft = hardwareMap.dcMotor.get("LLift");
         liftRight = hardwareMap.dcMotor.get("RLift");
         rightElbow = hardwareMap.servo.get("RElbow");
@@ -301,13 +298,11 @@ public abstract class TeleLib extends OpMode {
 
         right_stick_y_output = gamepad2.right_stick_y;
 
-        if (Math.abs(right_stick_y_output) >= .075) {
-            rightVex.setPower(right_stick_y_output / 2);
-            leftVex.setPower(-right_stick_y_output / 2);
+        if (right_stick_y_output >= .075) {
+            outVex.setPosition(1);
         }
-        else {
-            rightVex.setPower(0);
-            leftVex.setPower(0);
+        else if(right_stick_y_output <= -.075){
+            outVex.setPosition(0);
 
         }
     }
@@ -502,6 +497,24 @@ public abstract class TeleLib extends OpMode {
             } else if (leftElbow.getPosition() == 0) {
                 leftElbow.setPosition(1);
             }
+
+        }
+
+        if(gamepad1.a) {
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    time.reset();
+                    while (time.milliseconds() < 300)
+                    {
+
+                    }
+                    rightHookArm.setPosition(0);
+                    rightElbow.setPosition(1);
+
+                }
+            });
+            t.start();
 
         }
             Output_Telemetry();
