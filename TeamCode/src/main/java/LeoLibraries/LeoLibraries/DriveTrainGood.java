@@ -257,7 +257,7 @@ public class DriveTrainGood {
 
         gyroTurnStraight(1000);
         snowWhite();
-    }
+    } 
 
     public void thread (LinearOpMode opMode, Output out, double reverseInches) {
 

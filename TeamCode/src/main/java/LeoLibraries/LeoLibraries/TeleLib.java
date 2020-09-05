@@ -131,6 +131,7 @@ public abstract class TeleLib extends OpMode {
         hookLeft.setDirection(Servo.Direction.FORWARD);
         hookRight.setDirection(Servo.Direction.FORWARD);
         cap.setDirection(Servo.Direction.FORWARD);
+        pushBlock.setDirection(Servo.Direction.FORWARD);
 
         liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -442,7 +443,7 @@ public abstract class TeleLib extends OpMode {
     }
     public void output() {
         horizontalLiftTele();
-        hookToggle();
+        hookToggle();  
         lift();
         encoderCalibrate();
 
