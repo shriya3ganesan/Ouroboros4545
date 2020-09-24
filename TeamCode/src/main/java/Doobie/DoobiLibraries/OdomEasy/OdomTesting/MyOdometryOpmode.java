@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import org.firstinspires.ftc.teamcode.DoobiLibraries.OdomEasy.OdometryGlobalCoordinatePosition;
+import Doobie.DoobiLibraries.OdomEasy.OdometryGlobalCoordinatePosition;
 
 
 /**
@@ -64,17 +64,22 @@ public class MyOdometryOpmode extends LinearOpMode {
 
     public void goToPosition(double targetX, double targetY, double power, double orientation, double allowedDistanceError) {
 
-        double distanceToX = targetX - globalPositionUpdate.returnXCoordinate();
-        double distanceToY = targetY - globalPositionUpdate.returnYCoordinate();
+        //distance to x and y for trig calculations
+        double distanceToX = (targetX * COUNTS_PER_INCH)- globalPositionUpdate.returnXCoordinate();
+        double distanceToY = (targetY * COUNTS_PER_INCH) - globalPositionUpdate.returnYCoordinate();
 
+        //gets total distance needed to travel
         double distance = Math.hypot(distanceToX, distanceToY);
 
         while (opModeIsActive() && distance > allowedDistanceError) {
             distanceToX = targetX - globalPositionUpdate.returnXCoordinate();
             distanceToY = targetY - globalPositionUpdate.returnYCoordinate();
 
+            //uses right triange trig to figure out what ange the robot needs to move at
+            //maybe could integrate Nir's holonomic odom math into?
             double moveAngle = Math.toDegrees(Math.atan2(distanceToX, distanceToY));
 
+            //figures out what power to set the motors to so we can move at this angle
             double movementX = calculateX(moveAngle, power);
             double movementY = calculateY(moveAngle, power);
 
@@ -116,6 +121,11 @@ public class MyOdometryOpmode extends LinearOpMode {
         right_back.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         left_front.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         left_back.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        left_front.setDirection(DcMotor.Direction.FORWARD);
+        right_front.setDirection(DcMotor.Direction.REVERSE);
+        left_back.setDirection(DcMotor.Direction.FORWARD);
+        right_back.setDirection(DcMotor.Direction.REVERSE);
 
         left_front.setDirection(DcMotorSimple.Direction.REVERSE);
         right_front.setDirection(DcMotorSimple.Direction.REVERSE);

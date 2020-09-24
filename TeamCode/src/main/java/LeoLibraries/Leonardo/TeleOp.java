@@ -10,10 +10,7 @@ public class TeleOp extends TeleLib {
     @Override
     public void loop(){
         arcadedrive();
-        halfspeed();
-        output();
-        intake();
-        cfmSpeed();
+        
 
     }
 

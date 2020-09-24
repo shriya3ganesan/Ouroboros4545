@@ -112,6 +112,8 @@ public class OdometryCalibration extends LinearOpMode {
         ReadWriteFile.writeFile(wheelBaseSeparationFile, String.valueOf(wheelBaseSeparation));
         ReadWriteFile.writeFile(horizontalTickOffsetFile, String.valueOf(horizontalTickOffset));
 
+        //here, figure out where we need to reverse
+
         while(opModeIsActive()){
             telemetry.addData("Odometry System Calibration Status", "Calibration Complete");
             //Display calculated constants
@@ -163,6 +165,11 @@ public class OdometryCalibration extends LinearOpMode {
         right_back.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         left_front.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         left_back.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        left_front.setDirection(DcMotor.Direction.FORWARD);
+        right_front.setDirection(DcMotor.Direction.REVERSE);
+        left_back.setDirection(DcMotor.Direction.FORWARD);
+        right_back.setDirection(DcMotor.Direction.REVERSE);
 
         left_front.setDirection(DcMotorSimple.Direction.REVERSE);
         right_front.setDirection(DcMotorSimple.Direction.REVERSE);

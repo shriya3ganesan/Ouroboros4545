@@ -25,9 +25,9 @@ public class allen extends LinearOpMode {
         waitForStart();
         //For left side blue
 
-        drive.gyroStrafe(1, 70, true, 5);
+        drive.gyroStrafe(.9, 70, true, 5);
 
-        drive.gyroStrafe(1, 70, false, 5);
+        drive.gyroStrafe(.9, 70, false, 5);
 
 
         sleep(500);
