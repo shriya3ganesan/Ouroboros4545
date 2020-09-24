@@ -22,12 +22,11 @@ public class PlaygroundRight extends LinearOpMode {
 
         waitForStart();
 
-
-        out.hookUp();
-
+        drive.gyroStrafe(.7, 80, true, 5);
         sleep(1000);
-        out.hookDown();
-        sleep(2000);
+        drive.gyroStrafe(1, 80, false, 5);
+
+        drive.snowWhite();
 
     }
 }

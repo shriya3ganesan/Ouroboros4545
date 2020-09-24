@@ -439,6 +439,7 @@ public abstract class TeleLib extends OpMode {
         telemetry.addData("Right Hook", hookRight.getPosition());
         telemetry.addData("Push Block", pushBlock.getPosition());
         telemetry.addData("CFM Power", maxCFM_Velocity);
+        telemetry.addData("SHRIYA THIS THINGY", outVex.getPosition());
 
     }
     public void output() {

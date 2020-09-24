@@ -407,10 +407,10 @@ public class DriveTrainGood {
             opMode.telemetry.addData("Current Heading", sensors.getGyroYaw());
             opMode.telemetry.update();
             if (sensors.getGyroYaw() < goal) {
-                turn(.23, false);
+                turn(.21, false);
             }
             else {
-                turn(.23, true);
+                turn(.21, true);
             }
 
 
@@ -482,19 +482,19 @@ public class DriveTrainGood {
 
         double angle = sensors.getGyroYaw();
         double average = 0;
-        while(opMode.opModeIsActive() && Math.abs(average) < Math.abs(distance) * inchCounts && time.seconds() < timeout)
+        while(opMode.opModeIsActive() && Math.abs(average) < Math.abs(distance) * inchCounts * (24.0/19.0) && time.seconds() < timeout)
         {
 
             average = getStrafeEncoderAverage(pos);
 
-            if(angle > 2)
+            if(angle > 1.75)
             {
                 if(left)
                 {
                     pfr = -power;
                     pfl = power;
-                    pbr = power * .86;
-                    pbl = -power * .89;
+                    pbr = power * .865;
+                    pbl = -power * .865;
                 }
                 else if(!left)
                 {
@@ -504,12 +504,12 @@ public class DriveTrainGood {
                     pbl = power;
                 }
             }
-            else if(angle < -2)
+            else if(angle < -1.75)
             {
                 if(left)
                 {
-                    pfr = -power * .86;
-                    pfl = power * .89;
+                    pfr = -power * .865;
+                    pfl = power * .865;
                     pbr = power;
                     pbl = -power;
                 }

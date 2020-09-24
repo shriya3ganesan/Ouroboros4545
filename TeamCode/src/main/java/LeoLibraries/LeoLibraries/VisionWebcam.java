@@ -125,34 +125,32 @@ VisionWebcam {
 
     public String senseBlue(LinearOpMode opMode) throws InterruptedException {
 
-                    Bitmap bitmap = getBitmap();
-                    ArrayList<Integer> StoneX = new ArrayList<Integer>();
+        Bitmap bitmap = getBitmap();
+        ArrayList<Integer> StoneX = new ArrayList<Integer>();
 
-                    String pos = "";
-                    int stonexAvg = 0;
+        String pos = "";
+        int stonexAvg = 0;
 
-                    // top left = (0,0)
+        // top left = (0,0)
 
-                    while(opMode.opModeIsActive()) {
+        while(opMode.opModeIsActive()) {
 
-                        // scan 3 columns
-                        //TODO: NIR THIS IS WHAT YOU CHANGE FOR SCANNING
-                        for (int colNum = bitmap.getWidth() / 2; colNum < bitmap.getWidth(); colNum++) {
+            // scan 3 columns
+            for (int colNum = (bitmap.getWidth() / 2); colNum < bitmap.getWidth(); colNum++) {
 
-                            //Shouldnt need to change this
-                            for (int rowNum = (bitmap.getHeight() / 2) + 50; rowNum < (bitmap.getHeight() / 2) + 200; rowNum++) {
-                                int pixel = bitmap.getPixel(colNum, rowNum);
+                for (int rowNum = (bitmap.getHeight() / 2) + 50; rowNum < (bitmap.getHeight() / 2) + 200; rowNum++) {
+                    int pixel = bitmap.getPixel(colNum, rowNum);
 
-                                // receive R, G, and B values for each pixel
-                                int redPixel = red(pixel);
-                                int greenPixel = green(pixel);
-                                int bluePixel = blue(pixel);
+                    // receive R, G, and B values for each pixel
+                    int redPixel = red(pixel);
+                    int greenPixel = green(pixel);
+                    int bluePixel = blue(pixel);
 
-                    /*opMode.telemetry.addData("Red", redPixel);
-                    opMode.telemetry.addData("Green", greenPixel);
-                    opMode.telemetry.addData("Blue", bluePixel);
-                    opMode.telemetry.update();*/
-                                // only add x-coordinates of black pixels to list
+                /*opMode.telemetry.addData("Red", redPixel);
+                opMode.telemetry.addData("Green", greenPixel);
+                opMode.telemetry.addData("Blue", bluePixel);
+                opMode.telemetry.update();*/
+                    // only add x-coordinates of black pixels to list
 
                     if (redPixel < 30 && greenPixel < 30 && bluePixel < 30) {
                         StoneX.add(colNum);
@@ -170,7 +168,7 @@ VisionWebcam {
 
             if(StoneX.size() > 0) stonexAvg /= StoneX.size();
             else{
-                stonexAvg = 180;
+                stonexAvg = 550;
                 opMode.telemetry.addData("Failed", "Divided by Zero");
             }
 
@@ -181,17 +179,16 @@ VisionWebcam {
             opMode.telemetry.update();
 
 
-            //TODO: change the range for all of these to match the AVG X values
-            if (stonexAvg < 100) {
+
+            if (stonexAvg < 500) {
                 pos = "left";
-            } else if (stonexAvg > 260) {
+            } else if (stonexAvg > 670) {
                 pos = "right";
             } else {
                 pos = "center";
             }
 
-            //TODO: After you are done, uncomment the line below and see if it gets the right position
-            //opMode.telemetry.addData("Position", pos);
+            opMode.telemetry.addData("Position", pos);
             opMode.telemetry.update();
             break;
         }
@@ -214,8 +211,7 @@ VisionWebcam {
 
 
             // scan 3 columns
-            //TODO: NIR THIS IS WHAT YOU CHANGE FOR SCANNING
-            for (int colNum = bitmap.getWidth() / 2; colNum < bitmap.getWidth(); colNum++) {
+            for (int colNum = (bitmap.getWidth() / 2) + 50; colNum < bitmap.getWidth(); colNum++) {
 
                 for (int rowNum = (bitmap.getHeight() / 2) + 50; rowNum < (bitmap.getHeight() / 2) + 200; rowNum++){
                     int pixel = bitmap.getPixel(colNum, rowNum);
@@ -225,10 +221,10 @@ VisionWebcam {
                     int greenPixel = green(pixel);
                     int bluePixel = blue(pixel);
 
-                  /*  opMode.telemetry.addData("Red", redPixel);
-                    opMode.telemetry.addData("Green", greenPixel);
-                    opMode.telemetry.addData("Blue", bluePixel);
-                    opMode.telemetry.update();*/
+              /*  opMode.telemetry.addData("Red", redPixel);
+                opMode.telemetry.addData("Green", greenPixel);
+                opMode.telemetry.addData("Blue", bluePixel);
+                opMode.telemetry.update();*/
                     // only add x-coordinates of black pixels to list
 
                     if (redPixel < 30 && greenPixel < 30 && bluePixel < 30) {
@@ -245,7 +241,7 @@ VisionWebcam {
 
             if(StoneX.size() > 0) stonexAvg /= StoneX.size();
             else{
-                stonexAvg = 180;
+                stonexAvg = 600;
                 opMode.telemetry.addData("Failed", "Divided by Zero");
             }
 
@@ -256,25 +252,22 @@ VisionWebcam {
             opMode.telemetry.addData("AVG X = ", stonexAvg);
 
 
-            //TODO: change the range for all of these to match the AVG X values
-            if (stonexAvg < 100) {
+
+            if (stonexAvg < 540) {
                 pos = "left";
-            } else if (stonexAvg > 260) {
+            } else if (stonexAvg > 700) {
                 pos = "right";
             } else {
                 pos = "center";
             }
 
-            opMode.telemetry.addData("AVG X = ", stonexAvg);
-            //TODO: After you are done, uncomment the line below and see if it gets the right position
-            //opMode.telemetry.addData("Position", pos);
+            opMode.telemetry.addData("Position", pos);
             opMode.telemetry.update();
             break;
         }
 
         return pos;
     }
-
 
     public Bitmap vufConvertToBitmap(Frame frame) { return vuforia.convertFrameToBitmap(frame); }
 
